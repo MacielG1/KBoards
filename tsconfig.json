@@ -26,6 +26,6 @@
       "@store/*": ["./store/*"],
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/NewItem.jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/AddItem.jsx"],
   "exclude": ["node_modules"]
 }
