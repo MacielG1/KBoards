@@ -69,7 +69,19 @@ export default function Item({ Item, deleteItem, updateItem }: Props) {
       className="bg-neutral-950 p-2.5 h-[100px] min-h-[100px] flex text-left rounded-xl relative group"
       onClick={toggleEditMode}
     >
-      <div>{itemContent}</div>
+      <div>
+        {itemContent}
+        {
+          <button
+            onClick={() => {
+              deleteItem(Item.id);
+            }}
+            className="absolute top-2 right-2 group-hover:inline-flex hidden"
+          >
+            <Icons.trashIcon className="w-5 h-5 text-neutral-600 hover:text-red-500 transition duration-300" />
+          </button>
+        }
+      </div>
     </div>
   );
 }
