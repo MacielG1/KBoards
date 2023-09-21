@@ -2,7 +2,7 @@
 import { ItemType, ListType } from "@/utils/types";
 import { DndContext, DragEndEvent, DragOverEvent, DragOverlay, DragStartEvent, PointerSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, arrayMove } from "@dnd-kit/sortable";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import List from "./List";
 import ItemOverlay from "./Overlays/ItemOverlay";
@@ -40,6 +40,19 @@ export default function Board() {
 
   const sensors = useSensors(pointerSensor, touchSensor);
 
+  useEffect(() => {
+    const storedLists = localStorage.getItem("lists");
+    const storedItems = localStorage.getItem("items");
+
+    if (storedLists) {
+      setLists(JSON.parse(storedLists));
+    }
+
+    if (storedItems) {
+      setItems(JSON.parse(storedItems));
+    }
+  }, []);
+
   function addItem(listId: string) {
     const newItem: ItemType = {
       id: uuidv4(),
@@ -48,10 +61,12 @@ export default function Board() {
     };
 
     setItems([...items, newItem]);
+    localStorage.setItem("items", JSON.stringify([...items, newItem]));
   }
 
   function deleteItem(id: string) {
     setItems((items) => items.filter((i) => i.id !== id));
+    localStorage.setItem("items", JSON.stringify(items.filter((i) => i.id !== id)));
   }
 
   function updateItem(id: string, content: string) {
@@ -70,11 +85,13 @@ export default function Board() {
     };
 
     setLists([...lists, newList]);
+    localStorage.setItem("lists", JSON.stringify([...lists, newList]));
   }
 
   function deleteList(id: string) {
     setLists((lists) => lists.filter((i) => i.id !== id));
     setItems((items) => items.filter((i) => i.listId !== id));
+    localStorage.setItem("lists", JSON.stringify(lists.filter((i) => i.id !== id)));
   }
 
   function updateList(id: string, title: string) {
@@ -84,6 +101,7 @@ export default function Board() {
         return { ...list, title };
       })
     );
+    localStorage.setItem("lists", JSON.stringify(lists));
   }
 
   function onDragStart(event: DragStartEvent) {
@@ -114,7 +132,10 @@ export default function Board() {
     setLists((lists) => {
       const activeListIndex = lists.findIndex((i) => i.id === activeId);
       const overListIndex = lists.findIndex((i) => i.id === overId);
-      return arrayMove(lists, activeListIndex, overListIndex);
+
+      let newOrder = arrayMove(lists, activeListIndex, overListIndex);
+      localStorage.setItem("lists", JSON.stringify(newOrder));
+      return newOrder;
     });
   }
 
@@ -141,10 +162,14 @@ export default function Board() {
         if (items[activeIndex].listId != items[overIndex].listId) {
           // Fix introduced after video recording
           items[activeIndex].listId = items[overIndex].listId;
-          return arrayMove(items, activeIndex, overIndex - 1);
-        }
 
-        return arrayMove(items, activeIndex, overIndex);
+          let newOrder = arrayMove(items, activeIndex, overIndex);
+          localStorage.setItem("items", JSON.stringify(newOrder));
+          return newOrder;
+        }
+        let newOrder = arrayMove(items, activeIndex, overIndex);
+        localStorage.setItem("items", JSON.stringify(newOrder));
+        return newOrder;
       });
     }
 
@@ -156,7 +181,10 @@ export default function Board() {
         const activeIndex = items.findIndex((t) => t.id === activeId);
 
         items[activeIndex].listId = overId.toString();
-        return arrayMove(items, activeIndex, activeIndex);
+
+        let newOrder = arrayMove(items, activeIndex, activeIndex);
+        localStorage.setItem("items", JSON.stringify(newOrder));
+        return newOrder;
       });
     }
   }
