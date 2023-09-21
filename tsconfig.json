@@ -24,7 +24,8 @@
       "@components/*": ["./components/*"],
       "@utils/*": ["./utils/*"],
       "@store/*": ["./store/*"],
-      "@types/*" : ["./utils/types/*"]
+      "@types/*" : ["./utils/types/*"],
+      "@assets/*" : ["./assets/*"],
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/AddItem.jsx"],

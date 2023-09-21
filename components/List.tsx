@@ -4,6 +4,8 @@ import { CSS } from "@dnd-kit/utilities";
 import { useMemo, useState } from "react";
 
 import Button from "./Button";
+import Item from "./Item";
+import { Icons } from "@/assets/Icons";
 
 interface Props {
   list: ListType;
@@ -36,6 +38,10 @@ export default function List({ list, deleteList, updateList, addItem, items, del
     transition,
     transform: CSS.Transform.toString(transform),
   };
+
+  if (isDragging) {
+    return <div ref={setNodeRef} className="bg-red-800 opacity-40 min-h-[25vh] max-h-[88vh] rounded-xl flex flex-col w-[22rem]" />;
+  }
 
   return (
     <div ref={setNodeRef} style={style} className="bg-neutral-800 w-[22rem] min-h-[25vh] max-h-[88vh] rounded-xl flex flex-col">
@@ -72,14 +78,14 @@ export default function List({ list, deleteList, updateList, addItem, items, del
             deleteList(list.id);
           }}
         >
-          X
+          <Icons.trashIcon className="w-5 h-5 text-neutral-600 hover:text-red-500 transition duration-300" />
         </button>
       </div>
 
       <div className="flex flex-grow flex-col gap-4 p-2 overflow-x-hidden overflow-y-auto">
         <SortableContext items={itemsIds}>
           {items.map((item) => (
-            <>{item.content}</>
+            <Item key={item.id} Item={item} deleteItem={deleteItem} updateItem={updateItem} />
           ))}
         </SortableContext>
       </div>
@@ -90,7 +96,8 @@ export default function List({ list, deleteList, updateList, addItem, items, del
           addItem(list.id);
         }}
       >
-        + Add Item
+        <Icons.plusIcon className="w-4 h-4 text-neutral-400 " />
+        Add Item
       </Button>
     </div>
   );
