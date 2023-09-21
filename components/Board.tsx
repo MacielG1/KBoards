@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 import List from "./List";
 import ItemOverlay from "./Overlays/ItemOverlay";
 import { createPortal } from "react-dom";
+import ListOverlay from "./Overlays/ListOverlay";
 
 const defaultLists: ListType[] = [
   {
@@ -162,17 +163,7 @@ export default function Board() {
 
   let Overlay = (
     <DragOverlay dropAnimation={null}>
-      {activeList && (
-        <List
-          list={activeList}
-          deleteList={deleteList}
-          updateList={updateList}
-          addItem={addItem}
-          deleteItem={deleteItem}
-          updateItem={updateItem}
-          items={items.filter((i) => i.listId === activeList.id)}
-        />
-      )}
+      {activeList && <ListOverlay list={activeList} deleteItem={deleteItem} updateItem={updateItem} items={items.filter((i) => i.listId === activeList.id)} />}
 
       {activeItem && <ItemOverlay content={activeItem.content} />}
     </DragOverlay>
@@ -184,10 +175,9 @@ export default function Board() {
     <main className="grid pt-10 pb-4 w-full place-items-center overflow-x-auto ">
       <DndContext sensors={sensors} onDragStart={onDragStart} onDragEnd={onDragEnd} onDragOver={onDragOver} id="board">
         <div className="m-auto flex gap-4">
-          <div className="flex gap-4  ">
+          <div className="flex gap-4   ">
             <SortableContext items={listIds}>
               {lists.map((list) => (
-                // <div key={list.id} className="overflow-y-auto">
                 <List
                   list={list}
                   key={list.id}
@@ -198,7 +188,6 @@ export default function Board() {
                   updateItem={updateItem}
                   items={items.filter((i) => i.listId === list.id)}
                 />
-                // </div>
               ))}
             </SortableContext>
           </div>
@@ -206,7 +195,7 @@ export default function Board() {
             onClick={() => {
               createList();
             }}
-            className="h-[60px] min-w-[15rem] cursor-pointer rounded-xl bg-neutral-950 ring ring-neutral-800 hover:bg-neutral-900 hover:ring-neutral-700  px-1 flex items-center justify-center  transition duration-300"
+            className="h-[60px] text-neutral-100 min-w-[15rem] cursor-pointer rounded-xl bg-neutral-950 ring ring-neutral-800 hover:bg-neutral-900 hover:ring-neutral-700  px-1 flex items-center justify-center  transition duration-300"
           >
             New List
           </button>

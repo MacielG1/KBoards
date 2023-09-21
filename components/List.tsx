@@ -18,7 +18,7 @@ interface Props {
   deleteItem: (id: string) => void;
 }
 
-export default function List({ list, deleteList, updateList, addItem, items, deleteItem, updateItem }: Props) {
+export default function ListOverlay({ list, deleteList, updateList, addItem, items, deleteItem, updateItem }: Props) {
   const [isEditing, setIsEditing] = useState(false);
 
   const itemsIds = useMemo(() => {
@@ -40,11 +40,11 @@ export default function List({ list, deleteList, updateList, addItem, items, del
   };
 
   if (isDragging) {
-    return <div ref={setNodeRef} className="bg-red-800 opacity-40 min-h-[25vh] max-h-[88vh] rounded-xl flex flex-col w-[22rem]" />;
+    return <div ref={setNodeRef} style={style} className="bg-neutral-800 opacity-40  h-[80vh] rounded-xl flex flex-col w-[22rem]" />;
   }
 
   return (
-    <div ref={setNodeRef} style={style} className="bg-neutral-800 w-[22rem] min-h-[25vh] max-h-[88vh] rounded-xl flex flex-col">
+    <div ref={setNodeRef} style={style} className="bg-neutral-800 w-[22rem]  h-[80vh] rounded-xl flex flex-col">
       <div
         {...attributes}
         {...listeners}
@@ -91,7 +91,7 @@ export default function List({ list, deleteList, updateList, addItem, items, del
       </div>
 
       <Button
-        className="flex gap-2 items-center rounded-t-none justify-center dark:bg-neutral-900 p-4 w-full dark:hover:bg-indigo-900 active:bg-black transition duration-300"
+        className="mt-[0.15rem] flex gap-2 items-center border-0 ring-1 ring-neutral-700 ring-inset rounded-t-md justify-center dark:bg-neutral-900 p-4 w-full dark:hover:bg-black active:bg-black transition duration-300"
         onClick={() => {
           addItem(list.id);
         }}

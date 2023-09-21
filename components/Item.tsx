@@ -53,7 +53,7 @@ export default function Item({ Item, deleteItem, updateItem }: Props) {
       }}
     />
   ) : (
-    <p className="my-auto h-[90%] w-full overflow-y-auto overflow-x-hidden whitespace-pre-wrap cursor-pointer">{Item.content}</p>
+    <p className="my-auto text-white h-[90%] w-full overflow-y-auto overflow-x-hidden whitespace-pre-wrap cursor-pointer">{Item.content}</p>
   );
 
   if (isDragging) {
@@ -66,7 +66,7 @@ export default function Item({ Item, deleteItem, updateItem }: Props) {
       style={commonStyle}
       {...attributes}
       {...listeners}
-      className="bg-neutral-950 p-2.5 h-[100px] min-h-[100px] flex text-left rounded-xl relative group"
+      className="bg-neutral-950 p-2.5  min-h-[5rem] flex text-left rounded-xl relative group"
       onClick={toggleEditMode}
     >
       <div>
