@@ -11,6 +11,9 @@ dependencies:
   '@dnd-kit/sortable':
     specifier: ^7.0.2
     version: 7.0.2(@dnd-kit/core@6.0.8)(react@18.2.0)
+  '@dnd-kit/utilities':
+    specifier: ^3.2.1
+    version: 3.2.1(react@18.2.0)
   '@types/node':
     specifier: 20.5.9
     version: 20.5.9

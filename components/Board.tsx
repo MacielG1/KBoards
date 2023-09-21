@@ -41,6 +41,7 @@ export default function Board() {
         <div className="m-auto flex gap-4">
           <div className="flex gap-4  ">
             <SortableContext items={listIds}>
+              q
               {lists.map((list) => (
                 <>{list.title}</>
               ))}
