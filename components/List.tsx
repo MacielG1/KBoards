@@ -42,36 +42,41 @@ export default function ListOverlay({ list, deleteList, updateList, addItem, ite
   if (isDragging) {
     return <div ref={setNodeRef} style={style} className="bg-neutral-800 opacity-40  h-[80vh] rounded-xl flex flex-col w-[22rem]" />;
   }
-
   return (
-    <div ref={setNodeRef} style={style} className="bg-neutral-800 w-[22rem]  h-[80vh] rounded-xl flex flex-col">
+    <div ref={setNodeRef} style={style} className="bg-neutral-800 w-[22rem] h-[80vh] rounded-xl flex flex-col  ">
       <div
         {...attributes}
         {...listeners}
-        onClick={() => {
-          setIsEditing(true);
-        }}
         className="bg-neutral-900 text-neutral-100 text-lg h-[4rem] rounded-xl rounded-b-none p-3 font-bold flex items-center justify-between"
       >
-        <div className="flex gap-2 items-center ">
-          <div className="flex justify-center items-center bg-neutral-800 w-8 h-8 rounded-full">{itemsIds.length}</div>
-          {!isEditing ? (
-            <span className="flex-grow text-center">{list.title}</span>
-          ) : (
-            <input
-              className="bg-black focus:border-rose-500 border rounded outline-none px-2 "
-              value={list.title}
-              onChange={(e) => updateList(list.id, e.target.value)}
-              autoFocus
-              onBlur={() => {
-                setIsEditing(false);
-              }}
-              onKeyDown={(e) => {
-                if (e.key !== "Enter") return;
-                setIsEditing(false);
-              }}
-            />
-          )}
+        <div className="flex gap-2 items-center w-[90%] cursor-text">
+          <span className="flex justify-center items-center bg-neutral-800 w-8 h-8 rounded-full">{itemsIds.length}</span>
+          <p
+            className="flex-grow rounded-md h-8 flex items-center"
+            onClick={() => {
+              setIsEditing(true);
+            }}
+          >
+            {!isEditing ? (
+              <span className="w-full">{list.title}</span>
+            ) : (
+              <input
+                className="bg-black w-full h-8 focus:border-neutral-500 border rounded-md outline-none px-2 "
+                value={list.title}
+                onChange={(e) => updateList(list.id, e.target.value)}
+                onBlur={(e) => {
+                  e.stopPropagation();
+                  setIsEditing((prev) => !prev);
+                }}
+                autoFocus
+                maxLength={25}
+                onKeyDown={(e) => {
+                  if (e.key !== "Enter") return;
+                  setIsEditing(false);
+                }}
+              />
+            )}
+          </p>
         </div>
         <button
           onClick={() => {
