@@ -8,6 +8,7 @@ import List from "./List";
 import ItemOverlay from "./Overlays/ItemOverlay";
 import { createPortal } from "react-dom";
 import ListOverlay from "./Overlays/ListOverlay";
+import { useStore } from "@/store/store";
 
 const defaultLists: ListType[] = [
   {
@@ -21,8 +22,9 @@ const defaultLists: ListType[] = [
 ];
 
 export default function Board() {
-  const [lists, setLists] = useState<ListType[]>(defaultLists);
-  const [items, setItems] = useState<ItemType[]>([]);
+  const [lists, setLists] = useStore((state) => [state.lists, state.setLists]);
+  const [listItems, setListItems] = useStore((state) => [state.listItems, state.setListItems]);
+  const { addListItem, deleteListItem, updateListItem, addList, deleteList, updateList } = useStore();
   const [activeList, setActiveList] = useState<ListType | null>(null);
   const [activeItem, setActiveItem] = useState<ItemType | null>(null);
 
@@ -42,14 +44,14 @@ export default function Board() {
 
   useEffect(() => {
     const storedLists = localStorage.getItem("lists");
-    const storedItems = localStorage.getItem("items");
+    const storedItems = localStorage.getItem("listItems");
 
     if (storedLists) {
       setLists(JSON.parse(storedLists));
     }
 
     if (storedItems) {
-      setItems(JSON.parse(storedItems));
+      setListItems(JSON.parse(storedItems));
     }
   }, []);
 
@@ -57,25 +59,24 @@ export default function Board() {
     const newItem: ItemType = {
       id: uuidv4(),
       listId,
-      content: `Item ${items.length + 1}`,
+      content: `Item ${listItems.length + 1}`,
     };
+    addListItem(newItem);
 
-    setItems([...items, newItem]);
-    localStorage.setItem("items", JSON.stringify([...items, newItem]));
+    localStorage.setItem("items", JSON.stringify([...listItems, newItem]));
   }
 
   function deleteItem(id: string) {
-    setItems((items) => items.filter((i) => i.id !== id));
-    localStorage.setItem("items", JSON.stringify(items.filter((i) => i.id !== id)));
+    deleteListItem(id);
+    // CONVERT ABOVE TO USE STORE
+
+    localStorage.setItem("items", JSON.stringify(listItems.filter((i) => i.id !== id)));
   }
 
   function updateItem(id: string, content: string) {
-    setItems((items) =>
-      items.map((item) => {
-        if (item.id !== id) return item;
-        return { ...item, content };
-      })
-    );
+    updateListItem(id, content);
+
+    localStorage.setItem("items", JSON.stringify(listItems));
   }
 
   function createList() {
@@ -84,23 +85,17 @@ export default function Board() {
       title: `List ${lists.length + 1}`,
     };
 
-    setLists([...lists, newList]);
+    addList(newList);
     localStorage.setItem("lists", JSON.stringify([...lists, newList]));
   }
 
-  function deleteList(id: string) {
-    setLists((lists) => lists.filter((i) => i.id !== id));
-    setItems((items) => items.filter((i) => i.listId !== id));
+  function deleteListHandler(id: string) {
+    deleteList(id);
     localStorage.setItem("lists", JSON.stringify(lists.filter((i) => i.id !== id)));
   }
 
-  function updateList(id: string, title: string) {
-    setLists((list) =>
-      list.map((list) => {
-        if (list.id !== id) return list;
-        return { ...list, title };
-      })
-    );
+  function updateListHandler(id: string, title: string) {
+    updateList(id, title);
     localStorage.setItem("lists", JSON.stringify(lists));
   }
 
@@ -129,14 +124,21 @@ export default function Board() {
     const isActiveAList = active.data.current?.type === "List";
     if (!isActiveAList) return;
 
-    setLists((lists) => {
-      const activeListIndex = lists.findIndex((i) => i.id === activeId);
-      const overListIndex = lists.findIndex((i) => i.id === overId);
+    // setLists((lists) => {
+    //   const activeListIndex = lists.findIndex((i) => i.id === activeId);
+    //   const overListIndex = lists.findIndex((i) => i.id === overId);
 
-      let newOrder = arrayMove(lists, activeListIndex, overListIndex);
-      localStorage.setItem("lists", JSON.stringify(newOrder));
-      return newOrder;
-    });
+    //   let newOrder = arrayMove(lists, activeListIndex, overListIndex);
+    //   localStorage.setItem("lists", JSON.stringify(newOrder));
+    //   return newOrder;
+    // });
+
+    const activeListIndex = lists.findIndex((i) => i.id === activeId);
+    const overListIndex = lists.findIndex((i) => i.id === overId);
+
+    let newOrder = arrayMove(lists, activeListIndex, overListIndex);
+    localStorage.setItem("lists", JSON.stringify(newOrder));
+    setLists(newOrder);
   }
 
   function onDragOver(event: DragOverEvent) {
@@ -155,43 +157,43 @@ export default function Board() {
 
     // Im dropping a Item over another Item
     if (isActiveAnItem && isOverAItem) {
-      setItems((items) => {
-        const activeIndex = items.findIndex((t) => t.id === activeId);
-        const overIndex = items.findIndex((t) => t.id === overId);
+      const activeIndex = listItems.findIndex((t) => t.id === activeId);
+      const overIndex = listItems.findIndex((t) => t.id === overId);
 
-        if (items[activeIndex].listId != items[overIndex].listId) {
-          // Fix introduced after video recording
-          items[activeIndex].listId = items[overIndex].listId;
+      if (listItems[activeIndex].listId != listItems[overIndex].listId) {
+        listItems[activeIndex].listId = listItems[overIndex].listId;
 
-          let newOrder = arrayMove(items, activeIndex, overIndex);
-          localStorage.setItem("items", JSON.stringify(newOrder));
-          return newOrder;
-        }
-        let newOrder = arrayMove(items, activeIndex, overIndex);
-        localStorage.setItem("items", JSON.stringify(newOrder));
-        return newOrder;
-      });
+        let newOrder = arrayMove(listItems, activeIndex, overIndex);
+        localStorage.setItem("listItems", JSON.stringify(newOrder));
+        setListItems(newOrder);
+      }
+      let newOrder = arrayMove(listItems, activeIndex, overIndex);
+      localStorage.setItem("listItems", JSON.stringify(newOrder));
+      setListItems(newOrder);
     }
 
     const isOverAList = over.data.current?.type === "List";
 
     // Im dropping a Item over a List
     if (isActiveAnItem && isOverAList) {
-      setItems((items) => {
-        const activeIndex = items.findIndex((t) => t.id === activeId);
+      const activeIndex = listItems.findIndex((t) => t.id === activeId);
 
-        items[activeIndex].listId = overId.toString();
+      listItems[activeIndex].listId = overId.toString();
 
-        let newOrder = arrayMove(items, activeIndex, activeIndex);
-        localStorage.setItem("items", JSON.stringify(newOrder));
-        return newOrder;
-      });
+      let newOrder = arrayMove(listItems, activeIndex, activeIndex);
+      localStorage.setItem("listItems", JSON.stringify(newOrder));
+      setListItems(newOrder);
     }
+  }
+
+  function saveChanges() {
+    // save on DB
+    // add to sidebar boardlist if not already there
   }
 
   let Overlay = (
     <DragOverlay dropAnimation={null}>
-      {activeList && <ListOverlay list={activeList} deleteItem={deleteItem} updateItem={updateItem} items={items.filter((i) => i.listId === activeList.id)} />}
+      {activeList && <ListOverlay list={activeList} deleteItem={deleteItem} updateItem={updateItem} items={listItems.filter((i) => i.listId === activeList.id)} />}
 
       {activeItem && <ItemOverlay content={activeItem.content} />}
     </DragOverlay>
@@ -200,23 +202,26 @@ export default function Board() {
   const listIds = useMemo(() => lists.map((i) => i.id), [lists]);
 
   return (
-    <main className="grid pt-10 pb-4 w-full place-items-center overflow-x-auto ">
+    <main className="grid pt-16 pb-4 w-full place-items-center overflow-x-auto ">
       <DndContext sensors={sensors} onDragStart={onDragStart} onDragEnd={onDragEnd} onDragOver={onDragOver} id="board">
         <div className="m-auto flex gap-4">
           <div className="flex gap-4   ">
             <SortableContext items={listIds}>
-              {lists.map((list) => (
-                <List
-                  list={list}
-                  key={list.id}
-                  deleteList={deleteList}
-                  updateList={updateList}
-                  addItem={addItem}
-                  deleteItem={deleteItem}
-                  updateItem={updateItem}
-                  items={items.filter((i) => i.listId === list.id)}
-                />
-              ))}
+              {lists.map((list) => {
+                console.log(list, listItems);
+                return (
+                  <List
+                    list={list}
+                    key={list.id}
+                    deleteList={deleteListHandler}
+                    updateList={updateListHandler}
+                    addItem={addItem}
+                    deleteItem={deleteItem}
+                    updateItem={updateItem}
+                    items={listItems.filter((i) => i.listId === list.id)}
+                  />
+                );
+              })}
             </SortableContext>
           </div>
           <button

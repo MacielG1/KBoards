@@ -4,8 +4,9 @@ import { CSS } from "@dnd-kit/utilities";
 import { useMemo, useState } from "react";
 
 import Button from "./Button";
-import Item from "./Item";
+
 import { Icons } from "@/assets/Icons";
+import ItemCard from "./ItemCard";
 
 interface Props {
   list: ListType;
@@ -90,7 +91,7 @@ export default function ListOverlay({ list, deleteList, updateList, addItem, ite
       <div className="flex flex-grow flex-col gap-4 p-2 overflow-x-hidden overflow-y-auto">
         <SortableContext items={itemsIds}>
           {items.map((item) => (
-            <Item key={item.id} Item={item} deleteItem={deleteItem} updateItem={updateItem} />
+            <ItemCard key={item.id} Item={item} deleteItem={deleteItem} updateItem={updateItem} />
           ))}
         </SortableContext>
       </div>

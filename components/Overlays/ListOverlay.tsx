@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 
 import { Icons } from "@/assets/Icons";
 import Button from "../Button";
-import Item from "../Item";
+import Item from "../ItemCard";
 
 interface Props {
   list: ListType;
