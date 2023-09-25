@@ -29,4 +29,6 @@ export type StoreType = {
 
   boards: BoardType[];
   setBoards: (boards: BoardType[]) => void;
+  currentBoardId: string;
+  setCurrentBoardId: (currentBoardId: string) => void;
 };

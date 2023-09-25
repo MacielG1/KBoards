@@ -25,4 +25,6 @@ export const useStore = create<StoreType>((set) => ({
   updateList: (id: string, title: string) => set((state) => ({ lists: state.lists.map((list) => (list.id === id ? { ...list, title } : list)) })),
   boards: [],
   setBoards: (boards: BoardType[]) => set({ boards }),
+  currentBoardId: "",
+  setCurrentBoardId: (currentBoardId: string) => set({ currentBoardId }),
 }));
