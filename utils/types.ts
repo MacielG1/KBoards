@@ -1,6 +1,8 @@
 export type ListType = {
   id: string;
   title: string;
+  boardId: string;
+  items: ItemType[];
 };
 
 export type ItemType = {
@@ -16,11 +18,11 @@ export type BoardType = {
 };
 
 export type StoreType = {
-  listItems: ItemType[];
-  setListItems: (listItems: ItemType[]) => void;
-  addListItem: (item: ItemType) => void;
-  deleteListItem: (id: string) => void;
-  updateListItem: (id: string, content: string) => void;
+  items: ItemType[];
+  setItems: (listItems: ItemType[]) => void;
+  addItem: (item: ItemType) => void;
+  deleteItem: (id: string) => void;
+  updateItem: (id: string, content: string) => void;
   lists: ListType[];
   setLists: (lists: ListType[]) => void;
   addList: (list: ListType) => void;

@@ -1,5 +1,5 @@
 "use client";
-import { ItemType, ListType } from "@/utils/types";
+import { BoardType, ItemType, ListType } from "@/utils/types";
 import { DndContext, DragEndEvent, DragOverEvent, DragOverlay, DragStartEvent, PointerSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, arrayMove } from "@dnd-kit/sortable";
 import { useEffect, useMemo, useState } from "react";
@@ -10,21 +10,10 @@ import { createPortal } from "react-dom";
 import ListOverlay from "./Overlays/ListOverlay";
 import { useStore } from "@/store/store";
 
-const defaultLists: ListType[] = [
-  {
-    id: uuidv4(),
-    title: "Todo",
-  },
-  {
-    id: uuidv4(),
-    title: "Finished",
-  },
-];
-
-export default function Board() {
+export default function Board({ currentBoardId }: { currentBoardId: string }) {
   const [lists, setLists] = useStore((state) => [state.lists, state.setLists]);
-  const [listItems, setListItems] = useStore((state) => [state.listItems, state.setListItems]);
-  const { addListItem, deleteListItem, updateListItem, addList, deleteList, updateList } = useStore();
+  const [listItems, setListItems] = useStore((state) => [state.items, state.setItems]);
+  const { addItem, deleteItem, updateItem, addList, deleteList, updateList } = useStore();
   const [activeList, setActiveList] = useState<ListType | null>(null);
   const [activeItem, setActiveItem] = useState<ItemType | null>(null);
 
@@ -55,26 +44,25 @@ export default function Board() {
     }
   }, []);
 
-  function addItem(listId: string) {
+  function addNewItem(listId: string) {
     const newItem: ItemType = {
       id: uuidv4(),
       listId,
       content: `Item ${listItems.length + 1}`,
     };
-    addListItem(newItem);
+    addItem(newItem);
 
-    localStorage.setItem("items", JSON.stringify([...listItems, newItem]));
+    localStorage.setItem("lists", JSON.stringify(lists));
   }
 
-  function deleteItem(id: string) {
-    deleteListItem(id);
-    // CONVERT ABOVE TO USE STORE
+  function deleteListItem(id: string) {
+    deleteItem(id);
 
     localStorage.setItem("items", JSON.stringify(listItems.filter((i) => i.id !== id)));
   }
 
-  function updateItem(id: string, content: string) {
-    updateListItem(id, content);
+  function updateListItem(id: string, content: string) {
+    updateItem(id, content);
 
     localStorage.setItem("items", JSON.stringify(listItems));
   }
@@ -83,6 +71,8 @@ export default function Board() {
     const newList: ListType = {
       id: uuidv4(),
       title: `List ${lists.length + 1}`,
+      boardId: currentBoardId,
+      items: [],
     };
 
     addList(newList);
@@ -215,9 +205,9 @@ export default function Board() {
                     key={list.id}
                     deleteList={deleteListHandler}
                     updateList={updateListHandler}
-                    addItem={addItem}
-                    deleteItem={deleteItem}
-                    updateItem={updateItem}
+                    addItem={addNewItem}
+                    deleteItem={deleteListItem}
+                    updateItem={updateListItem}
                     items={listItems.filter((i) => i.listId === list.id)}
                   />
                 );
