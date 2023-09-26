@@ -29,6 +29,9 @@ export type StoreType = {
 
   boards: BoardType[];
   setBoards: (boards: BoardType[]) => void;
+  addBoard: (board: BoardType) => void;
+  deleteBoard: (id: string) => void;
+  updateBoard: (id: string, title: string) => void;
   currentBoardId: string;
   setCurrentBoardId: (currentBoardId: string) => void;
 };

@@ -6,7 +6,7 @@ import Sidebar from "./Sidebar";
 
 export default function Kanban() {
   return (
-    <div>
+    <div className="flex">
       <Sidebar />
       <Board />;
     </div>
