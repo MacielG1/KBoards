@@ -1,7 +1,6 @@
 export type ListType = {
   id: string;
   title: string;
-  boardId: string;
   items: ItemType[];
 };
 

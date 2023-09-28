@@ -10,7 +10,7 @@ import { createPortal } from "react-dom";
 import ListOverlay from "./Overlays/ListOverlay";
 import { useStore } from "@/store/store";
 
-export default function Board({ currentBoardId }: { currentBoardId: string }) {
+export default function Board() {
   const [lists, setLists] = useStore((state) => [state.lists, state.setLists]);
   const [listItems, setListItems] = useStore((state) => [state.items, state.setItems]);
   const { addItem, deleteItem, updateItem, addList, deleteList, updateList } = useStore();
@@ -33,7 +33,7 @@ export default function Board({ currentBoardId }: { currentBoardId: string }) {
 
   useEffect(() => {
     const storedLists = localStorage.getItem("lists");
-    const storedItems = localStorage.getItem("listItems");
+    const storedItems = localStorage.getItem("items");
 
     if (storedLists) {
       setLists(JSON.parse(storedLists));
@@ -52,7 +52,7 @@ export default function Board({ currentBoardId }: { currentBoardId: string }) {
     };
     addItem(newItem);
 
-    localStorage.setItem("lists", JSON.stringify(lists));
+    localStorage.setItem("items", JSON.stringify([...listItems, newItem]));
   }
 
   function deleteListItem(id: string) {
@@ -71,7 +71,6 @@ export default function Board({ currentBoardId }: { currentBoardId: string }) {
     const newList: ListType = {
       id: uuidv4(),
       title: `List ${lists.length + 1}`,
-      boardId: currentBoardId,
       items: [],
     };
 
@@ -114,15 +113,6 @@ export default function Board({ currentBoardId }: { currentBoardId: string }) {
     const isActiveAList = active.data.current?.type === "List";
     if (!isActiveAList) return;
 
-    // setLists((lists) => {
-    //   const activeListIndex = lists.findIndex((i) => i.id === activeId);
-    //   const overListIndex = lists.findIndex((i) => i.id === overId);
-
-    //   let newOrder = arrayMove(lists, activeListIndex, overListIndex);
-    //   localStorage.setItem("lists", JSON.stringify(newOrder));
-    //   return newOrder;
-    // });
-
     const activeListIndex = lists.findIndex((i) => i.id === activeId);
     const overListIndex = lists.findIndex((i) => i.id === overId);
 
@@ -154,11 +144,11 @@ export default function Board({ currentBoardId }: { currentBoardId: string }) {
         listItems[activeIndex].listId = listItems[overIndex].listId;
 
         let newOrder = arrayMove(listItems, activeIndex, overIndex);
-        localStorage.setItem("listItems", JSON.stringify(newOrder));
+        localStorage.setItem("items", JSON.stringify(newOrder));
         setListItems(newOrder);
       }
       let newOrder = arrayMove(listItems, activeIndex, overIndex);
-      localStorage.setItem("listItems", JSON.stringify(newOrder));
+      localStorage.setItem("items", JSON.stringify(newOrder));
       setListItems(newOrder);
     }
 
@@ -171,15 +161,15 @@ export default function Board({ currentBoardId }: { currentBoardId: string }) {
       listItems[activeIndex].listId = overId.toString();
 
       let newOrder = arrayMove(listItems, activeIndex, activeIndex);
-      localStorage.setItem("listItems", JSON.stringify(newOrder));
+      localStorage.setItem("items", JSON.stringify(newOrder));
       setListItems(newOrder);
     }
   }
 
-  function saveChanges() {
-    // save on DB
-    // add to sidebar boardlist if not already there
-  }
+  // function saveChanges() {
+  //   // save on DB
+  //   // add to sidebar boardlist if not already there
+  // }
 
   let Overlay = (
     <DragOverlay dropAnimation={null}>

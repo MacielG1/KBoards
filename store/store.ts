@@ -5,13 +5,11 @@ const defaultLists: ListType[] = [
   {
     id: uuidv4(),
     title: "Todo",
-    boardId: "main",
     items: [],
   },
   {
     id: uuidv4(),
     title: "Finished",
-    boardId: "main",
     items: [],
   },
 ];
@@ -25,7 +23,7 @@ const defaultBoards: BoardType[] = [
 ];
 export const useStore = create<StoreType>((set) => ({
   items: [],
-  setItems: (listItems: ItemType[]) => set({ items: listItems }),
+  setItems: (items: ItemType[]) => set({ items: items }),
   addItem: (item: ItemType) => set((state) => ({ items: [...state.items, item] })),
   deleteItem: (id: string) => set((state) => ({ items: state.items.filter((item) => item.id !== id) })),
   updateItem: (id: string, content: string) => set((state) => ({ items: state.items.map((item) => (item.id === id ? { ...item, content } : item)) })),
