@@ -10,9 +10,14 @@ import { createPortal } from "react-dom";
 import ListOverlay from "./Overlays/ListOverlay";
 import { useStore } from "@/store/store";
 
-export default function Board() {
-  const [lists, setLists] = useStore((state) => [state.lists, state.setLists]);
-  const [listItems, setListItems] = useStore((state) => [state.items, state.setItems]);
+type Props = {
+  lists: ListType[];
+  listItems: ItemType[];
+  setLists: (lists: ListType[]) => void;
+  setListItems: (items: ItemType[]) => void;
+};
+
+export default function Board({ lists, listItems, setLists, setListItems }: Props) {
   const { addItem, deleteItem, updateItem, addList, deleteList, updateList } = useStore();
   const [activeList, setActiveList] = useState<ListType | null>(null);
   const [activeItem, setActiveItem] = useState<ItemType | null>(null);
@@ -30,19 +35,6 @@ export default function Board() {
   });
 
   const sensors = useSensors(pointerSensor, touchSensor);
-
-  useEffect(() => {
-    const storedLists = localStorage.getItem("lists");
-    const storedItems = localStorage.getItem("items");
-
-    if (storedLists) {
-      setLists(JSON.parse(storedLists));
-    }
-
-    if (storedItems) {
-      setListItems(JSON.parse(storedItems));
-    }
-  }, []);
 
   function addNewItem(listId: string) {
     const newItem: ItemType = {
@@ -118,7 +110,7 @@ export default function Board() {
 
     let newOrder = arrayMove(lists, activeListIndex, overListIndex);
     localStorage.setItem("lists", JSON.stringify(newOrder));
-    setLists(newOrder);
+    return setLists(newOrder);
   }
 
   function onDragOver(event: DragOverEvent) {
@@ -143,13 +135,13 @@ export default function Board() {
       if (listItems[activeIndex].listId != listItems[overIndex].listId) {
         listItems[activeIndex].listId = listItems[overIndex].listId;
 
-        let newOrder = arrayMove(listItems, activeIndex, overIndex);
+        let newOrder = arrayMove(listItems, activeIndex, overIndex - 1);
         localStorage.setItem("items", JSON.stringify(newOrder));
-        setListItems(newOrder);
+        return setListItems(newOrder);
       }
       let newOrder = arrayMove(listItems, activeIndex, overIndex);
       localStorage.setItem("items", JSON.stringify(newOrder));
-      setListItems(newOrder);
+      return setListItems(newOrder);
     }
 
     const isOverAList = over.data.current?.type === "List";
@@ -162,14 +154,9 @@ export default function Board() {
 
       let newOrder = arrayMove(listItems, activeIndex, activeIndex);
       localStorage.setItem("items", JSON.stringify(newOrder));
-      setListItems(newOrder);
+      return setListItems(newOrder);
     }
   }
-
-  // function saveChanges() {
-  //   // save on DB
-  //   // add to sidebar boardlist if not already there
-  // }
 
   let Overlay = (
     <DragOverlay dropAnimation={null}>
