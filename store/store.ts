@@ -1,6 +1,7 @@
 import { BoardType, ItemType, ListType, StoreType } from "@/utils/types";
 import { create } from "zustand";
 import { v4 as uuidv4 } from "uuid";
+import { persist } from "zustand/middleware";
 const defaultLists: ListType[] = [
   {
     id: uuidv4(),
@@ -37,6 +38,6 @@ export const useStore = create<StoreType>((set) => ({
   addBoard: (board: BoardType) => set((state) => ({ boards: [...state.boards, board] })),
   deleteBoard: (id: string) => set((state) => ({ boards: state.boards.filter((board) => board.id !== id) })),
   updateBoard: (id: string, title: string) => set((state) => ({ boards: state.boards.map((board) => (board.id === id ? { ...board, title } : board)) })),
-  currentBoardId: "",
+  currentBoardId: null,
   setCurrentBoardId: (currentBoardId: string) => set({ currentBoardId }),
 }));

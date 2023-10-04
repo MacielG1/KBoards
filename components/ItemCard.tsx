@@ -13,7 +13,7 @@ interface Props {
 export default function Item({ Item, deleteItem, updateItem }: Props) {
   const [isEditing, setIsEditing] = useState(true);
 
-  const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({
+  const { setNodeRef, attributes, listeners, transform, transition, isDragging, isSorting } = useSortable({
     id: Item.id,
     data: {
       type: "Item",
@@ -28,9 +28,7 @@ export default function Item({ Item, deleteItem, updateItem }: Props) {
   };
 
   const toggleEditMode = () => {
-    if (!isDragging) {
-      setIsEditing((prev) => !prev);
-    }
+    setIsEditing((prev) => !prev);
   };
 
   const itemContent = isEditing ? (

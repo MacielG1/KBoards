@@ -15,9 +15,11 @@ type Props = {
   listItems: ItemType[];
   setLists: (lists: ListType[]) => void;
   setListItems: (items: ItemType[]) => void;
+
+  currentBoardId: string;
 };
 
-export default function Board({ lists, listItems, setLists, setListItems }: Props) {
+export default function Board({ lists, listItems, setLists, setListItems, currentBoardId }: Props) {
   const { addItem, deleteItem, updateItem, addList, deleteList, updateList } = useStore();
   const [activeList, setActiveList] = useState<ListType | null>(null);
   const [activeItem, setActiveItem] = useState<ItemType | null>(null);
@@ -42,21 +44,23 @@ export default function Board({ lists, listItems, setLists, setListItems }: Prop
       listId,
       content: `Item ${listItems.length + 1}`,
     };
-    addItem(newItem);
+    // addItem(newItem);
+    setListItems([...listItems, newItem]);
 
-    localStorage.setItem("items", JSON.stringify([...listItems, newItem]));
+    localStorage.setItem(currentBoardId, JSON.stringify({ lists: lists, items: [...listItems, newItem] }));
   }
 
   function deleteListItem(id: string) {
-    deleteItem(id);
+    // deleteItem(id);
+    setListItems(listItems.filter((i) => i.id !== id));
 
-    localStorage.setItem("items", JSON.stringify(listItems.filter((i) => i.id !== id)));
+    localStorage.setItem(currentBoardId, JSON.stringify({ lists: lists, items: listItems.filter((i) => i.id !== id) }));
   }
 
   function updateListItem(id: string, content: string) {
-    updateItem(id, content);
-
-    localStorage.setItem("items", JSON.stringify(listItems));
+    // updateItem(id, content);
+    setListItems(listItems.map((i) => (i.id === id ? { ...i, content } : i)));
+    localStorage.setItem(currentBoardId, JSON.stringify({ lists: lists, items: listItems }));
   }
 
   function createList() {
@@ -66,18 +70,21 @@ export default function Board({ lists, listItems, setLists, setListItems }: Prop
       items: [],
     };
 
-    addList(newList);
-    localStorage.setItem("lists", JSON.stringify([...lists, newList]));
+    // addList(newList);
+    setLists([...lists, newList]);
+    localStorage.setItem(currentBoardId, JSON.stringify({ lists: [...lists, newList], items: listItems }));
   }
 
   function deleteListHandler(id: string) {
-    deleteList(id);
-    localStorage.setItem("lists", JSON.stringify(lists.filter((i) => i.id !== id)));
+    // deleteList(id);
+    setLists(lists.filter((i) => i.id !== id));
+    localStorage.setItem(currentBoardId, JSON.stringify({ lists: lists.filter((i) => i.id !== id), items: listItems }));
   }
 
   function updateListHandler(id: string, title: string) {
-    updateList(id, title);
-    localStorage.setItem("lists", JSON.stringify(lists));
+    // updateList(id, title);
+    setLists(lists.map((i) => (i.id === id ? { ...i, title } : i)));
+    localStorage.setItem(currentBoardId, JSON.stringify({ lists: lists, items: listItems }));
   }
 
   function onDragStart(event: DragStartEvent) {
@@ -109,7 +116,7 @@ export default function Board({ lists, listItems, setLists, setListItems }: Prop
     const overListIndex = lists.findIndex((i) => i.id === overId);
 
     let newOrder = arrayMove(lists, activeListIndex, overListIndex);
-    localStorage.setItem("lists", JSON.stringify(newOrder));
+    localStorage.setItem(currentBoardId, JSON.stringify({ lists: newOrder, items: listItems }));
     return setLists(newOrder);
   }
 
@@ -132,15 +139,14 @@ export default function Board({ lists, listItems, setLists, setListItems }: Prop
       const activeIndex = listItems.findIndex((t) => t.id === activeId);
       const overIndex = listItems.findIndex((t) => t.id === overId);
 
+      let newOrder;
       if (listItems[activeIndex].listId != listItems[overIndex].listId) {
         listItems[activeIndex].listId = listItems[overIndex].listId;
-
-        let newOrder = arrayMove(listItems, activeIndex, overIndex - 1);
-        localStorage.setItem("items", JSON.stringify(newOrder));
-        return setListItems(newOrder);
+        newOrder = arrayMove(listItems, activeIndex, overIndex - 1);
+      } else {
+        newOrder = arrayMove(listItems, activeIndex, overIndex);
       }
-      let newOrder = arrayMove(listItems, activeIndex, overIndex);
-      localStorage.setItem("items", JSON.stringify(newOrder));
+      localStorage.setItem(currentBoardId, JSON.stringify({ lists: lists, items: newOrder }));
       return setListItems(newOrder);
     }
 
@@ -153,7 +159,7 @@ export default function Board({ lists, listItems, setLists, setListItems }: Prop
       listItems[activeIndex].listId = overId.toString();
 
       let newOrder = arrayMove(listItems, activeIndex, activeIndex);
-      localStorage.setItem("items", JSON.stringify(newOrder));
+      localStorage.setItem(currentBoardId, JSON.stringify({ lists: lists, items: newOrder }));
       return setListItems(newOrder);
     }
   }
@@ -170,6 +176,7 @@ export default function Board({ lists, listItems, setLists, setListItems }: Prop
 
   return (
     <main className="grid pt-16 pb-4 w-full place-items-center overflow-x-auto ">
+      <span className="text-neutral-100">{currentBoardId}</span>
       <DndContext sensors={sensors} onDragStart={onDragStart} onDragEnd={onDragEnd} onDragOver={onDragOver} id="board">
         <div className="m-auto flex gap-4">
           <div className="flex gap-4   ">

@@ -33,6 +33,6 @@ export type StoreType = {
   addBoard: (board: BoardType) => void;
   deleteBoard: (id: string) => void;
   updateBoard: (id: string, title: string) => void;
-  currentBoardId: string;
+  currentBoardId: string | null;
   setCurrentBoardId: (currentBoardId: string) => void;
 };
