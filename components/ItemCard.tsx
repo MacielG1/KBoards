@@ -11,7 +11,7 @@ interface Props {
 }
 
 export default function Item({ Item, deleteItem, updateItem }: Props) {
-  const [isEditing, setIsEditing] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
 
   const { setNodeRef, attributes, listeners, transform, transition, isDragging, isSorting } = useSortable({
     id: Item.id,

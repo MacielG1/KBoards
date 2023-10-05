@@ -48,12 +48,12 @@ export default function ListOverlay({ list, deleteList, updateList, addItem, ite
       <div
         {...attributes}
         {...listeners}
-        className="bg-neutral-900 text-neutral-100 text-lg h-[4rem] rounded-xl rounded-b-none p-3 font-bold flex items-center justify-between"
+        className="bg-neutral-900 min-h-[4rem]  text-neutral-100 text-lg h-[4rem]  rounded-xl rounded-b-none p-3 font-bold flex items-center justify-between"
       >
-        <div className="flex gap-2 items-center w-[90%] cursor-text">
-          <span className="flex justify-center items-center bg-neutral-800 w-8 h-8 rounded-full">{itemsIds.length}</span>
+        <div className="flex gap-2 items-center w-[90%] cursor-text ">
+          <span className="flex justify-center items-center bg-neutral-800 w-8 h-8  rounded-full">{itemsIds.length}</span>
           <p
-            className="flex-grow rounded-md h-8 flex items-center"
+            className="flex-grow rounded-md h-8 flex items-center "
             onClick={() => {
               setIsEditing(true);
             }}

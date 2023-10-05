@@ -23,6 +23,9 @@ export default function Board({ lists, listItems, setLists, setListItems, curren
   const { addItem, deleteItem, updateItem, addList, deleteList, updateList } = useStore();
   const [activeList, setActiveList] = useState<ListType | null>(null);
   const [activeItem, setActiveItem] = useState<ItemType | null>(null);
+  const [boards, setBoards] = useStore((state) => [state.boards, state.setBoards]);
+
+  const currentBoardData = boards.find((b) => b.id === currentBoardId);
 
   const pointerSensor = useSensor(PointerSensor, {
     activationConstraint: {
@@ -173,10 +176,9 @@ export default function Board({ lists, listItems, setLists, setListItems, curren
   );
 
   const listIds = useMemo(() => lists.map((i) => i.id), [lists]);
-
   return (
     <main className="grid pt-16 pb-4 w-full place-items-center overflow-x-auto ">
-      <span className="text-neutral-100">{currentBoardId}</span>
+      <span className="text-neutral-100 py-1">{currentBoardData?.title}</span>
       <DndContext sensors={sensors} onDragStart={onDragStart} onDragEnd={onDragEnd} onDragOver={onDragOver} id="board">
         <div className="m-auto flex gap-4">
           <div className="flex gap-4   ">

@@ -25,6 +25,7 @@ export default function Sidebar() {
     addBoard(newBoard);
     localStorage.setItem("boards", JSON.stringify([...boards, newBoard]));
     setCurrentBoardId(newBoard.id);
+    localStorage.setItem("currentBoardId", newBoard.id);
   }
 
   return (
