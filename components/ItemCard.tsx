@@ -35,7 +35,6 @@ export default function Item({ Item, deleteItem, updateItem }: Props) {
     <textarea
       className="h-[90%] w-full resize-none border-none rounded bg-transparent text-white focus:outline-none cursor-text"
       value={Item.content}
-      autoFocus
       placeholder="Item Content"
       onBlur={toggleEditMode}
       onKeyDown={(e) => {

@@ -75,18 +75,22 @@ export default function Board({ lists, listItems, setLists, setListItems, curren
 
     // addList(newList);
     setLists([...lists, newList]);
+    setListItems([...listItems]);
+
     localStorage.setItem(currentBoardId, JSON.stringify({ lists: [...lists, newList], items: listItems }));
   }
 
   function deleteListHandler(id: string) {
     // deleteList(id);
     setLists(lists.filter((i) => i.id !== id));
+    setListItems(listItems.filter((i) => i.listId !== id));
     localStorage.setItem(currentBoardId, JSON.stringify({ lists: lists.filter((i) => i.id !== id), items: listItems }));
   }
 
   function updateListHandler(id: string, title: string) {
     // updateList(id, title);
     setLists(lists.map((i) => (i.id === id ? { ...i, title } : i)));
+
     localStorage.setItem(currentBoardId, JSON.stringify({ lists: lists, items: listItems }));
   }
 
