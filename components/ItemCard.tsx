@@ -33,9 +33,10 @@ export default function Item({ Item, deleteItem, updateItem }: Props) {
 
   const itemContent = isEditing ? (
     <textarea
-      className="h-[90%] w-full resize-none border-none rounded bg-transparent text-white focus:outline-none cursor-text"
+      className="h-[90%] w-[95%] resize-none border-none rounded bg-transparent text-white focus:outline-none cursor-text"
       value={Item.content}
       placeholder="Item Content"
+      autoFocus
       onBlur={toggleEditMode}
       onKeyDown={(e) => {
         if (e.key === "Enter" && !e.shiftKey) {
@@ -50,7 +51,7 @@ export default function Item({ Item, deleteItem, updateItem }: Props) {
       }}
     />
   ) : (
-    <p className="my-auto text-white h-[90%] w-full overflow-y-auto overflow-x-hidden whitespace-pre-wrap cursor-pointer">{Item.content}</p>
+    <p className="my-auto text-white  min-h-[90%] max-h-fit w-[95%]  overflow-x-hidden cursor-pointer">{Item.content}</p>
   );
 
   if (isDragging) {
@@ -63,22 +64,20 @@ export default function Item({ Item, deleteItem, updateItem }: Props) {
       style={commonStyle}
       {...attributes}
       {...listeners}
-      className="bg-neutral-950 p-2.5  min-h-[5rem] flex text-left rounded-xl relative group "
+      className="bg-neutral-950 p-2.5 min-h-[5rem] flex text-left rounded-xl relative group "
       onClick={toggleEditMode}
     >
-      <div>
-        {itemContent}
-        {
-          <button
-            onClick={() => {
-              deleteItem(Item.id);
-            }}
-            className="absolute top-2 right-2 group-hover:inline-flex hidden"
-          >
-            <Icons.trashIcon className="w-5 h-5 text-neutral-600 hover:text-red-500 transition duration-300" />
-          </button>
-        }
-      </div>
+      {itemContent}
+      {
+        <button
+          onClick={() => {
+            deleteItem(Item.id);
+          }}
+          className="absolute top-1 right-1 group-hover:inline-flex hidden"
+        >
+          <Icons.trashIcon className="w-5 h-5 text-neutral-600 hover:text-red-500 transition duration-300" />
+        </button>
+      }
     </div>
   );
 }

@@ -1,12 +1,13 @@
 import { SortableContext, useSortable } from "@dnd-kit/sortable";
 import { ListType, ItemType } from "@/utils/types";
 import { CSS } from "@dnd-kit/utilities";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import Button from "./Button";
 
 import { Icons } from "@/assets/Icons";
 import ItemCard from "./ItemCard";
+import NewItem from "./NewItem";
 
 interface Props {
   list: ListType;
@@ -14,13 +15,14 @@ interface Props {
   deleteList: (id: string) => void;
   updateList: (id: string, title: string) => void;
 
-  addItem: (listId: string) => void;
+  addItem: (listId: string, content: string) => void;
   updateItem: (id: string, content: string) => void;
   deleteItem: (id: string) => void;
 }
 
 export default function ListOverlay({ list, deleteList, updateList, addItem, items, deleteItem, updateItem }: Props) {
   const [isEditing, setIsEditing] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const itemsIds = useMemo(() => {
     return items.map((item) => item.id);
@@ -39,6 +41,14 @@ export default function ListOverlay({ list, deleteList, updateList, addItem, ite
     transition,
     transform: CSS.Transform.toString(transform),
   };
+
+  const listRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isModalOpen && listRef.current) {
+      listRef.current.scrollTop = listRef.current.scrollHeight;
+    }
+  }, [isModalOpen, addItem]);
 
   if (isDragging) {
     return <div ref={setNodeRef} style={style} className="bg-neutral-800 opacity-40  h-[80vh] rounded-xl flex flex-col w-[22rem]" />;
@@ -88,7 +98,7 @@ export default function ListOverlay({ list, deleteList, updateList, addItem, ite
         </button>
       </div>
 
-      <div className="flex flex-grow flex-col gap-4 p-2 overflow-x-hidden overflow-y-auto">
+      <div className="flex flex-grow flex-col gap-4 p-2 overflow-x-hidden overflow-y-auto" ref={listRef}>
         <SortableContext items={itemsIds}>
           {items.map((item) => (
             <ItemCard key={item.id} Item={item} deleteItem={deleteItem} updateItem={updateItem} />
@@ -96,15 +106,17 @@ export default function ListOverlay({ list, deleteList, updateList, addItem, ite
         </SortableContext>
       </div>
 
-      <Button
-        className="mt-[0.15rem] flex gap-2 items-center border-0 ring-1 ring-neutral-700 ring-inset rounded-t-md justify-center dark:bg-neutral-900 p-4 w-full dark:hover:bg-black active:bg-black transition duration-300"
-        onClick={() => {
-          addItem(list.id);
-        }}
-      >
-        <Icons.plusIcon className="w-4 h-4 text-neutral-400 " />
-        Add Item
-      </Button>
+      {isModalOpen ? (
+        <NewItem listId={list.id} addItem={addItem} onChange={updateItem} closeModal={() => setIsModalOpen(false)} />
+      ) : (
+        <Button
+          onClick={() => setIsModalOpen(true)}
+          className="mt-[0.15rem] flex gap-2 items-center border-0 ring-1 ring-neutral-700 ring-inset rounded-t-md justify-start dark:bg-neutral-900 p-4 w-full dark:hover:bg-black active:bg-black transition duration-300"
+        >
+          <Icons.plusIcon className="w-4 h-4 text-neutral-400 " />
+          Add Item
+        </Button>
+      )}
     </div>
   );
 }

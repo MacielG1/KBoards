@@ -19,7 +19,7 @@ export type BoardType = {
 export type StoreType = {
   items: ItemType[];
   setItems: (listItems: ItemType[]) => void;
-  addItem: (item: ItemType) => void;
+  addItem: (item: ItemType, content: string) => void;
   deleteItem: (id: string) => void;
   updateItem: (id: string, content: string) => void;
   lists: ListType[];

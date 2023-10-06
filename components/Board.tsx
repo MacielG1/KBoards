@@ -1,6 +1,17 @@
 "use client";
 import { BoardType, ItemType, ListType } from "@/utils/types";
-import { DndContext, DragEndEvent, DragOverEvent, DragOverlay, DragStartEvent, PointerSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
+import {
+  DndContext,
+  DragEndEvent,
+  DragOverEvent,
+  DragOverlay,
+  DragStartEvent,
+  PointerSensor,
+  TouchSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 import { SortableContext, arrayMove } from "@dnd-kit/sortable";
 import { useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
@@ -15,7 +26,6 @@ type Props = {
   listItems: ItemType[];
   setLists: (lists: ListType[]) => void;
   setListItems: (items: ItemType[]) => void;
-
   currentBoardId: string;
 };
 
@@ -41,11 +51,11 @@ export default function Board({ lists, listItems, setLists, setListItems, curren
 
   const sensors = useSensors(pointerSensor, touchSensor);
 
-  function addNewItem(listId: string) {
+  function addNewItem(listId: string, content: string) {
     const newItem: ItemType = {
       id: uuidv4(),
       listId,
-      content: `Item ${listItems.length + 1}`,
+      content,
     };
     // addItem(newItem);
     setListItems([...listItems, newItem]);
