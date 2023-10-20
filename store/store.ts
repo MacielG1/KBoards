@@ -22,6 +22,7 @@ const defaultBoards: BoardType[] = [
     lists: defaultLists,
   },
 ];
+
 export const useStore = create<StoreType>((set) => ({
   items: [],
   setItems: (items: ItemType[]) => set({ items: items }),
@@ -33,11 +34,13 @@ export const useStore = create<StoreType>((set) => ({
   addList: (list: ListType) => set((state) => ({ lists: [...state.lists, list] })),
   deleteList: (id: string) => set((state) => ({ lists: state.lists.filter((list) => list.id !== id) })),
   updateList: (id: string, title: string) => set((state) => ({ lists: state.lists.map((list) => (list.id === id ? { ...list, title } : list)) })),
-  boards: defaultBoards,
+  boards: [],
   setBoards: (boards: BoardType[]) => set({ boards }),
   addBoard: (board: BoardType) => set((state) => ({ boards: [...state.boards, board] })),
   deleteBoard: (id: string) => set((state) => ({ boards: state.boards.filter((board) => board.id !== id) })),
   updateBoard: (id: string, title: string) => set((state) => ({ boards: state.boards.map((board) => (board.id === id ? { ...board, title } : board)) })),
   currentBoardId: null,
-  setCurrentBoardId: (currentBoardId: string) => set({ currentBoardId }),
+  setCurrentBoardId: (currentBoardId: string | null) => set({ currentBoardId }),
+  currentListId: null,
+  setCurrentListId: (currentListId: string | null) => set({ currentListId }),
 }));

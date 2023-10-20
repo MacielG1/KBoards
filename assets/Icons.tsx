@@ -18,4 +18,14 @@ export const Icons = {
       />
     </svg>
   ),
+  xIcon: (props: SVGProps<SVGSVGElement>) => (
+    <svg {...props} xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+      <line x1="10" y1="10" x2="90" y2="90" stroke="currentColor" strokeWidth="10" />
+      <line x1="10" y1="90" x2="90" y2="10" stroke="currentColor" strokeWidth="10" />
+      <circle cx="10" cy="10" r="5" fill="currentColor" />
+      <circle cx="90" cy="90" r="5" fill="currentColor" />
+      <circle cx="10" cy="90" r="5" fill="currentColor" />
+      <circle cx="90" cy="10" r="5" fill="currentColor" />
+    </svg>
+  ),
 };

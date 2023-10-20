@@ -9,10 +9,11 @@ import {
   PointerSensor,
   TouchSensor,
   closestCenter,
+  closestCorners,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import { SortableContext, arrayMove } from "@dnd-kit/sortable";
+import { SortableContext, arrayMove, rectSwappingStrategy } from "@dnd-kit/sortable";
 import { useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import List from "./List";
@@ -33,9 +34,6 @@ export default function Board({ lists, listItems, setLists, setListItems, curren
   const { addItem, deleteItem, updateItem, addList, deleteList, updateList } = useStore();
   const [activeList, setActiveList] = useState<ListType | null>(null);
   const [activeItem, setActiveItem] = useState<ItemType | null>(null);
-  const [boards, setBoards] = useStore((state) => [state.boards, state.setBoards]);
-
-  const currentBoardData = boards.find((b) => b.id === currentBoardId);
 
   const pointerSensor = useSensor(PointerSensor, {
     activationConstraint: {
@@ -134,6 +132,7 @@ export default function Board({ lists, listItems, setLists, setListItems, curren
 
     let newOrder = arrayMove(lists, activeListIndex, overListIndex);
     localStorage.setItem(currentBoardId, JSON.stringify({ lists: newOrder, items: listItems }));
+
     return setLists(newOrder);
   }
 
@@ -184,47 +183,49 @@ export default function Board({ lists, listItems, setLists, setListItems, curren
   let Overlay = (
     <DragOverlay dropAnimation={null}>
       {activeList && <ListOverlay list={activeList} deleteItem={deleteItem} updateItem={updateItem} items={listItems.filter((i) => i.listId === activeList.id)} />}
-
       {activeItem && <ItemOverlay content={activeItem.content} />}
     </DragOverlay>
   );
 
   const listIds = useMemo(() => lists.map((i) => i.id), [lists]);
   return (
-    <main className="grid pt-16 pb-4 w-full place-items-center overflow-x-auto ">
-      <span className="text-neutral-100 py-1">{currentBoardData?.title}</span>
-      <DndContext sensors={sensors} onDragStart={onDragStart} onDragEnd={onDragEnd} onDragOver={onDragOver} id="board">
-        <div className="m-auto flex gap-4">
-          <div className="flex gap-4   ">
-            <SortableContext items={listIds}>
-              {lists.map((list) => {
-                console.log(list, listItems);
-                return (
-                  <List
-                    list={list}
-                    key={list.id}
-                    deleteList={deleteListHandler}
-                    updateList={updateListHandler}
-                    addItem={addNewItem}
-                    deleteItem={deleteListItem}
-                    updateItem={updateListItem}
-                    items={listItems.filter((i) => i.listId === list.id)}
-                  />
-                );
-              })}
-            </SortableContext>
-          </div>
-          <button
-            onClick={() => {
-              createList();
-            }}
-            className="h-[60px] text-neutral-100 min-w-[15rem] cursor-pointer rounded-xl bg-neutral-950 ring ring-neutral-800 hover:bg-neutral-900 hover:ring-neutral-700  px-1 flex items-center justify-center  transition duration-300"
-          >
-            New List
-          </button>
+    <>
+      <main className="flex flex-col w-full items-center justify-center pt-16 pb-4  ">
+        <div className="grid py-2 w-full place-items-center overflow-x-auto  ">
+          <DndContext sensors={sensors} onDragStart={onDragStart} onDragEnd={onDragEnd} onDragOver={onDragOver} id="board">
+            <div className="m-auto flex gap-4">
+              <div className="flex gap-4   ">
+                <SortableContext items={listIds} id="lists">
+                  {lists.map((list) => {
+                    console.log(list, listItems);
+                    return (
+                      <List
+                        list={list}
+                        key={list.id}
+                        deleteList={deleteListHandler}
+                        updateList={updateListHandler}
+                        addItem={addNewItem}
+                        deleteItem={deleteListItem}
+                        updateItem={updateListItem}
+                        items={listItems.filter((i) => i.listId === list.id)}
+                      />
+                    );
+                  })}
+                </SortableContext>
+              </div>
+              <button
+                onClick={() => {
+                  createList();
+                }}
+                className="h-[60px] text-neutral-100 min-w-[15rem] cursor-pointer rounded-xl bg-neutral-950 ring ring-neutral-800 hover:bg-neutral-900 hover:ring-neutral-700  px-1 flex items-center justify-center  transition duration-300"
+              >
+                New List
+              </button>
+            </div>
+            {typeof window !== "undefined" && createPortal(Overlay, document.querySelector("#modal-root") as HTMLElement)}
+          </DndContext>
         </div>
-        {typeof window !== "undefined" && createPortal(Overlay, document.querySelector("#modal-root") as HTMLElement)}
-      </DndContext>
-    </main>
+      </main>
+    </>
   );
 }

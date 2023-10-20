@@ -33,12 +33,12 @@ export default function List({ list, items, deleteItem, updateItem }: Props) {
     transform: CSS.Transform.toString(transform),
   };
 
-  //   if (isDragging) {
-  //     return <div ref={setNodeRef} className="bg-neutral-800 opacity-40  h-[80vh] rounded-xl flex flex-col w-[22rem]" />;
-  //   }
+  // if (isDragging) {
+  //   return <div ref={setNodeRef} className="bg-red-800 opacity-40  h-[80vh] rounded-xl flex flex-col w-[22rem]" />;
+  // }
 
   return (
-    <div ref={setNodeRef} style={style} className="bg-neutral-800 w-[22rem]  h-[80vh] rounded-xl flex flex-col">
+    <div ref={setNodeRef} style={style} className="bg-neutral-800 w-[20rem] border border-neutral-900 h-[80vh] rounded-xl flex flex-col">
       <div
         {...attributes}
         {...listeners}

@@ -34,5 +34,7 @@ export type StoreType = {
   deleteBoard: (id: string) => void;
   updateBoard: (id: string, title: string) => void;
   currentBoardId: string | null;
-  setCurrentBoardId: (currentBoardId: string) => void;
+  setCurrentBoardId: (currentBoardId: string | null) => void;
+  currentListId: string | null;
+  setCurrentListId: (currentListId: string | null) => void;
 };
