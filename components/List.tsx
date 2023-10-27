@@ -9,6 +9,7 @@ import { Icons } from "@/assets/Icons";
 import ItemCard from "./ItemCard";
 import NewItem from "./NewItem";
 import { useStore } from "@/store/store";
+import { useIsMounted } from "@/hooks/useIsMounted";
 
 interface Props {
   list: ListType;
@@ -24,7 +25,7 @@ interface Props {
 export default function ListOverlay({ list, deleteList, updateList, addItem, items, deleteItem, updateItem }: Props) {
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
+  const isMounted = useIsMounted();
   const [currentListId, setCurrentListId] = useStore((state) => [state.currentListId, state.setCurrentListId]);
 
   const itemsIds = useMemo(() => {
@@ -48,15 +49,7 @@ export default function ListOverlay({ list, deleteList, updateList, addItem, ite
   const listRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setIsMounted(true);
-
-    return () => {
-      setIsMounted(false);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (isModalOpen && isMounted && listRef.current && list.id === currentListId) {
+    if (isModalOpen && isMounted() && listRef.current && list.id === currentListId) {
       // if also added: isModalOpen to the if statement makes it not scroll when onBlur is triggered
       listRef.current.scrollTop = listRef.current.scrollHeight;
     }

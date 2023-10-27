@@ -14,7 +14,7 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import { SortableContext, arrayMove, rectSwappingStrategy } from "@dnd-kit/sortable";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import List from "./List";
 import ItemOverlay from "./Overlays/ItemOverlay";
@@ -34,6 +34,9 @@ export default function Board({ lists, listItems, setLists, setListItems, curren
   const { addItem, deleteItem, updateItem, addList, deleteList, updateList } = useStore();
   const [activeList, setActiveList] = useState<ListType | null>(null);
   const [activeItem, setActiveItem] = useState<ItemType | null>(null);
+
+  const containerRef = useRef<HTMLDivElement | null>(null); // Define the ref with proper typing
+  const firstRender = useRef(true);
 
   const pointerSensor = useSensor(PointerSensor, {
     activationConstraint: {
@@ -75,6 +78,10 @@ export default function Board({ lists, listItems, setLists, setListItems, curren
   }
 
   function createList() {
+    if (firstRender.current) {
+      firstRender.current = false;
+    }
+
     const newList: ListType = {
       id: uuidv4(),
       title: `List ${lists.length + 1}`,
@@ -187,13 +194,26 @@ export default function Board({ lists, listItems, setLists, setListItems, curren
     </DragOverlay>
   );
 
+  useEffect(() => {
+    if (firstRender.current) {
+      return; // Don't scroll on the first render
+    }
+
+    if (containerRef.current) {
+      containerRef.current.scrollTo({
+        left: containerRef.current.scrollWidth, // Scroll to the right edge
+        behavior: "smooth",
+      });
+    }
+  }, [createList]);
+
   const listIds = useMemo(() => lists.map((i) => i.id), [lists]);
   return (
     <>
-      <main className="flex flex-col w-full items-center justify-center pt-16 pb-4  ">
-        <div className="grid py-2 w-full place-items-center overflow-x-auto  ">
+      <main className="flex flex-col w-full items-center justify-center pt-16 pb-4">
+        <div className="grid py-2 pr-6 w-full place-items-center overflow-x-auto" ref={containerRef}>
           <DndContext sensors={sensors} onDragStart={onDragStart} onDragEnd={onDragEnd} onDragOver={onDragOver} id="board">
-            <div className="m-auto flex gap-4">
+            <div className="flex gap-4">
               <div className="flex gap-4   ">
                 <SortableContext items={listIds} id="lists">
                   {lists.map((list) => {
@@ -217,7 +237,7 @@ export default function Board({ lists, listItems, setLists, setListItems, curren
                 onClick={() => {
                   createList();
                 }}
-                className="h-[60px] text-neutral-100 min-w-[15rem] cursor-pointer rounded-xl bg-neutral-950 ring ring-neutral-800 hover:bg-neutral-900 hover:ring-neutral-700  px-1 flex items-center justify-center  transition duration-300"
+                className="h-[60px] text-neutral-100 min-w-[15rem] cursor-pointer rounded-xl bg-neutral-950 ring ring-neutral-800 hover:bg-neutral-900 hover:ring-neutral-700  flex items-center justify-center  transition duration-300"
               >
                 New List
               </button>

@@ -52,12 +52,12 @@ export default function Item({ Item, deleteItem, updateItem }: Props) {
       }}
     />
   ) : (
-    <p className="my-auto text-white min-h-[90%] max-h-fit w-[95%]  overflow-x-hidden cursor-pointer">{Item.content}</p>
+    <p className="my-auto text-white min-h-[90%] w-[95%]  overflow-x-hidden cursor-pointer">{Item.content}</p>
   );
 
   if (isDragging) {
     return (
-      <div ref={setNodeRef} style={commonStyle} className="bg-neutral-900 min-h-[5rem] rounded-xl cursor-grab">
+      <div ref={setNodeRef} style={commonStyle} className="bg-neutral-900  min-h-[5rem] rounded-xl cursor-grab">
         {Item.content}
       </div>
     );

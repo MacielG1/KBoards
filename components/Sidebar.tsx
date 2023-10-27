@@ -42,7 +42,7 @@ export default function Sidebar() {
   }
 
   return (
-    <div className="min-w-[13rem] w-52 h-screen bg-neutral-900 text-white flex flex-col p-4">
+    <div className="min-w-[13rem] h-screen bg-neutral-900 text-white flex flex-col p-4">
       <p className="text-xl tracking-wider whitespace-nowrap mb-4 text-center">Boards List</p>
       <ul>
         {boards.map((board) => (
