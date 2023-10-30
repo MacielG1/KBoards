@@ -79,7 +79,7 @@ export default function Navigation() {
       </aside>
       <div
         ref={navbarRef}
-        className={cn("absolute top-0 z-[99999] left-60 w-[calc(100%-240px)] ", isResetting && "transition-all ease-in-out", isMobile && "left-0 w-full")}
+        className={cn("absolute top-3 z-[99999] left-60 w-[calc(100%-240px)] ", isResetting && "transition-all ease-in-out", isMobile && "left-0 w-full")}
       >
         {isCollapsed && <Icons.chevronsRight role="button" className="h-6 w-6 absolute text-neutral-500" onClick={resetWidth} />}
         <nav className="bg-transparent px-3 pt-3 w-full">

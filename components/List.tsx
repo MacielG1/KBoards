@@ -10,23 +10,25 @@ import ItemCard from "./ItemCard";
 import NewItem from "./NewItem";
 import { useStore } from "@/store/store";
 import { useIsMounted } from "@/hooks/useIsMounted";
+import { v4 as uuidv4 } from "uuid";
 
 interface Props {
   list: ListType;
   items: ItemType[];
   deleteList: (id: string) => void;
   updateList: (id: string, title: string) => void;
-
-  addItem: (listId: string, content: string) => void;
-  updateItem: (id: string, content: string) => void;
-  deleteItem: (id: string) => void;
 }
 
-export default function ListOverlay({ list, deleteList, updateList, addItem, items, deleteItem, updateItem }: Props) {
+export default function ListOverlay({ list, deleteList, updateList, items }: Props) {
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const isMounted = useIsMounted();
   const [currentListId, setCurrentListId] = useStore((state) => [state.currentListId, state.setCurrentListId]);
+
+  const [lists, setLists] = useStore((state) => [state.lists, state.setLists]);
+  const [listItems, setListItems] = useStore((state) => [state.items, state.setItems]);
+
+  const [currentBoardId, setCurrentBoardId] = useStore((state) => [state.currentBoardId, state.setCurrentBoardId]);
 
   const itemsIds = useMemo(() => {
     return items.map((item) => item.id);
@@ -46,11 +48,36 @@ export default function ListOverlay({ list, deleteList, updateList, addItem, ite
     transform: CSS.Transform.toString(transform),
   };
 
+  function addItem(listId: string, content: string) {
+    const newItem: ItemType = {
+      id: uuidv4(),
+      listId,
+      content,
+    };
+    // addItem(newItem);
+    setListItems([...listItems, newItem]);
+
+    localStorage.setItem(`board-${currentBoardId}`, JSON.stringify({ lists: lists, items: [...listItems, newItem] }));
+  }
+
+  function deleteItem(id: string) {
+    // deleteItem(id);
+    setListItems(listItems.filter((i) => i.id !== id));
+
+    localStorage.setItem(`board-${currentBoardId}`, JSON.stringify({ lists: lists, items: listItems.filter((i) => i.id !== id) }));
+  }
+
+  function updateItem(id: string, content: string) {
+    // updateItem(id, content);
+    setListItems(listItems.map((i) => (i.id === id ? { ...i, content } : i)));
+    localStorage.setItem(`board-${currentBoardId}`, JSON.stringify({ lists: lists, items: listItems }));
+  }
+
   const listRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isModalOpen && isMounted() && listRef.current && list.id === currentListId) {
-      // if also added: isModalOpen to the if statement makes it not scroll when onBlur is triggered
+      // scroll to the bottom when adding a new item
       listRef.current.scrollTop = listRef.current.scrollHeight;
     }
   }, [isModalOpen, addItem]);

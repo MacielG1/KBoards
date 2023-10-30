@@ -7,19 +7,20 @@ import { ItemType, ListType } from "@/utils/types";
 import Navigation from "./Navigation";
 
 export default function Kanban() {
-  const [lists, setLists] = useState<ListType[]>([]);
-  const [listItems, setListItems] = useState<ItemType[]>([]);
+  const [lists, setLists] = useStore((state) => [state.lists, state.setLists]);
+  const [listItems, setListItems] = useStore((state) => [state.items, state.setItems]);
 
   const [currentBoardId, setCurrentBoardId] = useStore((state) => [state.currentBoardId, state.setCurrentBoardId]);
-
   useEffect(() => {
     const id = localStorage.getItem("currentBoardId");
 
     let currentBoardData = null;
     if (id) {
       setCurrentBoardId(id);
-      const storedData = localStorage.getItem(id);
-      if (storedData) currentBoardData = JSON.parse(storedData);
+      const storeBoard = localStorage.getItem(`board-${id}`);
+      if (storeBoard) {
+        currentBoardData = JSON.parse(storeBoard);
+      }
     }
 
     setLists(currentBoardData?.lists || []);
@@ -28,7 +29,7 @@ export default function Kanban() {
   return (
     <div className="overflow-hidden flex h-screen">
       <Navigation />
-      <main className="flex-1 h-full overflow-y-auto pl-1 flex">
+      <main className="flex-1 h-full overflow-y-auto pl-4 flex">
         {currentBoardId && <Board lists={lists} listItems={listItems} setLists={setLists} setListItems={setListItems} currentBoardId={currentBoardId} />}
       </main>
     </div>

@@ -52,29 +52,13 @@ export default function Board({ lists, listItems, setLists, setListItems, curren
 
   const sensors = useSensors(pointerSensor, touchSensor);
 
-  function addNewItem(listId: string, content: string) {
-    const newItem: ItemType = {
-      id: uuidv4(),
-      listId,
-      content,
-    };
-    // addItem(newItem);
-    setListItems([...listItems, newItem]);
-
-    localStorage.setItem(currentBoardId, JSON.stringify({ lists: lists, items: [...listItems, newItem] }));
-  }
-
-  function deleteListItem(id: string) {
-    // deleteItem(id);
-    setListItems(listItems.filter((i) => i.id !== id));
-
-    localStorage.setItem(currentBoardId, JSON.stringify({ lists: lists, items: listItems.filter((i) => i.id !== id) }));
-  }
-
-  function updateListItem(id: string, content: string) {
-    // updateItem(id, content);
-    setListItems(listItems.map((i) => (i.id === id ? { ...i, content } : i)));
-    localStorage.setItem(currentBoardId, JSON.stringify({ lists: lists, items: listItems }));
+  function scrollToRight() {
+    if (containerRef.current) {
+      containerRef.current.scrollTo({
+        left: containerRef.current.scrollWidth, // Scroll to the right edge
+        behavior: "smooth",
+      });
+    }
   }
 
   function createList() {
@@ -92,21 +76,25 @@ export default function Board({ lists, listItems, setLists, setListItems, curren
     setLists([...lists, newList]);
     setListItems([...listItems]);
 
-    localStorage.setItem(currentBoardId, JSON.stringify({ lists: [...lists, newList], items: listItems }));
+    setTimeout(() => {
+      scrollToRight();
+    }, 1);
+
+    localStorage.setItem(`board-${currentBoardId}`, JSON.stringify({ lists: [...lists, newList], items: listItems }));
   }
 
   function deleteListHandler(id: string) {
     // deleteList(id);
     setLists(lists.filter((i) => i.id !== id));
     setListItems(listItems.filter((i) => i.listId !== id));
-    localStorage.setItem(currentBoardId, JSON.stringify({ lists: lists.filter((i) => i.id !== id), items: listItems }));
+    localStorage.setItem(`board-${currentBoardId}`, JSON.stringify({ lists: lists.filter((i) => i.id !== id), items: listItems }));
   }
 
   function updateListHandler(id: string, title: string) {
     // updateList(id, title);
     setLists(lists.map((i) => (i.id === id ? { ...i, title } : i)));
 
-    localStorage.setItem(currentBoardId, JSON.stringify({ lists: lists, items: listItems }));
+    localStorage.setItem(`board-${currentBoardId}`, JSON.stringify({ lists: lists, items: listItems }));
   }
 
   function onDragStart(event: DragStartEvent) {
@@ -138,7 +126,7 @@ export default function Board({ lists, listItems, setLists, setListItems, curren
     const overListIndex = lists.findIndex((i) => i.id === overId);
 
     let newOrder = arrayMove(lists, activeListIndex, overListIndex);
-    localStorage.setItem(currentBoardId, JSON.stringify({ lists: newOrder, items: listItems }));
+    localStorage.setItem(`board-${currentBoardId}`, JSON.stringify({ lists: newOrder, items: listItems }));
 
     return setLists(newOrder);
   }
@@ -169,7 +157,7 @@ export default function Board({ lists, listItems, setLists, setListItems, curren
       } else {
         newOrder = arrayMove(listItems, activeIndex, overIndex);
       }
-      localStorage.setItem(currentBoardId, JSON.stringify({ lists: lists, items: newOrder }));
+      localStorage.setItem(`board-${currentBoardId}`, JSON.stringify({ lists: lists, items: newOrder }));
       return setListItems(newOrder);
     }
 
@@ -182,7 +170,7 @@ export default function Board({ lists, listItems, setLists, setListItems, curren
       listItems[activeIndex].listId = overId.toString();
 
       let newOrder = arrayMove(listItems, activeIndex, activeIndex);
-      localStorage.setItem(currentBoardId, JSON.stringify({ lists: lists, items: newOrder }));
+      localStorage.setItem(`board-${currentBoardId}`, JSON.stringify({ lists: lists, items: newOrder }));
       return setListItems(newOrder);
     }
   }
@@ -193,19 +181,6 @@ export default function Board({ lists, listItems, setLists, setListItems, curren
       {activeItem && <ItemOverlay content={activeItem.content} />}
     </DragOverlay>
   );
-
-  useEffect(() => {
-    if (firstRender.current) {
-      return; // Don't scroll on the first render
-    }
-
-    if (containerRef.current) {
-      containerRef.current.scrollTo({
-        left: containerRef.current.scrollWidth, // Scroll to the right edge
-        behavior: "smooth",
-      });
-    }
-  }, [createList]);
 
   const listIds = useMemo(() => lists.map((i) => i.id), [lists]);
   return (
@@ -224,9 +199,6 @@ export default function Board({ lists, listItems, setLists, setListItems, curren
                         key={list.id}
                         deleteList={deleteListHandler}
                         updateList={updateListHandler}
-                        addItem={addNewItem}
-                        deleteItem={deleteListItem}
-                        updateItem={updateListItem}
                         items={listItems.filter((i) => i.listId === list.id)}
                       />
                     );
