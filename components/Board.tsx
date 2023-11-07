@@ -145,26 +145,25 @@ export default function Board({ lists, listItems, setLists, setListItems, curren
 
     if (!isActiveAnItem) return;
 
-    // Im dropping a Item over another Item
     if (isActiveAnItem && isOverAItem) {
       const activeIndex = listItems.findIndex((t) => t.id === activeId);
       const overIndex = listItems.findIndex((t) => t.id === overId);
-
       let newOrder;
+
       if (listItems[activeIndex].listId != listItems[overIndex].listId) {
         listItems[activeIndex].listId = listItems[overIndex].listId;
         newOrder = arrayMove(listItems, activeIndex, overIndex - 1);
-      } else {
+      } else (activeIndex < overIndex) {
         newOrder = arrayMove(listItems, activeIndex, overIndex);
       }
       localStorage.setItem(`board-${currentBoardId}`, JSON.stringify({ lists: lists, items: newOrder }));
       return setListItems(newOrder);
     }
-
     const isOverAList = over.data.current?.type === "List";
 
     // Im dropping a Item over a List
     if (isActiveAnItem && isOverAList) {
+      console.log("4, dropping a Item over a List");
       const activeIndex = listItems.findIndex((t) => t.id === activeId);
 
       listItems[activeIndex].listId = overId.toString();
@@ -183,6 +182,7 @@ export default function Board({ lists, listItems, setLists, setListItems, curren
   );
 
   const listIds = useMemo(() => lists.map((i) => i.id), [lists]);
+
   return (
     <>
       <main className="flex flex-col w-full items-center justify-center pt-16 pb-4">
@@ -192,7 +192,6 @@ export default function Board({ lists, listItems, setLists, setListItems, curren
               <div className="flex gap-4   ">
                 <SortableContext items={listIds} id="lists">
                   {lists.map((list) => {
-                    console.log(list, listItems);
                     return (
                       <List
                         list={list}
