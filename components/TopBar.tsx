@@ -1,9 +1,9 @@
-import { useStore } from "@/store/store";
+import { ThemeSwitcher } from "./ThemeSwitcher";
 
 export default function TopBar() {
-  const currentBoardId = useStore((state) => state.currentBoardId);
-  const boards = useStore((state) => state.boards);
-  const currentBoardData = boards.find((b) => b.id === currentBoardId);
-
-  return <h2>{currentBoardData?.title}</h2>;
+  return (
+    <h2 className="p-1">
+      <ThemeSwitcher />
+    </h2>
+  );
 }

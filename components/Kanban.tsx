@@ -1,36 +1,31 @@
 "use client";
 import { useStore } from "@/store/store";
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import Board from "./Board";
-import Sidebar from "./Sidebar";
-import { ItemType, ListType } from "@/utils/types";
-import Navigation from "./Navigation";
+import TopBar from "./TopBar";
 
 export default function Kanban() {
-  const [lists, setLists] = useStore((state) => [state.lists, state.setLists]);
-  const [listItems, setListItems] = useStore((state) => [state.items, state.setItems]);
+  const [currentBoardData, setCurrentBoardData] = useStore((state) => [state.currentBoardData, state.setCurrentBoardData]);
+  const [currentBoardId] = useStore((state) => [state.currentBoardId, state.setCurrentBoardId]);
+  const [boards] = useStore((state) => [state.boards]);
 
-  const [currentBoardId, setCurrentBoardId] = useStore((state) => [state.currentBoardId, state.setCurrentBoardId]);
+  const boardRef = useRef<HTMLDivElement | null>(null); // Define the ref with proper typing
+
   useEffect(() => {
-    const id = localStorage.getItem("currentBoardId");
-
-    let currentBoardData = null;
-    if (id) {
-      setCurrentBoardId(id);
-      const storeBoard = localStorage.getItem(`board-${id}`);
-      if (storeBoard) {
-        currentBoardData = JSON.parse(storeBoard);
+    if (currentBoardId) {
+      const board = boards.find((board) => board.id === currentBoardId);
+      if (board) {
+        setCurrentBoardData(board);
       }
     }
+  }, [boards, currentBoardId, setCurrentBoardData]);
 
-    setLists(currentBoardData?.lists || []);
-    setListItems(currentBoardData?.items || []);
-  }, [currentBoardId]);
   return (
-    <div className="overflow-hidden flex h-screen">
-      <Navigation />
-      <main className="flex-1 h-full overflow-y-auto pl-4 flex">
-        {currentBoardId && <Board lists={lists} listItems={listItems} setLists={setLists} setListItems={setListItems} currentBoardId={currentBoardId} />}
+    <div className=" flex ">
+      {/* <Navigation /> */}
+      <TopBar />
+      <main className="h-screen flex-1 pl-4" ref={boardRef}>
+        {currentBoardId && currentBoardData && <Board board={currentBoardData} currentBoardId={currentBoardId} boardRef={boardRef} />}
       </main>
     </div>
   );

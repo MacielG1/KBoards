@@ -1,222 +1,116 @@
 "use client";
-import { BoardType, ItemType, ListType } from "@/utils/types";
-import {
-  DndContext,
-  DragEndEvent,
-  DragOverEvent,
-  DragOverlay,
-  DragStartEvent,
-  PointerSensor,
-  TouchSensor,
-  closestCenter,
-  closestCorners,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import { SortableContext, arrayMove, rectSwappingStrategy } from "@dnd-kit/sortable";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
-import List from "./List";
-import ItemOverlay from "./Overlays/ItemOverlay";
-import { createPortal } from "react-dom";
-import ListOverlay from "./Overlays/ListOverlay";
-import { useStore } from "@/store/store";
+
+import { BoardType, useStore } from "@/store/store";
+import { DragDropContext, DropResult, Droppable, DroppableProvided } from "@hello-pangea/dnd";
+import ListItem from "./List/ListItem";
+import { reorder } from "../utils/reorder";
+import AddList from "./List/AddList";
+import { RefObject, useRef } from "react";
 
 type Props = {
-  lists: ListType[];
-  listItems: ItemType[];
-  setLists: (lists: ListType[]) => void;
-  setListItems: (items: ItemType[]) => void;
+  board: BoardType;
   currentBoardId: string;
+  boardRef: RefObject<HTMLDivElement>;
 };
 
-export default function Board({ lists, listItems, setLists, setListItems, currentBoardId }: Props) {
-  const { addItem, deleteItem, updateItem, addList, deleteList, updateList } = useStore();
-  const [activeList, setActiveList] = useState<ListType | null>(null);
-  const [activeItem, setActiveItem] = useState<ItemType | null>(null);
+export default function Board({ board, currentBoardId, boardRef }: Props) {
+  const updateBoard = useStore((state) => state.updateBoard);
 
   const containerRef = useRef<HTMLDivElement | null>(null); // Define the ref with proper typing
-  const firstRender = useRef(true);
 
-  const pointerSensor = useSensor(PointerSensor, {
-    activationConstraint: {
-      distance: 8,
-    },
-  });
-  const touchSensor = useSensor(TouchSensor, {
-    activationConstraint: {
-      delay: 250,
-      tolerance: 5,
-    },
-  });
+  function onDragEnd(result: DropResult) {
+    const { destination, source, type } = result;
 
-  const sensors = useSensors(pointerSensor, touchSensor);
+    if (!destination) return;
 
-  function scrollToRight() {
-    if (containerRef.current) {
-      containerRef.current.scrollTo({
-        left: containerRef.current.scrollWidth, // Scroll to the right edge
-        behavior: "smooth",
+    // Dropped in the same position
+    if (destination.droppableId === source.droppableId && destination.index === source.index) return;
+
+    // Reorder lists
+    if (type === "list") {
+      const items = reorder(board.lists, source.index, destination.index).map((list, index) => {
+        return { ...list, order: index };
       });
-    }
-  }
 
-  function createList() {
-    if (firstRender.current) {
-      firstRender.current = false;
+      return updateBoard(currentBoardId, { ...board, lists: items });
     }
 
-    const newList: ListType = {
-      id: uuidv4(),
-      title: `List ${lists.length + 1}`,
-      items: [],
-    };
+    // Reorder cards
 
-    // addList(newList);
-    setLists([...lists, newList]);
-    setListItems([...listItems]);
+    if (type === "card") {
+      let newOrderedData = [...board.lists];
 
-    setTimeout(() => {
-      scrollToRight();
-    }, 1);
+      const sourceList = newOrderedData.find((list) => list.id === source.droppableId);
+      const destinationList = newOrderedData.find((list) => list.id === destination.droppableId);
 
-    localStorage.setItem(`board-${currentBoardId}`, JSON.stringify({ lists: [...lists, newList], items: listItems }));
-  }
+      console.log("sourceList", sourceList);
+      console.log("destinationList", destinationList);
+      if (!sourceList || !destinationList) return;
 
-  function deleteListHandler(id: string) {
-    // deleteList(id);
-    setLists(lists.filter((i) => i.id !== id));
-    setListItems(listItems.filter((i) => i.listId !== id));
-    localStorage.setItem(`board-${currentBoardId}`, JSON.stringify({ lists: lists.filter((i) => i.id !== id), items: listItems }));
-  }
-
-  function updateListHandler(id: string, title: string) {
-    // updateList(id, title);
-    setLists(lists.map((i) => (i.id === id ? { ...i, title } : i)));
-
-    localStorage.setItem(`board-${currentBoardId}`, JSON.stringify({ lists: lists, items: listItems }));
-  }
-
-  function onDragStart(event: DragStartEvent) {
-    if (event.active.data.current?.type === "List") {
-      return setActiveList(event.active.data.current.list);
-    }
-
-    if (event.active.data.current?.type === "Item") {
-      return setActiveItem(event.active.data.current.Item);
-    }
-  }
-
-  function onDragEnd(event: DragEndEvent) {
-    setActiveList(null);
-    setActiveItem(null);
-
-    const { active, over } = event;
-    if (!over) return;
-
-    const activeId = active.id;
-    const overId = over.id;
-
-    if (activeId === overId) return;
-
-    const isActiveAList = active.data.current?.type === "List";
-    if (!isActiveAList) return;
-
-    const activeListIndex = lists.findIndex((i) => i.id === activeId);
-    const overListIndex = lists.findIndex((i) => i.id === overId);
-
-    let newOrder = arrayMove(lists, activeListIndex, overListIndex);
-    localStorage.setItem(`board-${currentBoardId}`, JSON.stringify({ lists: newOrder, items: listItems }));
-
-    return setLists(newOrder);
-  }
-
-  function onDragOver(event: DragOverEvent) {
-    const { active, over } = event;
-    if (!over) return;
-
-    const activeId = active.id;
-    const overId = over.id;
-
-    if (activeId === overId) return;
-
-    const isActiveAnItem = active.data.current?.type === "Item";
-    const isOverAItem = over.data.current?.type === "Item";
-
-    if (!isActiveAnItem) return;
-
-    if (isActiveAnItem && isOverAItem) {
-      const activeIndex = listItems.findIndex((t) => t.id === activeId);
-      const overIndex = listItems.findIndex((t) => t.id === overId);
-      let newOrder;
-
-      if (listItems[activeIndex].listId != listItems[overIndex].listId) {
-        listItems[activeIndex].listId = listItems[overIndex].listId;
-        newOrder = arrayMove(listItems, activeIndex, overIndex - 1);
-      } else (activeIndex < overIndex) {
-        newOrder = arrayMove(listItems, activeIndex, overIndex);
+      // check if sources lists has cards
+      if (!sourceList.items) {
+        sourceList.items = [];
       }
-      localStorage.setItem(`board-${currentBoardId}`, JSON.stringify({ lists: lists, items: newOrder }));
-      return setListItems(newOrder);
-    }
-    const isOverAList = over.data.current?.type === "List";
 
-    // Im dropping a Item over a List
-    if (isActiveAnItem && isOverAList) {
-      console.log("4, dropping a Item over a List");
-      const activeIndex = listItems.findIndex((t) => t.id === activeId);
+      // check if destination lists has cards
+      if (!destinationList.items) {
+        destinationList.items = [];
+      }
 
-      listItems[activeIndex].listId = overId.toString();
+      // move card in the same list
 
-      let newOrder = arrayMove(listItems, activeIndex, activeIndex);
-      localStorage.setItem(`board-${currentBoardId}`, JSON.stringify({ lists: lists, items: newOrder }));
-      return setListItems(newOrder);
+      if (source.droppableId === destination.droppableId) {
+        const reorderedCards = reorder(sourceList.items, source.index, destination.index);
+
+        reorderedCards.forEach((card, index) => {
+          card.order = index;
+        });
+
+        sourceList.items = reorderedCards;
+        updateBoard(currentBoardId, { ...board, lists: newOrderedData });
+      } else if (source.droppableId !== destination.droppableId) {
+        // move card from another list
+        const [movedCard] = sourceList.items.splice(source.index, 1);
+
+        // add card to destination list
+        movedCard.listId = destinationList.id;
+        destinationList.items.splice(destination.index, 0, movedCard);
+
+        //  update the order of the cards in the source list
+        sourceList.items.forEach((card, index) => {
+          card.order = index;
+        });
+
+        // update the order of the cards in the destination list
+        destinationList.items.forEach((card, index) => {
+          card.order = index;
+        });
+        updateBoard(currentBoardId, { ...board, lists: newOrderedData });
+      }
     }
   }
-
-  let Overlay = (
-    <DragOverlay dropAnimation={null}>
-      {activeList && <ListOverlay list={activeList} deleteItem={deleteItem} updateItem={updateItem} items={listItems.filter((i) => i.listId === activeList.id)} />}
-      {activeItem && <ItemOverlay content={activeItem.content} />}
-    </DragOverlay>
-  );
-
-  const listIds = useMemo(() => lists.map((i) => i.id), [lists]);
 
   return (
-    <>
-      <main className="flex flex-col w-full items-center justify-center pt-16 pb-4">
-        <div className="grid py-2 pr-6 w-full place-items-center overflow-x-auto" ref={containerRef}>
-          <DndContext sensors={sensors} onDragStart={onDragStart} onDragEnd={onDragEnd} onDragOver={onDragOver} id="board">
-            <div className="flex gap-4">
-              <div className="flex gap-4   ">
-                <SortableContext items={listIds} id="lists">
-                  {lists.map((list) => {
-                    return (
-                      <List
-                        list={list}
-                        key={list.id}
-                        deleteList={deleteListHandler}
-                        updateList={updateListHandler}
-                        items={listItems.filter((i) => i.listId === list.id)}
-                      />
-                    );
+    <div className="flex w-full flex-col items-center justify-center pb-4 pt-8">
+      <div className="grid place-items-center py-2 pr-5" ref={containerRef}>
+        <DragDropContext onDragEnd={onDragEnd}>
+          <Droppable droppableId="lists" type="list" direction="horizontal">
+            {(provided: DroppableProvided) => (
+              <div {...provided.droppableProps} ref={provided.innerRef}>
+                <ol className="flex">
+                  {board.lists.map((list, i) => {
+                    return <ListItem key={list.id} index={i} data={list} />;
                   })}
-                </SortableContext>
+                  {provided.placeholder}
+                  <div className="pl-2">
+                    <AddList boardRef={boardRef} />
+                  </div>
+                </ol>
               </div>
-              <button
-                onClick={() => {
-                  createList();
-                }}
-                className="h-[60px] text-neutral-100 min-w-[15rem] cursor-pointer rounded-xl bg-neutral-950 ring ring-neutral-800 hover:bg-neutral-900 hover:ring-neutral-700  flex items-center justify-center  transition duration-300"
-              >
-                New List
-              </button>
-            </div>
-            {typeof window !== "undefined" && createPortal(Overlay, document.querySelector("#modal-root") as HTMLElement)}
-          </DndContext>
-        </div>
-      </main>
-    </>
+            )}
+          </Droppable>
+        </DragDropContext>
+      </div>
+    </div>
   );
 }

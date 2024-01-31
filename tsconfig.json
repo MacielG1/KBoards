@@ -28,6 +28,6 @@
       "@assets/*" : ["./assets/*"],
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/AddItem.jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/AddItem.jsx", "hooks/useScrollDrag.js"],
   "exclude": ["node_modules"]
 }
