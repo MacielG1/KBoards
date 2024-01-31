@@ -56,10 +56,10 @@ export default function ListItem({ data, index }: ListItemProps) {
             <div {...provided.dragHandleProps} className={data.items.length > 0 ? "pb-2" : "mt-0"}>
               <ListHeader onAddCard={enableEditing} data={data} />
             </div>
-            <div style={{ maxHeight: "62vh", overflowY: "auto" }} ref={scrollableRef} className={cn("mx-1 flex flex-col")}>
+            <div ref={scrollableRef} className={cn("mx-1 flex max-h-[62vh] flex-col overflow-y-auto")}>
               <Droppable droppableId={data.id} type="card">
                 {(provided) => (
-                  <ol ref={provided.innerRef} {...provided.droppableProps} className={"space-y-[0.35rem] py-[0.12rem]"}>
+                  <ol ref={provided.innerRef} {...provided.droppableProps} className={cn("space-y-[0.35rem]", data.items.length <= 0 ? "py-1" : "py-0")}>
                     {data.items.map((card, index) => (
                       <Card key={card.id} index={index} data={card} />
                     ))}

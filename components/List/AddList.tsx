@@ -9,11 +9,7 @@ import { PlusIcon, X } from "lucide-react";
 import FormButton from "../Form/FormButton";
 import FormTextArea from "../Form/FormTextArea";
 
-type AddListProps = {
-  boardRef: RefObject<HTMLDivElement>;
-};
-
-export default function AddList({ boardRef }: AddListProps) {
+export default function AddList() {
   const [isEditing, setIsEditing] = useState(false);
 
   const formRef = useRef<ElementRef<"form">>(null);
@@ -53,12 +49,12 @@ export default function AddList({ boardRef }: AddListProps) {
     disableEditing();
 
     setTimeout(() => {
-      // scroll to the right end of the board
-      boardRef.current?.scrollTo({
-        left: boardRef.current?.scrollWidth,
+      // this method until hello-pangea/dnd adds support for nested scroll
+      window.scrollTo({
+        left: document.documentElement.scrollWidth,
         behavior: "smooth",
       });
-    }, 200);
+    }, 1000);
   }
 
   if (isEditing)

@@ -28,7 +28,7 @@ export default function Card({ index, data }: CardProps) {
           {...provided.dragHandleProps}
           ref={provided.innerRef}
           style={getStyle(provided.draggableProps.style || {}, snapshot)}
-          className="group relative mx-0.5 my-1 flex items-center justify-between rounded-md border-2 border-transparent bg-neutral-100 text-sm shadow-sm hover:border-neutral-600 dark:bg-neutral-800 dark:hover:border-neutral-950"
+          className="group relative mx-0.5 mb-1 flex items-center justify-between rounded-md border-2 border-transparent bg-neutral-100 text-sm shadow-sm hover:border-neutral-600 dark:bg-neutral-800 dark:hover:border-neutral-950"
         >
           <CardContent data={data} />
         </div>

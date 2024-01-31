@@ -10,10 +10,9 @@ import { RefObject, useRef } from "react";
 type Props = {
   board: BoardType;
   currentBoardId: string;
-  boardRef: RefObject<HTMLDivElement>;
 };
 
-export default function Board({ board, currentBoardId, boardRef }: Props) {
+export default function Board({ board, currentBoardId }: Props) {
   const updateBoard = useStore((state) => state.updateBoard);
 
   const containerRef = useRef<HTMLDivElement | null>(null); // Define the ref with proper typing
@@ -97,13 +96,13 @@ export default function Board({ board, currentBoardId, boardRef }: Props) {
           <Droppable droppableId="lists" type="list" direction="horizontal">
             {(provided: DroppableProvided) => (
               <div {...provided.droppableProps} ref={provided.innerRef}>
-                <ol className="flex">
+                <ol className="flex ">
                   {board.lists.map((list, i) => {
                     return <ListItem key={list.id} index={i} data={list} />;
                   })}
                   {provided.placeholder}
                   <div className="pl-2">
-                    <AddList boardRef={boardRef} />
+                    <AddList />
                   </div>
                 </ol>
               </div>
