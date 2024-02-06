@@ -2,6 +2,7 @@ import { ThemeProvider } from "@/components/Providers/ThemeProvider";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
+import ScrollButtons from "@/components/ScrollButtons";
 
 const font = Open_Sans({
   subsets: ["latin"],
@@ -18,6 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={font.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           {children}
+          <ScrollButtons />
         </ThemeProvider>
         <div id="modal-root" />
       </body>

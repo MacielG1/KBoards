@@ -1,11 +1,13 @@
 import { create } from "zustand";
 import { v4 as uuidv4 } from "uuid";
-import { persist } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
+import { storage } from "./storage";
 
 export const defaultBoards: BoardType[] = [
   {
     id: "main",
     name: "Main",
+    color: "#000000",
     lists: [
       {
         id: "list-1",
@@ -69,6 +71,7 @@ export type ItemType = {
 export type BoardType = {
   id: string;
   name: string;
+  color: string;
   lists: ListType[];
 };
 
@@ -78,7 +81,9 @@ export type StoreType = {
 
   addBoard: (board: BoardType) => void;
   removeBoard: (boardId: string) => void;
+  copyBoard: (boardId: string) => void;
 
+  setBoardTitle: (boardId: string, name: string) => void;
   updateBoard: (boardId: string, updatedBoard: Partial<BoardType>) => void;
 
   addList: (boardId: string, title: string) => void;
@@ -97,22 +102,51 @@ export type StoreType = {
   currentBoardData: BoardType | null | undefined;
   setCurrentBoardData: (currentBoardData: BoardType) => void;
 
-  setColor: (listId: string, color: string) => void;
+  setListColor: (listId: string, color: string) => void;
+  setBoardColor: (boardId: string, color: string) => void;
 };
 
 export const useStore = create<StoreType>()(
   persist(
     (set) => ({
-      boards: defaultBoards,
+      boards: [],
       setBoards: (boards) => set({ boards }),
 
       addBoard: (board) => set((state) => ({ boards: [...state.boards, board] })),
-      removeBoard: (boardId) => set((state) => ({ boards: state.boards.filter((board) => board.id !== boardId) })),
+      removeBoard: (boardId) =>
+        set((state) => ({
+          boards: state.boards.filter((board) => board.id !== boardId),
+          // set the currentboardId to the previous board id to thee one being deleted
+
+          currentBoardId: state.boards?.at(-2)?.id,
+        })),
+
+      setBoardTitle: (boardId, name) => {
+        set((state) => ({
+          boards: state.boards.map((board) => (board.id === boardId ? { ...board, name } : board)),
+        }));
+      },
 
       updateBoard: (boardId, updatedBoard) =>
         set((state) => ({
           boards: state.boards.map((board) => (board.id === boardId ? { ...board, ...updatedBoard } : board)),
         })),
+
+      copyBoard: (boardId) =>
+        set((state) => {
+          const { boards } = state;
+          const boardIndex = boards.findIndex((board) => board.id === boardId);
+          if (boardIndex === -1) {
+            return {}; // Not found
+          }
+
+          const boardToCopy = boards[boardIndex];
+          const newBoard = { ...boardToCopy, id: uuidv4() };
+
+          const updatedBoards = [...boards.slice(0, boardIndex + 1), newBoard, ...boards.slice(boardIndex + 1)];
+
+          return { boards: updatedBoards };
+        }),
       addList: (boardId, title) =>
         set((state) => ({
           boards: state.boards.map((board) =>
@@ -129,15 +163,21 @@ export const useStore = create<StoreType>()(
         set((state) => {
           const { boards } = state;
 
+          console.log("boards", boards);
+
           const boardIndex = boards.findIndex((board) => board.id === boardId);
           const listIndex = boards[boardIndex]?.lists.findIndex((list) => list.id === listId);
 
+          console.log("boardIndex", boardIndex);
+          console.log("listIndex", listIndex);
           if (boardIndex === -1 || listIndex === -1) {
             return {}; // Not found
           }
 
           const listToCopy = boards[boardIndex].lists[listIndex];
           const newList = { ...listToCopy, id: uuidv4() };
+
+          console.log("newList", newList);
 
           // change the listId of all items in the list
           const updatedItems = newList.items.map((item) => ({ ...item, id: uuidv4(), listId: newList.id }));
@@ -224,12 +264,16 @@ export const useStore = create<StoreType>()(
           ),
         })),
 
-      setColor: (listId, color) =>
+      setListColor: (listId, color) =>
         set((state) => ({
           boards: state.boards.map((board) => ({
             ...board,
             lists: board.lists.map((list) => (list.id === listId ? { ...list, color } : list)),
           })),
+        })),
+      setBoardColor: (boardId, color) =>
+        set((state) => ({
+          boards: state.boards.map((board) => (board.id === boardId ? { ...board, color } : board)),
         })),
 
       currentBoardId: "main",
@@ -240,6 +284,7 @@ export const useStore = create<StoreType>()(
     }),
     {
       name: "boardStore",
+      storage: createJSONStorage(() => storage),
     },
   ),
 );

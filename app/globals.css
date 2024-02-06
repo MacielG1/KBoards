@@ -5,6 +5,7 @@
 @layer base {
   :root {
     --list-default: #b4b4b4;
+    --board-default: #b4b4b4;
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
 
@@ -23,7 +24,8 @@
     --muted: 0 0% 96.1%;
     --muted-foreground: 0 0% 45.1%;
  
-    --accent: 0 0% 96.1%;
+    /* --accent: 0 0% 96.1%; */
+    --accent: 0, 1%, 92%;
     --accent-foreground: 0 0% 9%;
  
     --destructive: 0 84.2% 60.2%;
@@ -38,6 +40,7 @@
  
   .dark {
     --list-default: #252525;
+    --board-default: #252525;
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
  
@@ -71,7 +74,12 @@
 :root,
 body,
 html {
-  height: 100%;
+  height: 100%; 
+  
+}
+
+body {
+  overflow-y: hidden
 }
 
 
@@ -89,11 +97,11 @@ html {
 }
 
 ::-webkit-scrollbar:horizontal {
-  height: 8px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-neutral-800 rounded-xl;
+  @apply bg-neutral-600 rounded-xl;
 }
 
 .task> ::-webkit-scrollbar-thumb {

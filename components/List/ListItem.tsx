@@ -46,7 +46,7 @@ export default function ListItem({ data, index }: ListItemProps) {
   return (
     <Draggable draggableId={data.id} index={index}>
       {(provided: DraggableProvided, snapshot) => (
-        <li
+        <div
           {...provided.draggableProps}
           ref={provided.innerRef}
           style={getStyle(provided.draggableProps.style || {}, snapshot)}
@@ -77,7 +77,7 @@ export default function ListItem({ data, index }: ListItemProps) {
               scrollableRef={scrollableRef}
             />
           </div>
-        </li>
+        </div>
       )}
     </Draggable>
   );
