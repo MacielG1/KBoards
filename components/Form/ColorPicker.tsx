@@ -1,20 +1,26 @@
 import { useStore } from "@/store/store";
 import { useEffect, useState } from "react";
 
-export default function ColorPicker({ listId, value }: { listId: string; value: string }) {
+type ColorPickerProps = {
+  id: string;
+  value: string;
+  setter: (id: string, value: string) => void;
+};
+
+export default function ColorPicker({ id, value, setter }: ColorPickerProps) {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
-  const setColor = useStore((state) => state.setColor);
+  // const setColor = useStore((state) => state.setListColor);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setColor(listId, debouncedValue);
+      setter(id, debouncedValue);
     }, 50);
 
     return () => {
       clearTimeout(timer);
     };
-  }, [listId, debouncedValue, setColor]);
+  }, [id, debouncedValue, setter]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDebouncedValue(e.target.value);

@@ -55,7 +55,6 @@ export default function ListHeader({ data, onAddCard }: ListHeaderProps) {
 
     if (!title) return;
 
-    console.log("up");
     setTitle(title);
     updateList(currentBoardId, data.id, { ...data, title });
     disableEditing();

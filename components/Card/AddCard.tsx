@@ -39,10 +39,18 @@ const AddCard = forwardRef<HTMLTextAreaElement, AddCardProps>(({ isEditing, enab
     }
   }
 
+  function focusOnTextArea() {
+    (ref as React.MutableRefObject<HTMLTextAreaElement | null>)?.current?.focus();
+  }
+
   function onSubmit(formData: FormData) {
     const content = formData.get("content") as string;
 
-    if (!content) return;
+    if (!content) {
+      return setTimeout(() => {
+        focusOnTextArea();
+      }, 200);
+    }
 
     const newItem = {
       id: uuidv4(),
@@ -60,8 +68,7 @@ const AddCard = forwardRef<HTMLTextAreaElement, AddCardProps>(({ isEditing, enab
         top: scrollableRef.current.scrollHeight,
         behavior: "smooth",
       });
-
-      (ref as React.MutableRefObject<HTMLTextAreaElement | null>)?.current?.focus();
+      focusOnTextArea();
     }, 200);
   }
 
@@ -73,7 +80,7 @@ const AddCard = forwardRef<HTMLTextAreaElement, AddCardProps>(({ isEditing, enab
             id="content"
             onKeyDown={onTextAreaKeyDown}
             ref={ref}
-            className="px-2 focus-visible:ring-1 focus-visible:ring-neutral-950 focus-visible:ring-offset-0"
+            className="px-2 focus-visible:ring-1 focus-visible:ring-neutral-950 focus-visible:ring-offset-0 dark:focus-visible:bg-neutral-800/80"
             placeholder="Enter a title for this card"
           />
           <input hidden id="listId" value={listId} name="listId" readOnly />

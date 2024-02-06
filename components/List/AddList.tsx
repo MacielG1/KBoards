@@ -1,7 +1,7 @@
 "use client";
 
 import { ElementRef, RefObject, forwardRef, useRef, useState } from "react";
-import { useEventListener, useOnClickOutside } from "usehooks-ts";
+import { useEventListener, useMediaQuery, useOnClickOutside } from "usehooks-ts";
 import { FormInput } from "../Form/FormInput";
 import { useStore } from "@/store/store";
 import { Button } from "../ui/button";
@@ -17,6 +17,8 @@ export default function AddList() {
 
   const addList = useStore((state) => state.addList);
   const currentBoardId = useStore((state) => state.currentBoardId);
+
+  const isMobile = useMediaQuery("(max-width: 1000px)");
 
   function enableEditing() {
     setIsEditing(true);
@@ -48,13 +50,15 @@ export default function AddList() {
     formRef.current?.reset();
     disableEditing();
 
-    setTimeout(() => {
-      // this method until hello-pangea/dnd adds support for nested scroll
-      window.scrollTo({
-        left: document.documentElement.scrollWidth,
-        behavior: "smooth",
-      });
-    }, 1000);
+    if (!isMobile) {
+      setTimeout(() => {
+        // this method until hello-pangea/dnd adds support for nested scroll
+        window.scrollTo({
+          left: document.documentElement.scrollWidth,
+          behavior: "smooth",
+        });
+      }, 200);
+    }
   }
 
   if (isEditing)
