@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-
-import { Trash2 } from "lucide-react";
+import { useRef } from "react";
 
 type DeleteModalProps = {
   deleteHandler: () => void;
@@ -10,36 +9,35 @@ type DeleteModalProps = {
 };
 
 export default function DeleteModal({ deleteHandler, message, children }: DeleteModalProps) {
+  const ref = useRef<HTMLButtonElement>(null);
   return (
     <Dialog>
-      {/* <button className="px-[0.1rem] py-2 opacity-0 group-hover:opacity-100">
-        <DialogTrigger asChild>
-          <Trash2 className="size-4 text-neutral-500 hover:text-red-500 dark:text-neutral-300 dark:hover:text-red-400" />
-        </DialogTrigger>
-      </button> */}
       <DialogTrigger onClick={(e) => e.stopPropagation()} asChild>
         {children}
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="max-w-[350px] sm:max-w-[425px]">
         <DialogHeader className="space-y-3">
           <DialogTitle className="text-xl">{message}</DialogTitle>
-          <DialogDescription>Are you sure you?</DialogDescription>
+          <DialogDescription>Are you sure?</DialogDescription>
         </DialogHeader>
 
         <DialogFooter className="flex gap-2 justify-self-center pt-2">
-          <DialogClose>
-            <Button className="border border-neutral-600" variant="ghost">
-              Cancel
+          <DialogClose ref={ref}>
+            <Button asChild className="border border-neutral-600" variant="ghost">
+              <span>Cancel</span>
             </Button>
           </DialogClose>
           <Button
+            asChild
             onClick={(e) => {
+              e.stopPropagation();
               deleteHandler();
+              ref.current?.click();
             }}
-            className="bg-red-500 font-semibold hover:bg-red-600 dark:hover:bg-red-500/80"
+            className="cursor-pointer bg-red-500 font-semibold hover:bg-red-600 dark:hover:bg-red-500/80"
           >
-            Delete
+            <span>Delete</span>
           </Button>
         </DialogFooter>
       </DialogContent>

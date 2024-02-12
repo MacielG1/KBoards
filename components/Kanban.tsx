@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import Board from "./Board";
 import TopBar from "./TopBar/TopBar";
 import Navigation from "./Navigation";
+import AddBoard from "./Sidebar/Addboard";
 
 export default function Kanban() {
   const [currentBoardData, setCurrentBoardData] = useStore((state) => [state.currentBoardData, state.setCurrentBoardData]);
@@ -11,21 +12,24 @@ export default function Kanban() {
   const [boards] = useStore((state) => [state.boards]);
 
   useEffect(() => {
-    if (currentBoardId) {
-      const board = boards.find((board) => board.id === currentBoardId);
-      if (board) {
-        setCurrentBoardData(board);
-      }
-    }
+    const board = boards.find((board) => board.id === currentBoardId);
+    setCurrentBoardData(board || null);
   }, [boards, currentBoardId, setCurrentBoardData]);
 
   return (
-    <div className="flex ">
+    <div className="flex">
       <Navigation />
-
-      <main className="flex-1 space-y-5 px-2">
-        {currentBoardData && <TopBar currentBoardData={currentBoardData} />}
-        {currentBoardId && currentBoardData && <Board board={currentBoardData} currentBoardId={currentBoardId} />}
+      <main className="flex-1 space-y-14">
+        <TopBar />
+        {boards.length > 0 ? (
+          <>{currentBoardId && currentBoardData && <Board board={currentBoardData} currentBoardId={currentBoardId} />}</>
+        ) : (
+          <div className="flex h-[70vh] w-full items-center justify-center ">
+            <div className="flex flex-col items-center">
+              <AddBoard />
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );

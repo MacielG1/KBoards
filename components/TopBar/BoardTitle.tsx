@@ -8,7 +8,6 @@ type BoardTitleProps = {
 
 export default function BoardTitle({ board }: BoardTitleProps) {
   const [isEditing, setIsEditing] = useState(false);
-  // const [title, setTitle] = useState(board.name);
 
   const setBoardTitle = useStore((state) => state.setBoardTitle);
 
@@ -23,20 +22,17 @@ export default function BoardTitle({ board }: BoardTitleProps) {
     setIsEditing(true);
     setTimeout(() => {
       inputRef.current?.focus();
-      // textAreaRef.current?.select();
     });
   }
 
   function changeBoardTitle(formData: FormData) {
     const title = formData.get("title") as string;
     const boardName = formData.get("boardName") as string;
-    // if (!title) return disableEditing();
 
     if (title === boardName || !title) {
       return disableEditing();
     }
 
-    // setTitle(title);
     disableEditing();
     setBoardTitle(board.id, title);
   }
@@ -44,15 +40,16 @@ export default function BoardTitle({ board }: BoardTitleProps) {
   function onBlur() {
     formRef.current?.requestSubmit();
   }
+
   return (
-    <div className="peer flex  w-[25rem] items-center justify-between">
+    <div className="peer flex w-[15rem] items-center justify-between sm:w-[30rem] lg:w-[50rem]">
       {isEditing ? (
         <form action={changeBoardTitle} className="flex-1" ref={formRef}>
           <input hidden id="boardName" value={board.name} name="boardName" readOnly />
           <FormInput
             ref={inputRef}
             id="title"
-            className="bg-transparent px-1 py-0 text-sm font-medium transition focus:border-0 focus:bg-white focus:outline-0 focus:ring-0 dark:focus-visible:bg-transparent"
+            className="bg-transparent px-1 py-0 text-xl font-medium transition focus:border-0 focus:bg-neutral-200 focus:outline-0 focus:ring-0 dark:focus-visible:bg-neutral-800"
             placeholder="Enter board title..."
             defaultValue={board.name}
             onBlur={onBlur}
@@ -60,11 +57,9 @@ export default function BoardTitle({ board }: BoardTitleProps) {
           <button type="submit" hidden />
         </form>
       ) : (
-        <>
-          <span onClick={enableEditing} className="w-full truncate px-1 py-0 pt-[0.1rem] text-sm font-medium">
-            {board.name}
-          </span>
-        </>
+        <h2 onClick={enableEditing} className=" w-full truncate px-1 py-0 pt-[0.1rem] text-xl font-medium">
+          {board.name}
+        </h2>
       )}
     </div>
   );

@@ -1,14 +1,14 @@
 "use client";
 
-import { ElementRef, RefObject, forwardRef, useRef, useState } from "react";
+import { ElementRef, useRef, useState } from "react";
 import { useEventListener, useOnClickOutside } from "usehooks-ts";
 import { FormInput } from "../Form/FormInput";
 import { useStore } from "@/store/store";
 import { Button } from "../ui/button";
 import { PlusIcon, X } from "lucide-react";
 import FormButton from "../Form/FormButton";
-import FormTextArea from "../Form/FormTextArea";
 import { v4 as uuidv4 } from "uuid";
+import { createBoard } from "@/utils/actions/createBoard";
 
 export default function AddBoard() {
   const [isEditing, setIsEditing] = useState(false);
@@ -17,9 +17,8 @@ export default function AddBoard() {
   const inputRef = useRef<ElementRef<"input">>(null);
 
   const addBoard = useStore((state) => state.addBoard);
-  const currentBoardId = useStore((state) => state.currentBoardId);
-
   const setCurrentBoardId = useStore((state) => state.setCurrentBoardId);
+  const boards = useStore((state) => state.boards);
 
   function enableEditing() {
     setIsEditing(true);
@@ -41,7 +40,7 @@ export default function AddBoard() {
   useEventListener("keydown", onKeyDown);
   useOnClickOutside(formRef, disableEditing);
 
-  function handleSubmit(formData: FormData) {
+  async function handleSubmit(formData: FormData) {
     const title = formData.get("title") as string;
 
     if (!title) return;
@@ -50,9 +49,14 @@ export default function AddBoard() {
       id: uuidv4(),
       name: title,
       lists: [],
+      color: "",
+      backgroundColor: "",
+      order: boards.length + 1,
     };
     addBoard(newBoard);
     setCurrentBoardId(newBoard.id);
+
+    await createBoard(newBoard);
 
     formRef.current?.reset();
     disableEditing();
@@ -94,7 +98,9 @@ export default function AddBoard() {
     <div className="h-full w-[8rem] shrink-0 select-none">
       <button
         onClick={enableEditing}
-        className="flex w-full items-center justify-center rounded-xl bg-neutral-400/50 p-2 py-[0.6rem] text-sm font-medium transition duration-300 hover:bg-neutral-400 dark:bg-neutral-700 dark:hover:bg-neutral-700/80"
+        className="flex w-full items-center justify-center rounded-xl bg-indigo-600 p-2 py-[0.6rem] text-sm font-medium text-black transition duration-300 hover:bg-indigo-700 dark:bg-[#46c290] dark:hover:bg-[#389b73]
+
+"
       >
         <PlusIcon className="mr-2 size-4" />
         Add Board

@@ -5,8 +5,7 @@ import { DragDropContext, DropResult, Droppable, DroppableProvided } from "@hell
 import ListItem from "./List/ListItem";
 import { reorder } from "../utils/reorder";
 import AddList from "./List/AddList";
-import { RefObject, useRef } from "react";
-import TopBar from "./TopBar/TopBar";
+import { useRef } from "react";
 
 type Props = {
   board: BoardType;
@@ -91,7 +90,7 @@ export default function Board({ board, currentBoardId }: Props) {
   }
 
   return (
-    <div className="flex w-full flex-col items-center justify-center pb-4 pt-8">
+    <div className="flex h-full w-full flex-col items-center justify-start px-2" id={board.id} style={{ backgroundColor: board.backgroundColor }}>
       <div className="grid place-items-center py-2 pr-2" ref={containerRef}>
         <DragDropContext onDragEnd={onDragEnd}>
           <Droppable droppableId="lists" type="list" direction="horizontal">

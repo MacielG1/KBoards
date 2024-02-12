@@ -1,5 +1,5 @@
 import { StateStorage } from "zustand/middleware";
-import { get, set, del } from "idb-keyval"; // can use anything: IndexedDB, Ionic Storage, etc.
+import { get, set, del } from "idb-keyval";
 
 // Custom storage object
 export const storage: StateStorage = {

@@ -1,13 +1,14 @@
 "use client";
 
-import { ElementRef, RefObject, forwardRef, useRef, useState } from "react";
+import { ElementRef, useRef, useState } from "react";
 import { useEventListener, useMediaQuery, useOnClickOutside } from "usehooks-ts";
-import { FormInput } from "../Form/FormInput";
 import { useStore } from "@/store/store";
 import { Button } from "../ui/button";
 import { PlusIcon, X } from "lucide-react";
 import FormButton from "../Form/FormButton";
 import FormTextArea from "../Form/FormTextArea";
+import { createList } from "@/utils/actions/createList";
+import { v4 as uuidv4 } from "uuid";
 
 export default function AddList() {
   const [isEditing, setIsEditing] = useState(false);
@@ -17,6 +18,7 @@ export default function AddList() {
 
   const addList = useStore((state) => state.addList);
   const currentBoardId = useStore((state) => state.currentBoardId);
+  const board = useStore((state) => state.boards.find((board) => board.id === currentBoardId));
 
   const isMobile = useMediaQuery("(max-width: 1000px)");
 
@@ -43,9 +45,13 @@ export default function AddList() {
   function handleSubmit(formData: FormData) {
     const title = formData.get("title") as string;
 
-    if (!title) return;
+    if (!title || !board) return;
 
-    addList(currentBoardId || "main", title);
+    const newList = { id: uuidv4(), title, items: [], order: board.lists.length + 1, color: "", boardId: currentBoardId };
+
+    addList(currentBoardId || "main", newList);
+
+    createList(newList);
 
     formRef.current?.reset();
     disableEditing();
@@ -64,7 +70,7 @@ export default function AddList() {
   if (isEditing)
     return (
       <li className="h-full w-[17rem] select-none">
-        <form action={handleSubmit} ref={formRef} className="w-full rounded-md bg-white p-2 shadow-md dark:bg-neutral-800">
+        <form action={handleSubmit} ref={formRef} className="w-full rounded-md bg-neutral-100 p-2 shadow-md dark:bg-neutral-800">
           <FormTextArea
             rows={1}
             id="title"

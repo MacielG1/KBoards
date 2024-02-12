@@ -7,7 +7,6 @@ import { ItemType, useStore } from "@/store/store";
 
 import { Copy, MoreHorizontal, Trash, X } from "lucide-react";
 import { ElementRef, useRef } from "react";
-import FormButton from "../Form/FormButton";
 
 type CardOptionsProps = {
   data: ItemType;
@@ -35,7 +34,7 @@ export default function CardOptions({ data }: CardOptionsProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button className="h-auto w-auto  p-[0.1rem] hover:bg-neutral-200 dark:bg-neutral-700 dark:hover:bg-neutral-600" variant="ghost">
+        <Button className="h-auto w-auto p-[0.1rem] hover:bg-neutral-200 dark:bg-neutral-700 dark:hover:bg-neutral-600" variant="ghost">
           <MoreHorizontal className="size-4" />
         </Button>
       </PopoverTrigger>

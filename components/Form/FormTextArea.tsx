@@ -41,9 +41,15 @@ const FormTextArea = forwardRef<HTMLTextAreaElement, FormTextAreaProps>(
           required={required}
           disabled={pending || disabled}
           className={cn(
-            "focus-outline-0 resize-none border-0 bg-neutral-300 shadow-sm outline-none ring-0 focus:border-0 focus:ring-0 focus-visible:bg-[#e2e2e2] focus-visible:ring-0 focus-visible:ring-offset-0 dark:bg-neutral-800 dark:focus-visible:bg-[#303030]",
+            "focus-outline-0 resize-none border-0 bg-neutral-300 shadow-sm outline-none ring-0 focus:border-0 focus:ring-0 focus-visible:bg-[#f1f1f1] focus-visible:ring-0 focus-visible:ring-offset-0 dark:bg-neutral-800 dark:focus-visible:bg-[#303030]",
             className,
           )}
+          onKeyDownCapture={(e) => {
+            // if enter but not shift enter onblur
+            if (e.key === "Enter" && !e.shiftKey) {
+              onBlur?.();
+            }
+          }}
           onBlur={onBlur}
           onClick={onClick}
           defaultValue={defaultValue}

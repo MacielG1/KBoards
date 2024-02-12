@@ -1,16 +1,13 @@
 "use client";
 
-import { ElementRef, useRef, useState } from "react";
-import { BoardType, ListType, useStore } from "@/store/store";
-import Card from "../Card/Card";
-import CardForm from "../Card/AddCard";
+import { ElementRef, useEffect, useRef, useState } from "react";
+import { BoardType, useStore } from "@/store/store";
+
 import { cn } from "@/utils";
-import { Icons } from "@/assets/Icons";
-import { FormInput } from "../Form/FormInput";
 import { Draggable, DraggableProvided, DraggableStateSnapshot, DraggableStyle } from "@hello-pangea/dnd";
-import { Pencil, Trash2 } from "lucide-react";
-import DeleteModal from "../Modals/DeleteModal";
 import BoardOptions from "./BoardOptions";
+import getContrastColor from "@/utils/getConstrastColor";
+import { useTheme } from "next-themes";
 
 type BoardItemProps = {
   board: BoardType;
@@ -19,11 +16,12 @@ type BoardItemProps = {
 
 export default function BoardItem({ board, index }: BoardItemProps) {
   const [isEditing, setIsEditing] = useState(false);
-  // const [title, setTitle] = useState(board.name);
+  const [textColor, setTextColor] = useState("var(--text-default)");
 
   const [currentBoardId, setCurrentBoardId] = useStore((state) => [state.currentBoardId, state.setCurrentBoardId]);
   const setBoardTitle = useStore((state) => state.setBoardTitle);
-  const removeBoard = useStore((state) => state.removeBoard);
+
+  const { resolvedTheme } = useTheme();
 
   const inputRef = useRef<ElementRef<"input">>(null);
   const formRef = useRef<ElementRef<"form">>(null);
@@ -38,10 +36,6 @@ export default function BoardItem({ board, index }: BoardItemProps) {
       inputRef.current?.focus();
       // textAreaRef.current?.select();
     });
-  }
-
-  function deleteBoard() {
-    removeBoard(board.id);
   }
 
   function changeCurrentBoard() {
@@ -77,6 +71,12 @@ export default function BoardItem({ board, index }: BoardItemProps) {
     };
   }
 
+  useEffect(() => {
+    if (board.color) return setTextColor(getContrastColor(board.color));
+
+    setTextColor(resolvedTheme === "dark" ? "#fafafa" : "#0a0a0a");
+  }, [board.color, resolvedTheme]);
+
   return (
     <Draggable draggableId={board.id} index={index}>
       {(provided: DraggableProvided, snapshot) => (
@@ -89,8 +89,8 @@ export default function BoardItem({ board, index }: BoardItemProps) {
             backgroundColor: board.color || "var(--board-default)",
           }}
           className={cn(
-            `group mb-3 cursor-pointer rounded-lg border border-neutral-400 bg-neutral-200 pl-1.5  pr-1.5 transition-colors duration-300   `,
-            board.id === currentBoardId ? "border-indigo-700 bg-neutral-300 dark:bg-neutral-900" : "hover:bg-neutral-300 dark:hover:bg-neutral-900/80",
+            `group mb-3 cursor-pointer rounded-lg pl-1.5 pr-1.5 transition-colors duration-300  `,
+            board.id === currentBoardId && "ring-1 ring-neutral-500 ring-offset-1 ring-offset-transparent  dark:ring-neutral-500",
           )}
           onClick={() => changeCurrentBoard()}
         >
@@ -111,9 +111,11 @@ export default function BoardItem({ board, index }: BoardItemProps) {
               </form>
             ) : (
               <>
-                <span className="w-full truncate py-2 pl-1 text-sm font-medium">{board.name}</span>
-                <span className="peer absolute right-0 flex h-full flex-nowrap items-center justify-between gap-[0.1rem] opacity-0 group-hover:static group-hover:opacity-100">
-                  <BoardOptions enableEditing={enableEditing} data={board} />
+                <span style={{ color: textColor }} className="w-full break-all py-2 pl-1 text-sm font-medium ">
+                  {board.name}
+                </span>
+                <span className="peer static right-0 mt-1.5 flex h-full flex-nowrap items-center justify-between gap-[0.1rem] place-self-start pl-[0.5rem] md:opacity-0 md:group-hover:static md:group-hover:opacity-100">
+                  <BoardOptions enableEditing={enableEditing} data={board} textColor={textColor} />
                 </span>
               </>
             )}

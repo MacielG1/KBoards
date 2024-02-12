@@ -8,12 +8,15 @@ export const defaultBoards: BoardType[] = [
     id: "main",
     name: "Main",
     color: "#000000",
+    backgroundColor: "#000000",
+    order: 1,
     lists: [
       {
         id: "list-1",
         title: "List 1",
         color: "#ff0000",
         order: 1,
+        boardId: "main",
         items: [
           {
             id: "item-1",
@@ -29,26 +32,6 @@ export const defaultBoards: BoardType[] = [
           },
         ],
       },
-      {
-        id: "list-2",
-        title: "List 2",
-        color: "#00ff00",
-        order: 2,
-        items: [
-          {
-            id: "item-3",
-            content: "Item 3",
-            listId: "list-2",
-            order: 1,
-          },
-          {
-            id: "item-4",
-            content: "Item 4",
-            listId: "list-2",
-            order: 2,
-          },
-        ],
-      },
     ],
   },
 ];
@@ -59,6 +42,7 @@ export type ListType = {
   items: ItemType[];
   color: string;
   order: number;
+  boardId: string;
 };
 
 export type ItemType = {
@@ -72,7 +56,9 @@ export type BoardType = {
   id: string;
   name: string;
   color: string;
+  backgroundColor: string;
   lists: ListType[];
+  order: number;
 };
 
 export type StoreType = {
@@ -86,7 +72,7 @@ export type StoreType = {
   setBoardTitle: (boardId: string, name: string) => void;
   updateBoard: (boardId: string, updatedBoard: Partial<BoardType>) => void;
 
-  addList: (boardId: string, title: string) => void;
+  addList: (boardId: string, list: ListType) => void;
   removeList: (boardId: string, listId: string) => void;
   updateList: (boardId: string, listId: string, updatedList: Partial<ListType>) => void;
   copyList: (boardId: string, listId: string) => void;
@@ -100,10 +86,14 @@ export type StoreType = {
   setCurrentBoardId: (currentBoardId: string) => void;
 
   currentBoardData: BoardType | null | undefined;
-  setCurrentBoardData: (currentBoardData: BoardType) => void;
+  setCurrentBoardData: (currentBoardData: BoardType | null) => void;
 
-  setListColor: (listId: string, color: string) => void;
+  setListColor: (listId: string, color: string, boardId: string) => void;
   setBoardColor: (boardId: string, color: string) => void;
+  setBoardBackgroundColor: (boardId: string, backgroundColor: string) => void;
+
+  isCollapsed: boolean;
+  setIsCollapsed: (isCollapsed: boolean) => void;
 };
 
 export const useStore = create<StoreType>()(
@@ -114,12 +104,15 @@ export const useStore = create<StoreType>()(
 
       addBoard: (board) => set((state) => ({ boards: [...state.boards, board] })),
       removeBoard: (boardId) =>
-        set((state) => ({
-          boards: state.boards.filter((board) => board.id !== boardId),
-          // set the currentboardId to the previous board id to thee one being deleted
+        set((state) => {
+          const updatedBoards = state.boards.filter((board) => board.id !== boardId);
+          const currentBoardId = state.currentBoardId === boardId ? updatedBoards?.at(-1)?.id : state.currentBoardId;
 
-          currentBoardId: state.boards?.at(-2)?.id,
-        })),
+          return {
+            boards: updatedBoards,
+            currentBoardId,
+          };
+        }),
 
       setBoardTitle: (boardId, name) => {
         set((state) => ({
@@ -141,17 +134,35 @@ export const useStore = create<StoreType>()(
           }
 
           const boardToCopy = boards[boardIndex];
-          const newBoard = { ...boardToCopy, id: uuidv4() };
+
+          const newBoardId = uuidv4();
+          const newBoard = { ...boardToCopy, id: newBoardId, name: `${boardToCopy.name} - copy` };
+
+          // change the boardId of each list
+          const updatedLists = newBoard.lists.map((list) => ({ ...list, id: uuidv4() }));
+
+          newBoard.lists = updatedLists;
+
+          // change the listId of all items in the list
+          const updatedItems = newBoard.lists.map((list) => list.items.map((item) => ({ ...item, id: uuidv4(), listId: list.id })));
+
+          newBoard.lists = newBoard.lists.map((list, index) => ({ ...list, items: updatedItems[index] }));
 
           const updatedBoards = [...boards.slice(0, boardIndex + 1), newBoard, ...boards.slice(boardIndex + 1)];
 
-          return { boards: updatedBoards };
+          return { boards: updatedBoards, currentBoardId: newBoardId };
         }),
-      addList: (boardId, title) =>
+      // addList: (boardId, title) =>
+      //   set((state) => ({
+      //     boards: state.boards.map((board) =>
+      //       board.id === boardId
+      //         ? { ...board, lists: [...board.lists, { id: uuidv4(), title, items: [], order: board.lists.length + 1, color: "", boardId }] }
+      //         : board,
+      //     ),
+      //   })),
+      addList: (boardId, newList) =>
         set((state) => ({
-          boards: state.boards.map((board) =>
-            board.id === boardId ? { ...board, lists: [...board.lists, { id: uuidv4(), title, items: [], order: board.lists.length + 1, color: "" }] } : board,
-          ),
+          boards: state.boards.map((board) => (board.id === boardId ? { ...board, lists: [...board.lists, newList] } : board)),
         })),
 
       removeList: (boardId, listId) =>
@@ -163,21 +174,15 @@ export const useStore = create<StoreType>()(
         set((state) => {
           const { boards } = state;
 
-          console.log("boards", boards);
-
           const boardIndex = boards.findIndex((board) => board.id === boardId);
           const listIndex = boards[boardIndex]?.lists.findIndex((list) => list.id === listId);
 
-          console.log("boardIndex", boardIndex);
-          console.log("listIndex", listIndex);
           if (boardIndex === -1 || listIndex === -1) {
             return {}; // Not found
           }
 
           const listToCopy = boards[boardIndex].lists[listIndex];
-          const newList = { ...listToCopy, id: uuidv4() };
-
-          console.log("newList", newList);
+          const newList = { ...listToCopy, id: uuidv4(), title: `${listToCopy.title} - copy` };
 
           // change the listId of all items in the list
           const updatedItems = newList.items.map((item) => ({ ...item, id: uuidv4(), listId: newList.id }));
@@ -234,7 +239,7 @@ export const useStore = create<StoreType>()(
           }
 
           const itemToCopy = boards[boardIndex].lists[listIndex].items[itemIndex];
-          const newItem = { ...itemToCopy, id: uuidv4() };
+          const newItem = { ...itemToCopy, id: uuidv4(), content: `${itemToCopy.content} - copy` };
 
           const updatedBoards = boards.map((board, bIndex) =>
             bIndex === boardIndex
@@ -264,23 +269,34 @@ export const useStore = create<StoreType>()(
           ),
         })),
 
-      setListColor: (listId, color) =>
+      setListColor: (listId, color, boardId) =>
         set((state) => ({
-          boards: state.boards.map((board) => ({
-            ...board,
-            lists: board.lists.map((list) => (list.id === listId ? { ...list, color } : list)),
-          })),
+          boards: state.boards.map((board) => {
+            if (board.id !== boardId) return board;
+            return {
+              ...board,
+              lists: board.lists.map((list) => (list.id === listId ? { ...list, color } : list)),
+            };
+          }),
         })),
       setBoardColor: (boardId, color) =>
         set((state) => ({
           boards: state.boards.map((board) => (board.id === boardId ? { ...board, color } : board)),
         })),
 
+      setBoardBackgroundColor: (boardId, backgroundColor) =>
+        set((state) => ({
+          boards: state.boards.map((board) => (board.id === boardId ? { ...board, backgroundColor } : board)),
+        })),
+
       currentBoardId: "main",
       setCurrentBoardId: (currentBoardId: string) => set({ currentBoardId }),
 
       currentBoardData: null,
-      setCurrentBoardData: (currentBoardData: BoardType) => set({ currentBoardData }),
+      setCurrentBoardData: (currentBoardData: BoardType | null) => set({ currentBoardData }),
+
+      isCollapsed: false,
+      setIsCollapsed: (isCollapsed: boolean) => set({ isCollapsed }),
     }),
     {
       name: "boardStore",

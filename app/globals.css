@@ -2,10 +2,15 @@
 @tailwind components;
 @tailwind utilities;
  
+
+
+
+
 @layer base {
   :root {
     --list-default: #b4b4b4;
     --board-default: #b4b4b4;
+    --text-default: #0a0a0a;
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
 
@@ -40,7 +45,8 @@
  
   .dark {
     --list-default: #252525;
-    --board-default: #252525;
+    --board-default: #414141;
+    --text-default:#fafafa;
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
  
@@ -81,7 +87,6 @@ html {
 body {
   overflow-y: hidden
 }
-
 
 @layer base {
   * {

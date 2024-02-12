@@ -1,6 +1,7 @@
 import Kanban from "@/components/Kanban";
-import TopBar from "@/components/TopBar/TopBar";
+import Landing from "@/components/Landing";
 
-export default function Home() {
-  return <Kanban />;
+export default async function Home() {
+  // return <Kanban />;
+  return <Landing />;
 }

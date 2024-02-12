@@ -1,7 +1,5 @@
 "use client";
 
-// import { ListWithCards } from "@/types";
-// import { List } from "@prisma/client";
 import { ElementRef, useRef, useState } from "react";
 import { Draggable, DraggableProvided, DraggableStateSnapshot, DraggableStyle, Droppable } from "@hello-pangea/dnd";
 import { ListType } from "@/store/store";
@@ -29,7 +27,6 @@ export default function ListItem({ data, index }: ListItemProps) {
     setIsEditing(true);
     setTimeout(() => {
       textAreaRef.current?.focus();
-      // textAreaRef.current?.select();
     });
   }
 

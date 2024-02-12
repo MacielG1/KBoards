@@ -40,7 +40,7 @@ export default function CardContent({ data }: { data: ItemType }) {
   function handleSubmit(formData: FormData) {
     const content = formData.get("content") as string;
 
-    if (content === data.content) {
+    if (content === data.content || content.trim() === "") {
       return disableEditing();
     }
     setContent(content);
@@ -71,15 +71,18 @@ export default function CardContent({ data }: { data: ItemType }) {
             onKeyDown={onTextAreaKeyDown}
             defaultValue={content}
             ref={textAreaRef}
-            className="px-1 py-1 pl-2"
+            className="px-1 py-1 pl-2 focus-visible:bg-[#ffffff]"
           />
         </form>
       ) : (
         <>
-          <div onClick={enableEditing} className="relative w-[100%] whitespace-pre-wrap break-words border-transparent bg-transparent px-1 py-1 pl-2 text-sm ">
+          <div
+            onClick={enableEditing}
+            className="relative w-[90%] whitespace-pre-wrap break-words border-transparent bg-transparent px-1 py-1 pl-2 text-sm md:w-[100%] "
+          >
             {content}
           </div>
-          <span className="absolute right-0 top-0 z-50 mr-0.5 pt-[0.2rem] opacity-0 transition duration-100 group-hover:opacity-100">
+          <span className="absolute right-0 top-0 z-50 mr-0.5 pt-[0.2rem] transition duration-100 md:opacity-0 md:group-hover:opacity-100">
             <CardOptions data={data} />
           </span>
         </>

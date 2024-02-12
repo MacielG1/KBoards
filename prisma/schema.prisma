@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Board {
+  id              String @id @default(uuid())
+  userId          String
+  name            String
+  color           String
+  backgroundColor String
+
+  lists     List[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model List {
+  id    String @id @default(uuid())
+  title String
+  order Int
+  color String
+
+  boardId String
+  cards   Card[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Board     Board?   @relation(fields: [boardId], references: [id])
+
+  @@index([boardId])
+}
+
+model Card {
+  id      String @id @default(uuid())
+  content String @db.Text
+  order   Int
+
+  listId String
+  list   List   @relation(fields: [listId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([listId])
+}
+
+enum ACTION {
+  CREATE
+  UPDATE
+  DELETE
+}
+
+enum DATA_TYPE {
+  BOARD
+  LIST
+  CARD
+}

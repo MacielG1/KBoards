@@ -33,7 +33,7 @@ export default function ExportCSV({ data }: { data: BoardType }) {
   }
 
   return (
-    <Button variant="ghost" onClick={handleDownload} className="h-auto w-full justify-start rounded-none p-1 px-4 py-2 text-sm font-normal">
+    <Button variant="ghost" onClick={handleDownload} className="h-auto w-full justify-start rounded-none p-1 px-4 py-2 pl-3 text-sm font-normal">
       <Download className="mr-2 size-4" /> Export CSV
     </Button>
   );

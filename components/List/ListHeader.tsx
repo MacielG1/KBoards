@@ -1,12 +1,13 @@
 "use client";
 
-// import { FormInput } from "@/components/Dashboard/Forms/FormInput";
 import { ListType, useStore } from "@/store/store";
 import { ElementRef, useEffect, useRef, useState } from "react";
 import { useEventListener } from "usehooks-ts";
-import { FormInput } from "../Form/FormInput";
 import ListOptions from "./ListOptions";
 import FormTextArea from "../Form/FormTextArea";
+import getContrastColor from "@/utils/getConstrastColor";
+import { cn } from "@/utils";
+import { useTheme } from "next-themes";
 
 type ListHeaderProps = {
   data: ListType;
@@ -16,9 +17,11 @@ type ListHeaderProps = {
 export default function ListHeader({ data, onAddCard }: ListHeaderProps) {
   const [title, setTitle] = useState(data.title);
   const [isEditing, setIsEditing] = useState(false);
+  const [textColor, setTextColor] = useState(() => getComputedStyle(document.documentElement).getPropertyValue("--text-default"));
 
   const currentBoardId = useStore((state) => state.currentBoardId);
   const updateList = useStore((state) => state.updateList);
+  const { resolvedTheme } = useTheme();
 
   const formRef = useRef<ElementRef<"form">>(null);
   const textAreaRef = useRef<ElementRef<"textarea">>(null);
@@ -64,9 +67,15 @@ export default function ListHeader({ data, onAddCard }: ListHeaderProps) {
     formRef.current?.requestSubmit();
   }
 
+  useEffect(() => {
+    if (data.color) return setTextColor(getContrastColor(data.color));
+
+    setTextColor(resolvedTheme === "dark" ? "#fafafa" : "#0a0a0a");
+  }, [data.color, resolvedTheme]);
+
   return (
     <div
-      className="flex items-start justify-between gap-1 rounded-t-md px-1 py-1.5 pl-2 text-sm font-semibold"
+      className={cn("flex items-start justify-between gap-1 rounded-t-md px-1 py-1.5 pl-2 text-sm font-semibold")}
       style={{ backgroundColor: data.color || "var(--list-default)" }}
     >
       {isEditing ? (
@@ -75,7 +84,7 @@ export default function ListHeader({ data, onAddCard }: ListHeaderProps) {
             id="title"
             rows={1}
             ref={textAreaRef}
-            className="w-full border-transparent px-1 py-0.5 font-medium transition hover:border-input focus:border-input"
+            className="w-full border-transparent bg-transparent px-1 py-0.5 font-medium transition hover:border-input focus:border-input "
             placeholder="Enter list title..."
             defaultValue={title}
             onBlur={onBlur}
@@ -83,11 +92,15 @@ export default function ListHeader({ data, onAddCard }: ListHeaderProps) {
           <button type="submit" hidden />
         </form>
       ) : (
-        <div onClick={enableEditing} className="w-[90%] min-w-[100px] break-words border-transparent bg-transparent px-1 py-0.5 text-sm font-medium	">
+        <div
+          style={{ color: textColor }}
+          onClick={enableEditing}
+          className="w-[90%] min-w-[100px] break-words border-transparent bg-transparent px-1 py-0.5 text-sm font-medium"
+        >
           {title}
         </div>
       )}
-      <ListOptions data={data} onAddCard={onAddCard} />
+      <ListOptions data={data} onAddCard={onAddCard} textColor={textColor} />
     </div>
   );
 }
