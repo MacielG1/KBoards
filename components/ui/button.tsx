@@ -5,7 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 duration-300",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-50 duration-300",
   {
     variants: {
       variant: {
@@ -15,11 +15,11 @@ const buttonVariants = cva(
         secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        primary: "bg-blue-700 text-primayr-foregorund text-white hover:bg-blue-700/90",
+        primary: "bg-[#1dc481] dark:bg-[#46c290] text-black dark:hover:bg-[#3f996f] hover:bg-[#1ab074]",
         transparent: "bg-transparent text-white hover:bg-white/20",
         gray: "bg-neutral-200 text-secondary-foregorund hover:bg-neutral-300",
-        warning: "bg-yellow-500 text-black hover:bg-yellow-600",
         accent: "bg-indigo-700 text-white hover:bg-[#3c32b5]",
+        outline2: "border border-neutral-200 bg-transparent hover:bg-neutral-100/10",
         none: "",
       },
       size: {

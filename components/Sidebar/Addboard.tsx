@@ -3,12 +3,14 @@
 import { ElementRef, useRef, useState } from "react";
 import { useEventListener, useOnClickOutside } from "usehooks-ts";
 import { FormInput } from "../Form/FormInput";
-import { useStore } from "@/store/store";
+import { useStore, useStorePersisted } from "@/store/store";
 import { Button } from "../ui/button";
 import { PlusIcon, X } from "lucide-react";
 import FormButton from "../Form/FormButton";
 import { v4 as uuidv4 } from "uuid";
-import { createBoard } from "@/utils/actions/createBoard";
+import { createBoard } from "@/utils/actions/boards/createBoard";
+import { useRouter } from "next/navigation";
+import { ListWithItems } from "@/utils/types";
 
 export default function AddBoard() {
   const [isEditing, setIsEditing] = useState(false);
@@ -17,8 +19,10 @@ export default function AddBoard() {
   const inputRef = useRef<ElementRef<"input">>(null);
 
   const addBoard = useStore((state) => state.addBoard);
-  const setCurrentBoardId = useStore((state) => state.setCurrentBoardId);
-  const boards = useStore((state) => state.boards);
+  const setCurrentBoardId = useStorePersisted((state) => state.setCurrentBoardId);
+  const orderedBoards = useStore((state) => state.orderedBoards);
+
+  const router = useRouter();
 
   function enableEditing() {
     setIsEditing(true);
@@ -41,33 +45,39 @@ export default function AddBoard() {
   useOnClickOutside(formRef, disableEditing);
 
   async function handleSubmit(formData: FormData) {
-    const title = formData.get("title") as string;
+    try {
+      const title = formData.get("title") as string;
 
-    if (!title) return;
+      if (!title) {
+        return console.log("Title is required");
+      }
 
-    const newBoard = {
-      id: uuidv4(),
-      name: title,
-      lists: [],
-      color: "",
-      backgroundColor: "",
-      order: boards.length + 1,
-    };
-    addBoard(newBoard);
-    setCurrentBoardId(newBoard.id);
+      const newId = uuidv4();
+      const newBoard = {
+        id: newId,
+        name: title,
+        lists: [] as ListWithItems[],
+        color: "",
+        backgroundColor: "",
+        order: orderedBoards.length ?? 1,
+      };
 
-    await createBoard(newBoard);
+      addBoard(newBoard);
+      setCurrentBoardId(newBoard.id);
 
-    formRef.current?.reset();
-    disableEditing();
+      formRef.current?.reset();
 
-    // setTimeout(() => {
-    //   // this method until hello-pangea/dnd adds support for nested scroll
-    //   window.scrollTo({
-    //     left: document.documentElement.scrollWidth,
-    //     behavior: "smooth",
-    //   });
-    // }, 1000);
+      setIsEditing(false);
+
+      setTimeout(() => {
+        disableEditing();
+        // router.push(`/dashboard/${newBoard.id}`);
+      }, 0);
+
+      await createBoard(newBoard);
+    } catch (error) {
+      console.error("error", error);
+    }
   }
 
   if (isEditing) {
@@ -78,12 +88,12 @@ export default function AddBoard() {
             id="title"
             ref={inputRef}
             className="
-            h-9
-            w-full border-transparent px-2 py-1 font-medium transition hover:border-input focus:border-input dark:focus-visible:bg-transparent"
+              h-9
+              w-full border-transparent px-2 py-1 font-medium transition hover:border-input focus:border-input dark:focus-visible:bg-transparent"
             placeholder="Enter Board Name"
           />
           <p className="flex items-center justify-center gap-1 pt-2 ">
-            <FormButton size={"superSmall"} variant="accent">
+            <FormButton size={"superSmall"} variant="primary" className="font-semibold">
               Add Board
             </FormButton>
             <Button variant="ghost" size="superSmall" onClick={disableEditing} className="dark:hover:bg-neutral-800">
@@ -96,15 +106,14 @@ export default function AddBoard() {
   }
   return (
     <div className="h-full w-[8rem] shrink-0 select-none">
-      <button
+      <Button
+        variant="primary"
         onClick={enableEditing}
-        className="flex w-full items-center justify-center rounded-xl bg-indigo-600 p-2 py-[0.6rem] text-sm font-medium text-black transition duration-300 hover:bg-indigo-700 dark:bg-[#46c290] dark:hover:bg-[#389b73]
-
-"
+        className="flex w-full items-center justify-center rounded-xl p-2 py-[0.6rem] text-sm font-medium text-black transition duration-300 "
       >
         <PlusIcon className="mr-2 size-4" />
         Add Board
-      </button>
+      </Button>
     </div>
   );
 }

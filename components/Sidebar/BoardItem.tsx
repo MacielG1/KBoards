@@ -1,13 +1,17 @@
 "use client";
 
 import { ElementRef, useEffect, useRef, useState } from "react";
-import { BoardType, useStore } from "@/store/store";
+import { BoardType, useStore, useStorePersisted } from "@/store/store";
 
 import { cn } from "@/utils";
 import { Draggable, DraggableProvided, DraggableStateSnapshot, DraggableStyle } from "@hello-pangea/dnd";
 import BoardOptions from "./BoardOptions";
 import getContrastColor from "@/utils/getConstrastColor";
 import { useTheme } from "next-themes";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { updateBoard } from "@/utils/actions/boards/updateBoard";
+import { useCollapsedContext } from "../Providers/CollapseProvider";
 
 type BoardItemProps = {
   board: BoardType;
@@ -18,13 +22,16 @@ export default function BoardItem({ board, index }: BoardItemProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [textColor, setTextColor] = useState("var(--text-default)");
 
-  const [currentBoardId, setCurrentBoardId] = useStore((state) => [state.currentBoardId, state.setCurrentBoardId]);
-  const setBoardTitle = useStore((state) => state.setBoardTitle);
+  // const [title, setTitle] = useState(board.name);
+  const [currentBoardId, setCurrentBoardId] = useStorePersisted((state) => [state.currentBoardId, state.setCurrentBoardId]);
+  // const setBoardTitle = useStore((state) => state.setBoardTitle);
 
   const { resolvedTheme } = useTheme();
 
   const inputRef = useRef<ElementRef<"input">>(null);
   const formRef = useRef<ElementRef<"form">>(null);
+
+  const router = useRouter();
 
   function disableEditing() {
     setIsEditing(false);
@@ -39,14 +46,19 @@ export default function BoardItem({ board, index }: BoardItemProps) {
   }
 
   function changeCurrentBoard() {
-    if (board.id === currentBoardId) return;
+    if (board.id === currentBoardId) {
+      return;
+    }
+
     setCurrentBoardId(board.id);
+
+    router.prefetch(`/dashboard/${board.id}`);
+    router.push(`/dashboard/${board.id}`);
   }
 
-  function changeBoardTitle(formData: FormData) {
+  async function changeBoardTitle(formData: FormData) {
     const title = formData.get("title") as string;
     const boardName = formData.get("boardName") as string;
-    // if (!title) return disableEditing();
 
     if (title === boardName || !title) {
       return disableEditing();
@@ -54,7 +66,9 @@ export default function BoardItem({ board, index }: BoardItemProps) {
 
     // setTitle(title);
     disableEditing();
-    setBoardTitle(board.id, title);
+    // setBoardTitle(board.id, title);
+
+    updateBoard({ ...board, name: title });
   }
 
   function onBlur() {
@@ -74,7 +88,7 @@ export default function BoardItem({ board, index }: BoardItemProps) {
   useEffect(() => {
     if (board.color) return setTextColor(getContrastColor(board.color));
 
-    setTextColor(resolvedTheme === "dark" ? "#fafafa" : "#0a0a0a");
+    setTextColor(resolvedTheme === "dark" ? "#b3b3b3" : "#0a0a0a");
   }, [board.color, resolvedTheme]);
 
   return (
@@ -104,7 +118,7 @@ export default function BoardItem({ board, index }: BoardItemProps) {
                   name="title"
                   className="w-full truncate border-0 bg-transparent py-2 pl-1 text-sm font-medium outline-0 ring-0 transition focus:border-0 focus:bg-white focus:outline-0 focus:ring-0 focus-visible:bg-transparent dark:focus-visible:bg-transparent"
                   placeholder="Enter board title..."
-                  defaultValue={board.name || "New Board"}
+                  defaultValue={board.name}
                   onBlur={onBlur}
                 />
                 <button type="submit" hidden />

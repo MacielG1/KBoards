@@ -14,10 +14,13 @@ model Board {
   name            String
   color           String
   backgroundColor String
+  order           Int
 
   lists     List[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }
 
 model List {
@@ -27,16 +30,16 @@ model List {
   color String
 
   boardId String
-  cards   Card[]
+  items   Item[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  Board     Board?   @relation(fields: [boardId], references: [id])
+  Board     Board?   @relation(fields: [boardId], references: [id], onDelete: Cascade)
 
   @@index([boardId])
 }
 
-model Card {
+model Item {
   id      String @id @default(uuid())
   content String @db.Text
   order   Int
@@ -44,20 +47,10 @@ model Card {
   listId String
   list   List   @relation(fields: [listId], references: [id], onDelete: Cascade)
 
+  boardId String
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([listId])
-}
-
-enum ACTION {
-  CREATE
-  UPDATE
-  DELETE
-}
-
-enum DATA_TYPE {
-  BOARD
-  LIST
-  CARD
 }

@@ -1,5 +1,9 @@
 import { useStore } from "@/store/store";
 import { cn } from "@/utils";
+import { updateBoardBackgroundColor } from "@/utils/actions/boards/updateBoardBackgroundColor";
+import { updateBoardColor } from "@/utils/actions/boards/updateBoardColor";
+import { updateListColor } from "@/utils/actions/lists/updateListColor";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 type ColorPickerProps = {
@@ -8,49 +12,63 @@ type ColorPickerProps = {
   type: string;
   className?: string;
   text?: string;
+  setter: React.Dispatch<React.SetStateAction<string>>;
 };
 
-export default function ColorPicker({ id, value, type, text = "Change Color", className }: ColorPickerProps) {
-  const [debouncedValue, setDebouncedValue] = useState(value);
+export default function ColorPicker({ id, value, type, text = "Change Color", className, setter }: ColorPickerProps) {
+  const params = useParams<{ boardId: string }>();
+  const [isMounted, setIsMounted] = useState(false);
 
-  const currentBoardId = useStore((state) => state.currentBoardId);
   const setListColor = useStore((state) => state.setListColor);
   const setBoardColor = useStore((state) => state.setBoardColor);
   const setBoardBackgroundColor = useStore((state) => state.setBoardBackgroundColor);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (type === "list") {
-        setListColor(id, debouncedValue, currentBoardId);
-      } else if (type === "board") {
-        setBoardColor(id, debouncedValue);
-      } else if (type === "background") {
-        setBoardBackgroundColor(id, debouncedValue);
-      }
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted) return;
+
+    const timer = setTimeout(async () => {
+      if (type === "list") setListColor(id, value, params.boardId);
+      else if (type === "board") setBoardColor(id, value);
+      else if (type === "background") setBoardBackgroundColor(id, value);
     }, 50);
+
+    const timer2 = setTimeout(async () => {
+      console.log("updating color");
+      if (type === "list") await updateListColor({ id: id, color: value, boardId: params.boardId });
+      else if (type === "board") await updateBoardColor({ id: id, color: value });
+      else if (type === "background") await updateBoardBackgroundColor({ id: id, backgroundColor: value });
+    }, 200);
 
     return () => {
       clearTimeout(timer);
+      clearTimeout(timer2);
     };
-  }, [id, debouncedValue, setListColor, setBoardColor, setBoardBackgroundColor]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, value, setListColor, setBoardColor, setBoardBackgroundColor, type, params.boardId]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDebouncedValue(e.target.value);
+    setter(e.target.value);
   };
 
+  if (!isMounted) return null;
   return (
     <>
       <input
         className={cn(
-          "peer mr-[0.4rem] h-6 w-5 min-w-[1rem] shrink-0 cursor-pointer rounded-full border-0 bg-transparent outline-none focus-visible:scale-110 focus-visible:outline-none",
+          "peer mr-[0.4rem] h-6 w-5 min-w-[1rem] shrink-0 cursor-pointer rounded-full border-0 bg-transparent outline-none transition duration-100 focus-visible:scale-110 focus-visible:outline-none focus-visible:outline-4",
           className,
         )}
         type="color"
-        value={value}
+        value={value || getComputedStyle(document.documentElement).getPropertyValue(`--list-default`)}
         onChange={handleChange}
-        id="color"
+        id={`${type}-${id}`}
       />
-      <label htmlFor="color" className="flex cursor-pointer items-center justify-start  ">
+      <label htmlFor={`${type}-${id}`} className="flex cursor-pointer items-center justify-start py-2  ">
         {text}
       </label>
     </>

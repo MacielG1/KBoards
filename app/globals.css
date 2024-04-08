@@ -3,14 +3,13 @@
 @tailwind utilities;
  
 
-
-
-
 @layer base {
   :root {
     --list-default: #b4b4b4;
     --board-default: #b4b4b4;
     --text-default: #0a0a0a;
+    --main-color: 156, 74%, 44%;
+
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
 
@@ -29,8 +28,7 @@
     --muted: 0 0% 96.1%;
     --muted-foreground: 0 0% 45.1%;
  
-    /* --accent: 0 0% 96.1%; */
-    --accent: 0, 1%, 92%;
+    --accent: 0 0% 96%;
     --accent-foreground: 0 0% 9%;
  
     --destructive: 0 84.2% 60.2%;
@@ -47,6 +45,8 @@
     --list-default: #252525;
     --board-default: #414141;
     --text-default:#fafafa;
+    --main-color: 156, 50%, 52%;
+
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
  
@@ -77,16 +77,19 @@
   }
 }
  
-:root,
+html,
 body,
-html {
-  height: 100%; 
-  
+:root {
+  height: 100%;
 }
 
-body {
-  overflow-y: hidden
+
+@media (max-height : 800px) {
+  .listItemHeight {
+    max-height: 53vh;
+  }
 }
+
 
 @layer base {
   * {
@@ -97,22 +100,28 @@ body {
   }
 }
 
+
+
 ::-webkit-scrollbar {
   width: 4px;
 }
 
 ::-webkit-scrollbar:horizontal {
-  height: 10px;
+  height: 14px;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-neutral-600 rounded-xl;
+  @apply bg-neutral-500/70 rounded-xl;
 }
 
-.task> ::-webkit-scrollbar-thumb {
+body::-webkit-scrollbar-track {
+  @apply dark:bg-neutral-800 bg-neutral-200
+}
+
+
+/* .task> ::-webkit-scrollbar-thumb {
   @apply bg-sky-500 rounded-xl;
-}
-
+} */
 
 input[type="color"]::-webkit-color-swatch {
   border: 1px solid #474747;

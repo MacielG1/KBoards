@@ -3,15 +3,17 @@
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
-import { BoardType, useStore } from "@/store/store";
-
-import { Copy, MoreHorizontal, Pencil, Plus, Trash, X } from "lucide-react";
-import { ElementRef, useEffect, useRef, useState } from "react";
-
+import { BoardType, useStore, useStorePersisted } from "@/store/store";
+import { Copy, MoreHorizontal, Pencil, Trash, X } from "lucide-react";
+import { ElementRef, useRef, useState } from "react";
 import ColorPicker from "../Form/ColorPicker";
 import DeleteModal from "../Modals/DeleteModal";
 import { useMediaQuery } from "usehooks-ts";
-import { deleteBoard } from "@/utils/actions/deleteBoard";
+import { deleteBoard } from "@/utils/actions/boards/deleteBoard";
+import { updateBoardColor } from "@/utils/actions/boards/updateBoardColor";
+import { useRouter } from "next/navigation";
+import { copyBoard } from "@/utils/actions/boards/copyBoard";
+import { v4 as uuidv4 } from "uuid";
 
 type BoardOptionsProps = {
   data: BoardType;
@@ -21,26 +23,51 @@ type BoardOptionsProps = {
 
 export default function BoardOptions({ data, enableEditing, textColor }: BoardOptionsProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const [boardColor, setBoardColorState] = useState(data.color);
+
   const closeRef = useRef<ElementRef<"button">>(null);
 
   const isMobile = useMediaQuery("(max-width: 768px)");
   const removeBoard = useStore((state) => state.removeBoard);
-  const copyBoard = useStore((state) => state.copyBoard);
-  const setBoardColor = useStore((state) => state.setBoardColor); // takes a listId and a color
+  const router = useRouter();
+  const copyBoardState = useStore((state) => state.copyBoard);
+  const setBoardColor = useStore((state) => state.setBoardColor);
+  const currentBoardId = useStorePersisted((state) => state.currentBoardId);
+  const orderedBoards = useStore((state) => state.orderedBoards);
+  const setCurrentBoardId = useStorePersisted((state) => state.setCurrentBoardId);
 
-  function handleDelete() {
+  async function handleDelete() {
     removeBoard(data.id);
     closeRef.current?.click();
 
-    deleteBoard(data);
+    setTimeout(() => {
+      // router push to previous board in the orderedBoards array that comnes before the deleted board
+      if (currentBoardId === data.id) {
+        const index = orderedBoards.findIndex((board) => board.id === data.id);
+        const previousBoard = orderedBoards[index - 1];
+        if (previousBoard) {
+          setCurrentBoardId(previousBoard.id);
+          router.push(`/dashboard/${previousBoard.id}`);
+        } else {
+          router.push("/dashboard");
+          setCurrentBoardId("");
+        }
+      }
+    }, 0);
+
+    await deleteBoard(data);
   }
 
-  function handleCopy() {
-    copyBoard(data.id);
+  async function handleCopy() {
+    const newId = uuidv4();
+    copyBoardState(data.id, newId);
     closeRef.current?.click();
+    await copyBoard({ boardId: data.id, newId });
   }
-  function handleColorReset() {
+  async function handleColorReset() {
+    setBoardColorState("");
     setBoardColor(data.id, "");
+    await updateBoardColor({ id: data.id, color: "" });
   }
 
   return (
@@ -107,22 +134,25 @@ export default function BoardOptions({ data, enableEditing, textColor }: BoardOp
         </Button>
         <Separator />
         <Button
+          tabIndex={-1}
           onClick={(e) => {
             // e.stopPropagation();
           }}
           variant="ghost"
-          className="group flex h-auto w-full cursor-default items-center justify-start rounded-none p-1 px-4 pl-[1.1rem] text-sm font-normal"
+          className="group flex h-auto w-full cursor-default items-center justify-start rounded-none p-0 px-4 text-sm font-normal"
         >
-          <ColorPicker id={data.id} value={data.color} type="board" />
-          <span
-            className="ml-auto cursor-pointer text-sm text-neutral-400 opacity-0 transition duration-300 hover:text-neutral-950 group-hover:opacity-100 dark:hover:text-neutral-300"
-            onClick={(e) => {
-              // e.stopPropagation();
-              handleColorReset();
-            }}
-          >
-            Reset
-          </span>
+          <ColorPicker id={data.id} value={boardColor} type="board" setter={setBoardColorState} />
+          {boardColor !== "" && (
+            <span
+              className="ml-auto cursor-pointer text-sm text-neutral-400 opacity-0 transition duration-300 hover:text-neutral-950 group-hover:opacity-100 dark:hover:text-neutral-300"
+              onClick={(e) => {
+                // e.stopPropagation();
+                handleColorReset();
+              }}
+            >
+              Reset
+            </span>
+          )}
         </Button>
         <Separator />
         <DeleteModal message={`Delete Board: ${data.name}`} deleteHandler={handleDelete}>

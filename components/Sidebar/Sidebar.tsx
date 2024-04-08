@@ -1,16 +1,20 @@
 "use client";
-import { useStore } from "@/store/store";
+import { BoardType, useStore } from "@/store/store";
 import BoardItem from "./BoardItem";
 import AddBoard from "./Addboard";
 import { DragDropContext, DropResult, Droppable, DroppableProvided } from "@hello-pangea/dnd";
 import { reorder } from "@/utils/reorder";
+import { useEffect } from "react";
+import { updateBoardOrder } from "@/utils/actions/boards/updateBoardOrder";
 
-export default function Sidebar() {
-  const boards = useStore((state) => state.boards);
+export default function Sidebar({ boards }: { boards: BoardType[] }) {
+  const [orderedBoards, setOrderedBoards] = useStore((state) => [state.orderedBoards, state.setOrderedBoards]);
 
-  const setBoards = useStore((state) => state.setBoards);
+  useEffect(() => {
+    setOrderedBoards(boards);
+  }, [boards, setOrderedBoards]);
 
-  function onDragEnd(result: DropResult) {
+  async function onDragEnd(result: DropResult) {
     const { destination, source, type } = result;
 
     if (!destination) return;
@@ -19,19 +23,22 @@ export default function Sidebar() {
     if (destination.droppableId === source.droppableId && destination.index === source.index) return;
 
     if (type === "board") {
-      const items = reorder(boards, source.index, destination.index);
-      setBoards(items);
+      const items = reorder(orderedBoards, source.index, destination.index).map((board, index) => {
+        return { ...board, order: index };
+      });
+      setOrderedBoards(items);
+      return await updateBoardOrder(items);
     }
   }
 
   return (
-    <div className="flex h-screen w-[13rem] min-w-[13rem] max-w-[13rem] flex-col p-4">
+    <div className="flex  w-[13rem] min-w-[13rem] max-w-[13rem] flex-col p-4">
       <h1 className="mb-5 mt-2 whitespace-nowrap text-center text-xl tracking-wider">Boards</h1>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="boards" type="board" direction="vertical">
           {(provided: DroppableProvided) => (
             <div {...provided.droppableProps} ref={provided.innerRef}>
-              {boards.map((board, i) => {
+              {orderedBoards.map((board, i) => {
                 return <BoardItem key={board.id} index={i} board={board} />;
               })}
               {provided.placeholder}
@@ -39,10 +46,10 @@ export default function Sidebar() {
           )}
         </Droppable>
       </DragDropContext>
-
       <div className="self-center pt-3">
         <AddBoard />
       </div>
+      <div className="flex-grow"></div>
     </div>
   );
 }

@@ -1,6 +1,5 @@
 "use client";
-
-import { ListType, useStore } from "@/store/store";
+import type { ListType } from "@/store/store";
 import { ElementRef, useEffect, useRef, useState } from "react";
 import { useEventListener } from "usehooks-ts";
 import ListOptions from "./ListOptions";
@@ -8,19 +7,18 @@ import FormTextArea from "../Form/FormTextArea";
 import getContrastColor from "@/utils/getConstrastColor";
 import { cn } from "@/utils";
 import { useTheme } from "next-themes";
+import { updateList as updateListTitle } from "@/utils/actions/lists/updateList";
 
 type ListHeaderProps = {
   data: ListType;
-  onAddCard: () => void;
+  onAddItem: () => void;
 };
 
-export default function ListHeader({ data, onAddCard }: ListHeaderProps) {
+export default function ListHeader({ data, onAddItem }: ListHeaderProps) {
   const [title, setTitle] = useState(data.title);
   const [isEditing, setIsEditing] = useState(false);
   const [textColor, setTextColor] = useState(() => getComputedStyle(document.documentElement).getPropertyValue("--text-default"));
 
-  const currentBoardId = useStore((state) => state.currentBoardId);
-  const updateList = useStore((state) => state.updateList);
   const { resolvedTheme } = useTheme();
 
   const formRef = useRef<ElementRef<"form">>(null);
@@ -42,25 +40,28 @@ export default function ListHeader({ data, onAddCard }: ListHeaderProps) {
     setIsEditing(false);
   }
 
-  function onKeyDown(e: KeyboardEvent) {
+  function onKeyDownPressed(e: KeyboardEvent) {
     if (e.key === "Escape") {
       disableEditing();
     }
   }
 
-  useEventListener("keydown", onKeyDown);
+  useEventListener("keydown", onKeyDownPressed);
 
   function handleSubmit(formData: FormData) {
     const title = formData.get("title") as string;
-    if (title === data.title) {
+
+    if (!title || title === data.title) {
       return disableEditing();
     }
 
-    if (!title) return;
-
     setTitle(title);
-    updateList(currentBoardId, data.id, { ...data, title });
+
+    // updateList(currentBoardId, data.id, { ...data, title });
     disableEditing();
+    setTimeout(() => {
+      updateListTitle({ ...data, title });
+    }, 1);
   }
 
   function onBlur() {
@@ -70,12 +71,12 @@ export default function ListHeader({ data, onAddCard }: ListHeaderProps) {
   useEffect(() => {
     if (data.color) return setTextColor(getContrastColor(data.color));
 
-    setTextColor(resolvedTheme === "dark" ? "#fafafa" : "#0a0a0a");
+    setTextColor(resolvedTheme === "dark" ? "#b3b3b3" : "#0a0a0a");
   }, [data.color, resolvedTheme]);
 
   return (
     <div
-      className={cn("flex items-start justify-between gap-1 rounded-t-md px-1 py-1.5 pl-2 text-sm font-semibold")}
+      className={cn("flex items-center justify-between gap-1 rounded-t-md px-1 py-0.5 pl-2 text-sm font-semibold")}
       style={{ backgroundColor: data.color || "var(--list-default)" }}
     >
       {isEditing ? (
@@ -84,7 +85,7 @@ export default function ListHeader({ data, onAddCard }: ListHeaderProps) {
             id="title"
             rows={1}
             ref={textAreaRef}
-            className="w-full border-transparent bg-transparent px-1 py-0.5 font-medium transition hover:border-input focus:border-input "
+            className="w-full border-transparent bg-transparent px-2 py-[0.25rem] font-medium transition hover:border-input focus:border-input "
             placeholder="Enter list title..."
             defaultValue={title}
             onBlur={onBlur}
@@ -95,12 +96,12 @@ export default function ListHeader({ data, onAddCard }: ListHeaderProps) {
         <div
           style={{ color: textColor }}
           onClick={enableEditing}
-          className="w-[90%] min-w-[100px] break-words border-transparent bg-transparent px-1 py-0.5 text-sm font-medium"
+          className="w-[90%] min-w-[100px] break-words border-transparent bg-transparent px-2 py-[0.25rem] text-sm font-medium"
         >
           {title}
         </div>
       )}
-      <ListOptions data={data} onAddCard={onAddCard} textColor={textColor} />
+      <ListOptions data={data} onAddItem={onAddItem} textColor={textColor} />
     </div>
   );
 }

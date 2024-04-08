@@ -7,7 +7,6 @@ export default authMiddleware({
   afterAuth(auth, req) {
     if (auth?.userId && auth?.isPublicRoute) {
       let path = "/dashboard";
-
       const orgSelected = new URL(path, req.url);
       return NextResponse.redirect(orgSelected);
     }
@@ -15,12 +14,11 @@ export default authMiddleware({
     if (!auth?.userId && !auth?.isPublicRoute) {
       return redirectToSignIn({ returnBackUrl: req.url });
     }
-   if (auth.userId && !auth.isPublicRoute) {
+    if (auth.userId && !auth.isPublicRoute) {
       return NextResponse.next();
     }
     // Allow users visiting public routes to access them
     return NextResponse.next();
-
   },
 });
 

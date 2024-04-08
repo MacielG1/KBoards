@@ -1,6 +1,7 @@
-import { BoardType, useStore } from "@/store/store";
+import { BoardType } from "@/store/store";
 import { ElementRef, useRef, useState } from "react";
 import { FormInput } from "../Form/FormInput";
+import { updateBoard } from "@/utils/actions/boards/updateBoard";
 
 type BoardTitleProps = {
   board: BoardType;
@@ -9,7 +10,8 @@ type BoardTitleProps = {
 export default function BoardTitle({ board }: BoardTitleProps) {
   const [isEditing, setIsEditing] = useState(false);
 
-  const setBoardTitle = useStore((state) => state.setBoardTitle);
+  // const setBoardTitle = useStore((state) => state.setBoardTitle);
+  const [title, setTitle] = useState(board.name);
 
   const inputRef = useRef<ElementRef<"input">>(null);
   const formRef = useRef<ElementRef<"form">>(null);
@@ -25,7 +27,7 @@ export default function BoardTitle({ board }: BoardTitleProps) {
     });
   }
 
-  function changeBoardTitle(formData: FormData) {
+  async function changeBoardTitle(formData: FormData) {
     const title = formData.get("title") as string;
     const boardName = formData.get("boardName") as string;
 
@@ -33,8 +35,11 @@ export default function BoardTitle({ board }: BoardTitleProps) {
       return disableEditing();
     }
 
+    setTitle(title);
     disableEditing();
-    setBoardTitle(board.id, title);
+    // setBoardTitle(board.id, title);
+
+    updateBoard({ ...board, name: title });
   }
 
   function onBlur() {
@@ -49,7 +54,7 @@ export default function BoardTitle({ board }: BoardTitleProps) {
           <FormInput
             ref={inputRef}
             id="title"
-            className="bg-transparent px-1 py-0 text-xl font-medium transition focus:border-0 focus:bg-neutral-200 focus:outline-0 focus:ring-0 dark:focus-visible:bg-neutral-800"
+            className="bg-transparent px-1 py-0 pl-2 text-xl font-medium transition focus:border-0 focus:bg-neutral-200 focus:outline-0 focus:ring-0 dark:focus-visible:bg-neutral-800"
             placeholder="Enter board title..."
             defaultValue={board.name}
             onBlur={onBlur}
@@ -57,7 +62,7 @@ export default function BoardTitle({ board }: BoardTitleProps) {
           <button type="submit" hidden />
         </form>
       ) : (
-        <h2 onClick={enableEditing} className=" w-full truncate px-1 py-0 pt-[0.1rem] text-xl font-medium">
+        <h2 onClick={enableEditing} className=" w-full truncate px-1 py-0 pl-2 pt-[0.1rem] text-xl font-medium">
           {board.name}
         </h2>
       )}

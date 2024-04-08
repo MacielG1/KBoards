@@ -1,17 +1,18 @@
-import { ItemType, useStore } from "@/store/store";
+import { ItemType, useStorePersisted } from "@/store/store";
 import { ElementRef, useRef, useState } from "react";
 import { useEventListener } from "usehooks-ts";
 import FormTextArea from "../Form/FormTextArea";
-import CardOptions from "./CardOptions";
+import ItemOptions from "./ItemOptions";
+import { updateItem } from "@/utils/actions/items/updateItem";
 
-export default function CardContent({ data }: { data: ItemType }) {
+export default function ItemContent({ data }: { data: ItemType }) {
   const [content, setContent] = useState(data.content);
   const [isEditing, setIsEditing] = useState(false);
 
+  const showItemsOrder = useStorePersisted((state) => state.showItemsOrder);
+
   const formRef = useRef<ElementRef<"form">>(null);
   const textAreaRef = useRef<ElementRef<"textarea">>(null);
-  const currentBoardId = useStore((state) => state.currentBoardId);
-  const updateItem = useStore((state) => state.updateItem);
 
   function enableEditing() {
     setIsEditing(true);
@@ -37,16 +38,17 @@ export default function CardContent({ data }: { data: ItemType }) {
 
   useEventListener("keydown", onKeyDown);
 
-  function handleSubmit(formData: FormData) {
+  async function handleSubmit(formData: FormData) {
     const content = formData.get("content") as string;
 
     if (content === data.content || content.trim() === "") {
       return disableEditing();
     }
     setContent(content);
-    updateItem(currentBoardId, data.listId, data.id, { ...data, content: content });
 
     disableEditing();
+
+    await updateItem({ ...data, content });
   }
 
   function onTextAreaKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
@@ -78,12 +80,14 @@ export default function CardContent({ data }: { data: ItemType }) {
         <>
           <div
             onClick={enableEditing}
-            className="relative w-[90%] whitespace-pre-wrap break-words border-transparent bg-transparent px-1 py-1 pl-2 text-sm md:w-[100%] "
+            className="relative w-[90%] whitespace-pre-wrap break-words border-transparent bg-transparent px-1 py-1 pl-2 text-sm md:w-full"
           >
             {content}
           </div>
-          <span className="absolute right-0 top-0 z-50 mr-0.5 pt-[0.2rem] transition duration-100 md:opacity-0 md:group-hover:opacity-100">
-            <CardOptions data={data} />
+          <span
+            className={`absolute right-0 top-0 z-50 pt-[0.35rem] transition duration-100 md:opacity-0 md:group-hover:opacity-100 ${showItemsOrder ? "mr-3" : "mr-1"}`}
+          >
+            <ItemOptions data={data} />
           </span>
         </>
       )}

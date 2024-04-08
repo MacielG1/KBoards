@@ -16,8 +16,8 @@ export default function DeleteModal({ deleteHandler, message, children }: Delete
         {children}
       </DialogTrigger>
 
-      <DialogContent className="max-w-[350px] sm:max-w-[425px]">
-        <DialogHeader className="space-y-3">
+      <DialogContent className="max-w-[350px] pr-8 sm:max-w-[425px]">
+        <DialogHeader className="space-y-3 break-all">
           <DialogTitle className="text-xl">{message}</DialogTitle>
           <DialogDescription>Are you sure?</DialogDescription>
         </DialogHeader>
