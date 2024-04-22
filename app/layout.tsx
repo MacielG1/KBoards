@@ -10,7 +10,7 @@ const font = Open_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Kanban Board App",
+  title: "Kboards",
   description: "A kanban board app with drag and drop functionality",
 };
 
