@@ -1,8 +1,8 @@
 {
-  "name": "ranking-list",
+  "name": "kboards",
   "version": "1.0.0",
   "scripts": {
-    "dev": "next dev --turbo",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -15,6 +15,7 @@
     "@dnd-kit/sortable": "^8.0.0",
     "@dnd-kit/utilities": "^3.2.2",
     "@hello-pangea/dnd": "^16.5.0",
+    "@paralleldrive/cuid2": "^2.2.2",
     "@prisma/client": "^5.11.0",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-alert-dialog": "^1.0.5",
@@ -38,7 +39,7 @@
     "eslint": "^9.0.0",
     "eslint-config-next": "^14.1.4",
     "idb-keyval": "^6.2.1",
-    "lucide-react": "^0.365.0",
+    "lucide-react": "^0.372.0",
     "next": "^14.1.4",
     "next-themes": "^0.3.0",
     "postcss": "^8.4.38",
@@ -50,7 +51,6 @@
     "tailwindcss": "^3.4.1",
     "tailwindcss-animate": "^1.0.7",
     "usehooks-ts": "^3.0.2",
-    "uuid": "^9.0.1",
     "zod": "^3.22.4",
     "zustand": "^4.5.2"
   },
