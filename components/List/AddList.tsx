@@ -8,7 +8,7 @@ import { PlusIcon, X } from "lucide-react";
 import FormButton from "../Form/FormButton";
 import FormTextArea from "../Form/FormTextArea";
 import { createList } from "@/utils/actions/lists/createList";
-import { v4 as uuidv4 } from "uuid";
+import { createId } from "@paralleldrive/cuid2";
 import { useParams } from "next/navigation";
 import { BoardWithLists } from "@/utils/types";
 
@@ -48,7 +48,7 @@ export default function AddList({ board }: { board: BoardWithLists }) {
 
     if (!title || !params.boardId) return;
 
-    const newList = { id: uuidv4(), title, items: [] as ItemType[], order: board.lists.length ?? 1, color: "", boardId: params.boardId };
+    const newList = { id: createId(), title, items: [] as ItemType[], order: board.lists.length ?? 1, color: "", boardId: params.boardId };
 
     addList(newList);
 

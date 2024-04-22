@@ -1,9 +1,6 @@
 import { create } from "zustand";
-import { v4 as uuidv4 } from "uuid";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { storage } from "./storage";
-import { set } from "idb-keyval";
-import type { Board } from "@prisma/client";
 
 export const defaultBoards: BoardType[] = [
   {
@@ -26,6 +23,7 @@ export const defaultBoards: BoardType[] = [
             listId: "list-1",
             order: 1,
             boardId: "main",
+            color: "#ff0000",
           },
           {
             id: "item-2",
@@ -33,6 +31,7 @@ export const defaultBoards: BoardType[] = [
             listId: "list-1",
             order: 2,
             boardId: "main",
+            color: "#ff0000",
           },
         ],
       },
@@ -55,6 +54,7 @@ export type ItemType = {
   listId: string;
   order: number;
   boardId: string;
+  color: string;
 };
 
 export type BoardType = {
@@ -93,6 +93,7 @@ export type StoreType = {
   addItem: (item: ItemType, listId: string) => void;
   removeItem: (itemId: string, listId: string) => void;
   updateItem: (itemId: string, updatedItem: Partial<ItemType>, listId: string) => void;
+  setItemColor: (itemId: string, color: string, boardId: string) => void;
 
   copyItem: (itemId: string, listId: string, newId: string, boardId: string) => void;
 };
@@ -182,6 +183,28 @@ export const useStore = create<StoreType>((set, get) => ({
         list.id === listId ? { ...list, items: list.items.map((item) => (item.id === itemId ? { ...item, ...updatedItem } : item)) } : list,
       ),
     })),
+  setItemColor: (itemId, color, boardId) => {
+    const { lists } = get();
+    const listIndex = lists.findIndex((list) => list.boardId === boardId && list.items.some((item) => item.id === itemId));
+
+    if (listIndex !== -1) {
+      const list = lists[listIndex];
+      const itemIndex = list.items.findIndex((item) => item.id === itemId);
+
+      if (itemIndex !== -1) {
+        const item = list.items[itemIndex];
+        const updatedItem = { ...item, color };
+
+        set({
+          lists: [
+            ...lists.slice(0, listIndex),
+            { ...list, items: [...list.items.slice(0, itemIndex), updatedItem, ...list.items.slice(itemIndex + 1)] },
+            ...lists.slice(listIndex + 1),
+          ],
+        });
+      }
+    }
+  },
 
   copyItem: (boardId, listId, itemId, newId) =>
     set((state) => {

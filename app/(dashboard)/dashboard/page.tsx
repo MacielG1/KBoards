@@ -17,7 +17,6 @@ export default function Dashboard() {
     if (currentBoardId && orderedBoards.find((board) => board.id === currentBoardId) && params.boardId !== currentBoardId) {
       router.push(`/dashboard/${currentBoardId}`);
     } else {
-      setCurrentBoardId(null);
       router.push(`/dashboard`);
     }
   }, [currentBoardId, orderedBoards, params.boardId, router, setCurrentBoardId]);

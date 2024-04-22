@@ -24,7 +24,7 @@ export async function createItem(data: ItemType) {
       };
     }
 
-    const { content, id, listId, order, boardId } = data;
+    const { content, id, listId, order, boardId, color } = data;
 
     item = await prisma.item.create({
       data: {
@@ -33,6 +33,7 @@ export async function createItem(data: ItemType) {
         boardId,
         listId,
         order,
+        color,
       },
     });
   } catch (error) {

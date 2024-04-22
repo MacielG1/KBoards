@@ -47,7 +47,7 @@ export default function BoardTitle({ board }: BoardTitleProps) {
   }
 
   return (
-    <div className="peer flex w-[15rem] items-center justify-between sm:w-[30rem] lg:w-[50rem]">
+    <div className="peer flex w-[12rem] items-center justify-between sm:w-[30rem] lg:w-[50rem]">
       {isEditing ? (
         <form action={changeBoardTitle} className="flex-1" ref={formRef}>
           <input hidden id="boardName" value={board.name} name="boardName" readOnly />
@@ -62,7 +62,7 @@ export default function BoardTitle({ board }: BoardTitleProps) {
           <button type="submit" hidden />
         </form>
       ) : (
-        <h2 onClick={enableEditing} className=" w-full truncate px-1 py-0 pl-2 pt-[0.1rem] text-xl font-medium">
+        <h2 onClick={enableEditing} className="w-full truncate px-1 py-0 pl-2 pt-[0.1rem] font-medium md:text-xl">
           {board.name}
         </h2>
       )}

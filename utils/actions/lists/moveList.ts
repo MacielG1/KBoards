@@ -46,6 +46,26 @@ export async function moveList(data: { boardId: string; listId: string }) {
       },
       data: {
         boardId,
+        order: await prisma.list.count({
+          where: {
+            boardId,
+          },
+        }),
+      },
+    });
+
+    // update order of lists from original board
+    await prisma.list.updateMany({
+      where: {
+        boardId: listToMove.boardId,
+        order: {
+          gt: listToMove.order,
+        },
+      },
+      data: {
+        order: {
+          decrement: 1,
+        },
       },
     });
   } catch (error) {

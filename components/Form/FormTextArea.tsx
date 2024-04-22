@@ -18,10 +18,11 @@ type FormTextAreaProps = {
   onKeyDown?: KeyboardEventHandler<HTMLTextAreaElement | undefined>;
   defaultValue?: string;
   rows?: number;
+  onFocus?: () => void;
 };
 
 const FormTextArea = forwardRef<HTMLTextAreaElement, FormTextAreaProps>(
-  ({ id, label, placeholder, required, disabled, rows, className, onBlur, onClick, onKeyDown, defaultValue }, ref) => {
+  ({ id, label, placeholder, required, disabled, rows, className, onBlur, onClick, onKeyDown, defaultValue, onFocus }, ref) => {
     // const { pending } = useFormStatus();
 
     function onKeyDownHandler(e: React.KeyboardEvent<HTMLTextAreaElement>) {
@@ -55,6 +56,7 @@ const FormTextArea = forwardRef<HTMLTextAreaElement, FormTextAreaProps>(
           onClick={onClick}
           defaultValue={defaultValue}
           name={id}
+          onFocus={onFocus}
         />
       </div>
     );

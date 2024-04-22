@@ -2,6 +2,7 @@ import { useStore } from "@/store/store";
 import { cn } from "@/utils";
 import { updateBoardBackgroundColor } from "@/utils/actions/boards/updateBoardBackgroundColor";
 import { updateBoardColor } from "@/utils/actions/boards/updateBoardColor";
+import { updateItemColor } from "@/utils/actions/items/updateItemColor";
 import { updateListColor } from "@/utils/actions/lists/updateListColor";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -22,6 +23,7 @@ export default function ColorPicker({ id, value, type, text = "Change Color", cl
   const setListColor = useStore((state) => state.setListColor);
   const setBoardColor = useStore((state) => state.setBoardColor);
   const setBoardBackgroundColor = useStore((state) => state.setBoardBackgroundColor);
+  const setItemColorState = useStore((state) => state.setItemColor);
 
   useEffect(() => {
     setIsMounted(true);
@@ -34,6 +36,7 @@ export default function ColorPicker({ id, value, type, text = "Change Color", cl
       if (type === "list") setListColor(id, value, params.boardId);
       else if (type === "board") setBoardColor(id, value);
       else if (type === "background") setBoardBackgroundColor(id, value);
+      else if (type === "item") setItemColorState(id, value, params.boardId);
     }, 50);
 
     const timer2 = setTimeout(async () => {
@@ -41,6 +44,7 @@ export default function ColorPicker({ id, value, type, text = "Change Color", cl
       if (type === "list") await updateListColor({ id: id, color: value, boardId: params.boardId });
       else if (type === "board") await updateBoardColor({ id: id, color: value });
       else if (type === "background") await updateBoardBackgroundColor({ id: id, backgroundColor: value });
+      else if (type === "item") await updateItemColor({ id: id, color: value, boardId: params.boardId });
     }, 200);
 
     return () => {

@@ -9,6 +9,7 @@
     --board-default: #b4b4b4;
     --text-default: #0a0a0a;
     --main-color: 156, 74%, 44%;
+    --item-color: #f5f5f5;
 
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
@@ -46,6 +47,7 @@
     --board-default: #414141;
     --text-default:#fafafa;
     --main-color: 156, 50%, 52%;
+    --item-color: #262626;
 
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;

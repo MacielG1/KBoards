@@ -17,7 +17,7 @@ export default function TopBar({ boards }: { boards: BoardType[] }) {
   return (
     <div
       className={cn(
-        "fixed inset-x-0 z-[50] flex h-14 w-full items-center justify-center bg-background p-1 px-8 py-2 transition-all duration-300",
+        "fixed inset-x-0 z-[50] flex h-14 w-screen items-center justify-center bg-background p-1 px-8 py-2 transition-all duration-300",
         isCollapsed ? "pl-[4rem]" : "pl-[18rem]",
       )}
     >

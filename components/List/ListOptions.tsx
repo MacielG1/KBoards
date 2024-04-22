@@ -12,7 +12,7 @@ import { deleteList } from "@/utils/actions/lists/deleteList";
 import { updateListColor } from "@/utils/actions/lists/updateListColor";
 import { useParams } from "next/navigation";
 import { copyList } from "@/utils/actions/lists/copyList";
-import { v4 as uuidv4 } from "uuid";
+import { createId } from "@paralleldrive/cuid2";
 import ExportToBoard from "./ExportToBoard";
 
 type ListOptionsProps = {
@@ -40,7 +40,7 @@ export default function ListOptions({ data, onAddItem, textColor }: ListOptionsP
   }
 
   async function handleCopy() {
-    const newId = uuidv4();
+    const newId = createId();
     closeRef.current?.click();
     copyListState(data.id, newId);
     await copyList({ listId: data.id, boardId: data.boardId, newId });

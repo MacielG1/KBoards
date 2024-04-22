@@ -13,7 +13,7 @@ import { deleteBoard } from "@/utils/actions/boards/deleteBoard";
 import { updateBoardColor } from "@/utils/actions/boards/updateBoardColor";
 import { useRouter } from "next/navigation";
 import { copyBoard } from "@/utils/actions/boards/copyBoard";
-import { v4 as uuidv4 } from "uuid";
+import { createId } from "@paralleldrive/cuid2";
 
 type BoardOptionsProps = {
   data: BoardType;
@@ -22,12 +22,10 @@ type BoardOptionsProps = {
 };
 
 export default function BoardOptions({ data, enableEditing, textColor }: BoardOptionsProps) {
-  const [isHovered, setIsHovered] = useState(false);
   const [boardColor, setBoardColorState] = useState(data.color);
 
   const closeRef = useRef<ElementRef<"button">>(null);
 
-  const isMobile = useMediaQuery("(max-width: 768px)");
   const removeBoard = useStore((state) => state.removeBoard);
   const router = useRouter();
   const copyBoardState = useStore((state) => state.copyBoard);
@@ -59,7 +57,7 @@ export default function BoardOptions({ data, enableEditing, textColor }: BoardOp
   }
 
   async function handleCopy() {
-    const newId = uuidv4();
+    const newId = createId();
     copyBoardState(data.id, newId);
     closeRef.current?.click();
     await copyBoard({ boardId: data.id, newId });
@@ -79,15 +77,10 @@ export default function BoardOptions({ data, enableEditing, textColor }: BoardOp
         asChild
       >
         <Button
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-          style={{
-            borderColor: isHovered ? textColor : "transparent",
-          }}
-          className="h-auto w-auto border p-[0.15rem] transition-all duration-300 hover:bg-transparent dark:hover:bg-transparent"
+          className="h-auto w-auto border border-black bg-[#b4b4b4] p-[0.1rem] text-neutral-900 hover:bg-[#c7c7c7] dark:bg-[#414141] dark:text-neutral-300 dark:hover:bg-[#2c2c2c] dark:hover:text-white"
           variant="ghost"
         >
-          <MoreHorizontal style={{ color: textColor }} className="size-4" />
+          <MoreHorizontal className="size-4" />
         </Button>
       </PopoverTrigger>
       <PopoverContent

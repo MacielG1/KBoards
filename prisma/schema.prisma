@@ -9,7 +9,7 @@ datasource db {
 }
 
 model Board {
-  id              String @id @default(uuid())
+  id              String @id @default(cuid())
   userId          String
   name            String
   color           String
@@ -24,7 +24,7 @@ model Board {
 }
 
 model List {
-  id    String @id @default(uuid())
+  id    String @id @default(cuid())
   title String
   order Int
   color String
@@ -40,9 +40,10 @@ model List {
 }
 
 model Item {
-  id      String @id @default(uuid())
+  id      String @id @default(cuid())
   content String @db.Text
   order   Int
+  color   String
 
   listId String
   list   List   @relation(fields: [listId], references: [id], onDelete: Cascade)

@@ -133,11 +133,18 @@ export const updateListColorSchema = z.object({
   color: z.string(),
 });
 
+export const updateItemColorSchema = z.object({
+  id: z.string(),
+  color: z.string(),
+  boardId: z.string(),
+});
+
 export const copyItemSchema = z.object({
   boardId: z.string(),
   listId: z.string(),
   newId: z.string(),
   id: z.string(),
+  color: z.string(),
 });
 
 export const copyListSchema = z.object({

@@ -72,6 +72,7 @@ export async function copyBoard(data: { boardId: string; newId: string }) {
                 content: item.content,
                 order: item.order,
                 boardId: newBoard.id,
+                color: item.color,
               })),
             },
           },

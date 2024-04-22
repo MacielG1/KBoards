@@ -12,7 +12,7 @@ import { updateBoardBackgroundColor } from "@/utils/actions/boards/updateBoardBa
 import { useRouter } from "next/navigation";
 import { deleteBoard } from "@/utils/actions/boards/deleteBoard";
 import { copyBoard } from "@/utils/actions/boards/copyBoard";
-import { v4 as uuidv4 } from "uuid";
+import { createId } from "@paralleldrive/cuid2";
 
 type BoardOptionsProps = {
   data: BoardType;
@@ -60,7 +60,7 @@ export default function TopBarOptions({ data }: BoardOptionsProps) {
   }
 
   async function handleCopy() {
-    const newId = uuidv4();
+    const newId = createId();
     copyBoardState(data.id, newId);
     closeRef.current?.click();
 

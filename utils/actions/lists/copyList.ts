@@ -60,6 +60,7 @@ export async function copyList(data: { boardId: string; listId: string; newId: s
               content: item.content,
               order: item.order,
               boardId: listToCopy.boardId,
+              color: item.color,
             })),
           },
         },

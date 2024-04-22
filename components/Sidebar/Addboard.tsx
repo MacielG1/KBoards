@@ -7,7 +7,7 @@ import { useStore, useStorePersisted } from "@/store/store";
 import { Button } from "../ui/button";
 import { PlusIcon, X } from "lucide-react";
 import FormButton from "../Form/FormButton";
-import { v4 as uuidv4 } from "uuid";
+import { createId } from "@paralleldrive/cuid2";
 import { createBoard } from "@/utils/actions/boards/createBoard";
 import { useRouter } from "next/navigation";
 import { ListWithItems } from "@/utils/types";
@@ -52,7 +52,7 @@ export default function AddBoard() {
         return console.log("Title is required");
       }
 
-      const newId = uuidv4();
+      const newId = createId();
       const newBoard = {
         id: newId,
         name: title,

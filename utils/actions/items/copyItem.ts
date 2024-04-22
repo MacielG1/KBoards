@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { copyItemSchema } from "../../schemas";
 import type { Item } from "@prisma/client";
 
-export async function copyItem(data: { boardId: string; listId: string; newId: string; id: string }) {
+export async function copyItem(data: { boardId: string; listId: string; newId: string; id: string; color: string }) {
   let newItem: Item;
 
   try {
@@ -25,7 +25,7 @@ export async function copyItem(data: { boardId: string; listId: string; newId: s
       };
     }
 
-    const { boardId, listId, id, newId } = data;
+    const { boardId, listId, id, newId, color } = data;
 
     const itemToCopy = await prisma.item.findUnique({
       where: {
@@ -48,6 +48,7 @@ export async function copyItem(data: { boardId: string; listId: string; newId: s
         listId: itemToCopy.listId,
         boardId: itemToCopy.boardId,
         order: itemToCopy.order + 1,
+        color,
       },
     });
 
