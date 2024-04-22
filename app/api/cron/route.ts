@@ -1,20 +1,20 @@
 import prisma from "@/utils/prisma";
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextResponse } from "next/server";
 
 const cronKey = process.env.CRON_KEY;
 
-export default async function GET(req: NextApiRequest, res: NextApiResponse) {
-  // const cronKey = process.env.CRON_KEY;
-
-  if (req.query.key !== cronKey) {
-    return res.status(401).json({ error: "Unauthorized" });
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const query = searchParams.get("key");
+  if (query !== cronKey) {
+    return NextResponse.json({ error: "Unauthorized" });
   }
 
   try {
     await prisma.board.findFirst();
-    res.status(200).json({ message: "OK" });
+    return NextResponse.json({ message: "Success" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal Server Error" });
+    return NextResponse.json({ error: "Failed" });
   }
 }
