@@ -47,11 +47,11 @@ export default function ListItem({ data, index }: ListItemProps) {
         <div
           {...provided.draggableProps}
           ref={provided.innerRef}
-          style={getStyle(provided.draggableProps.style || {}, snapshot)}
+          style={{ ...getStyle(provided.draggableProps.style || {}, snapshot) }}
           className="ml-3 w-[17rem] select-none"
         >
           <div className="w-full rounded-md bg-[#e2e2e2] pb-2 shadow-md dark:bg-neutral-700">
-            <div {...provided.dragHandleProps} className={data.items?.length > 0 ? "pb-2" : "mt-0"}>
+            <div {...provided.dragHandleProps} className={data.items?.length > 0 ? "pb-2" : "mt-0"} style={{ cursor: "pointer" }}>
               <ListHeader onAddItem={enableEditing} data={data} />
             </div>
             <div ref={scrollableRef} className={cn("listItemHeight mx-1 flex max-h-[68vh] flex-col overflow-y-auto", showItemsOrder && "mr-1.5")}>

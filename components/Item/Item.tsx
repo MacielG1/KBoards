@@ -103,7 +103,7 @@ export default function Item({ index, data }: ItemProps) {
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={provided.innerRef}
-          style={{ ...getStyle(provided.draggableProps.style || {}, snapshot), color: textColor }}
+          style={{ ...getStyle(provided.draggableProps.style || {}, snapshot), color: textColor, cursor: "pointer" }}
           className={cn("group relative mb-0 flex items-center overflow-hidden", showItemsOrder ? "mx-0" : "mx-1")}
         >
           <span className={`flex items-center justify-center ${showItemsOrder && "mr-[4px]"}`} style={{ minWidth: showItemsOrder ? "0.85rem" : 0 }}>

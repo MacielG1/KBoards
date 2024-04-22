@@ -243,6 +243,7 @@ export default function BoardItem({ board, index }: BoardItemProps) {
           style={{
             ...getStyle(provided.draggableProps.style || {}, snapshot),
             backgroundColor: board.color || "var(--board-default)",
+            cursor: "pointer",
           }}
           className={cn(
             `group mb-3 cursor-pointer rounded-lg transition-colors duration-300  `,
