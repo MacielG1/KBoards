@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
 import { CollapseProvider } from "@/components/Providers/CollapseProvider";
 import ClerkCustomProvider from "@/components/Providers/ClerkCustomProvider";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const font = Open_Sans({
   subsets: ["latin"],
@@ -21,6 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <ClerkCustomProvider>
             <CollapseProvider>{children}</CollapseProvider>
+            <SpeedInsights />
           </ClerkCustomProvider>
         </ThemeProvider>
         <div id="modal-root" />
