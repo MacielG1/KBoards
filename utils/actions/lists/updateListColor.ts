@@ -1,5 +1,5 @@
 "use server";
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import prisma from "../../prisma";
 import { updateListColorSchema } from "../../schemas";

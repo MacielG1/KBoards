@@ -1,5 +1,5 @@
 "use server";
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import type { ItemType } from "@/store/store";
 import prisma from "../../prisma";

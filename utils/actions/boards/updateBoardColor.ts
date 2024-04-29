@@ -1,8 +1,8 @@
 "use server";
-import { auth } from "@clerk/nextjs";
 import { revalidatePath } from "next/cache";
 import prisma from "../../prisma";
 import { updateBoardColorSchema } from "../../schemas";
+import { auth } from "@clerk/nextjs/server";
 
 export async function updateBoardColor(data: { id: string; color: string }) {
   let board;
