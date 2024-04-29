@@ -14,6 +14,13 @@ export default async function DashBoardLayout({ children }: { children: React.Re
     where: {
       userId,
     },
+    include: {
+      lists: {
+        include: {
+          items: true,
+        },
+      },
+    },
     orderBy: {
       order: "asc",
     },
