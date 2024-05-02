@@ -55,6 +55,10 @@ export const updateBoardSchema = z.object({
   id: z.string(),
 });
 
+export const setCurrentBoardSchema = z.object({
+  id: z.string(),
+});
+
 export const updateListSchema = z.object({
   title: z
     .string({

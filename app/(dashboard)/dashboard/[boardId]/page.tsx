@@ -1,41 +1,19 @@
-import Kanban from "@/components/Kanban";
-import prisma from "@/utils/prisma";
-import { auth } from "@clerk/nextjs/server";
-import { notFound, redirect } from "next/navigation";
+import Board from "@/components/Board";
+
+import { fetchBoard } from "@/utils/data/fetchBoard";
+import { notFound } from "next/navigation";
+import { Suspense } from "react";
+
 type BoardIdPageProps = {
   params: {
     boardId: string;
   };
 };
+
 export default async function page({ params }: BoardIdPageProps) {
-  const { userId } = auth();
+  const board = await fetchBoard({ boardId: params.boardId });
 
-  if (!userId) {
-    redirect("/sign-in");
-  }
-  const board = await prisma.board.findUnique({
-    where: {
-      id: params.boardId,
-      userId,
-    },
-    include: {
-      lists: {
-        orderBy: {
-          order: "asc",
-        },
-        include: {
-          items: {
-            orderBy: {
-              order: "asc",
-            },
-          },
-        },
-      },
-    },
-  });
-  if (!board) {
-    notFound();
-  }
+  if (!board) notFound();
 
-  return <Kanban board={board} />;
+  return <Board board={board} />;
 }

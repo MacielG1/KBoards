@@ -9,12 +9,13 @@ datasource db {
 }
 
 model Board {
-  id              String @id @default(cuid())
+  id              String  @id @default(cuid())
   userId          String
   name            String
   color           String
   backgroundColor String
   order           Int
+  isCurrentBoard  Boolean @default(false)
 
   lists     List[]
   createdAt DateTime @default(now())
@@ -54,4 +55,15 @@ model Item {
   updatedAt DateTime @updatedAt
 
   @@index([listId])
+}
+
+model UserSettings {
+  id             String  @id @default(cuid())
+  userId         String  @unique
+  currentBoardId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }

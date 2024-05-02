@@ -64,6 +64,7 @@ export type BoardType = {
   backgroundColor: string;
   lists?: ListType[];
   order: number;
+  isCurrentBoard?: boolean;
 };
 
 export type StoreType = {

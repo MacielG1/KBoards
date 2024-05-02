@@ -1,5 +1,5 @@
 "use client";
-import { BoardType } from "@/store/store";
+import { BoardType, useStore } from "@/store/store";
 import { ThemeSwitcher } from "../ThemeSwitcher";
 import BoardTitle from "./BoardTitle";
 import TopBarOptions from "./TopBarOptions";
@@ -7,12 +7,14 @@ import { cn } from "@/utils";
 import { useCollapsedContext } from "../Providers/CollapseProvider";
 import { UserButton } from "@clerk/nextjs";
 import { useParams } from "next/navigation";
+import { Skeleton } from "../ui/skeleton";
 
-export default function TopBar({ boards }: { boards: BoardType[] }) {
+export default function TopBar() {
   const { isCollapsed } = useCollapsedContext();
   const params = useParams<{ boardId: string }>();
 
-  const currentBoardData = boards?.find((board) => board.id === params.boardId);
+  const orderedBoards = useStore((state) => state.orderedBoards);
+  const currentBoardData = orderedBoards?.find((board) => board.id === params.boardId);
 
   return (
     <div
@@ -22,6 +24,8 @@ export default function TopBar({ boards }: { boards: BoardType[] }) {
       )}
     >
       {currentBoardData && <BoardTitle board={currentBoardData} />}
+      {/* {!currentBoardData && <Skeleton className="h-7 w-64" />} */}
+
       <div className="ml-auto flex space-x-1 pl-1">
         {currentBoardData && <TopBarOptions data={currentBoardData} />}
 

@@ -77,7 +77,7 @@ export default function BoardOptions({ data, enableEditing, textColor }: BoardOp
         asChild
       >
         <Button
-          className="h-auto w-auto border border-black bg-[#b4b4b4] p-[0.1rem] text-neutral-900 hover:bg-[#c7c7c7] dark:bg-[#414141] dark:text-neutral-300 dark:hover:bg-[#2c2c2c] dark:hover:text-white"
+          className="h-auto w-auto border border-black bg-[#b4b4b4] p-[0.1rem] text-neutral-900 hover:bg-[#c7c7c7] dark:bg-[#353535] dark:text-neutral-300 dark:hover:bg-[#2b2b2b] dark:hover:text-white"
           variant="ghost"
         >
           <MoreHorizontal className="size-4" />
