@@ -26,7 +26,7 @@ export default function ExportCSV({ data }: { data: BoardType }) {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "export.csv";
+    a.download = `${data.name}-export.csv`;
     a.click();
 
     window.URL.revokeObjectURL(url);

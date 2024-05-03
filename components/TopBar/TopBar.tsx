@@ -13,8 +13,7 @@ export default function TopBar() {
   const params = useParams<{ boardId: string }>();
 
   const orderedBoards = useStore((state) => state.orderedBoards);
-
-  const currentBoardData = orderedBoards?.find((board) => board.id === params.boardId);
+  const currentBoardData = orderedBoards?.find((board) => board.id === params.boardId) || null;
 
   return (
     <div
@@ -25,8 +24,9 @@ export default function TopBar() {
     >
       {currentBoardData && <BoardTitle board={currentBoardData} />}
       <div className="ml-auto flex space-x-1 pl-1">
-        {currentBoardData && <TopBarOptions data={currentBoardData} />}
+        {/* {currentBoardData && <TopBarOptions data={currentBoardData} />} */}
 
+        <TopBarOptions data={currentBoardData} />
         <ThemeSwitcher />
         <UserButton
           afterSignOutUrl="/"
