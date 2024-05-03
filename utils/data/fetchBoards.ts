@@ -25,8 +25,6 @@ export async function fetchBoards() {
       },
     });
 
-    console.log("called2");
-
     return data;
   } catch (err) {
     console.error("Database Error:", err);

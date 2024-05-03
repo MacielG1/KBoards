@@ -1,5 +1,5 @@
 "use client";
-import { BoardType, useStore } from "@/store/store";
+import { useStore } from "@/store/store";
 import { ThemeSwitcher } from "../ThemeSwitcher";
 import BoardTitle from "./BoardTitle";
 import TopBarOptions from "./TopBarOptions";

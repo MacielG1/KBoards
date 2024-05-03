@@ -30,8 +30,6 @@ export async function fetchBoard({ boardId }: { boardId: string }) {
       },
     });
 
-    console.log("called");
-
     return board;
   } catch (err) {
     console.error("Database Error:", err);

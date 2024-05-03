@@ -11,7 +11,7 @@ export default function BoardTitle({ board }: BoardTitleProps) {
   const [isEditing, setIsEditing] = useState(false);
 
   // const setBoardTitle = useStore((state) => state.setBoardTitle);
-  const [title, setTitle] = useState(board.name);
+  // const [title, setTitle] = useState(board.name);
 
   const inputRef = useRef<ElementRef<"input">>(null);
   const formRef = useRef<ElementRef<"form">>(null);
@@ -35,7 +35,7 @@ export default function BoardTitle({ board }: BoardTitleProps) {
       return disableEditing();
     }
 
-    setTitle(title);
+    // setTitle(title);
     disableEditing();
     // setBoardTitle(board.id, title);
 
