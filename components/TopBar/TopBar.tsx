@@ -1,5 +1,5 @@
 "use client";
-import { BoardType } from "@/store/store";
+import { BoardType, useStore } from "@/store/store";
 import { ThemeSwitcher } from "../ThemeSwitcher";
 import BoardTitle from "./BoardTitle";
 import TopBarOptions from "./TopBarOptions";
@@ -8,11 +8,13 @@ import { useCollapsedContext } from "../Providers/CollapseProvider";
 import { UserButton } from "@clerk/nextjs";
 import { useParams } from "next/navigation";
 
-export default function TopBar({ boards }: { boards: BoardType[] }) {
+export default function TopBar() {
   const { isCollapsed } = useCollapsedContext();
   const params = useParams<{ boardId: string }>();
 
-  const currentBoardData = boards?.find((board) => board.id === params.boardId);
+  const orderedBoards = useStore((state) => state.orderedBoards);
+
+  const currentBoardData = orderedBoards?.find((board) => board.id === params.boardId);
 
   return (
     <div

@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { ElementRef } from "react";
 import { cn } from "@/utils";
 import { useMediaQuery } from "usehooks-ts";
@@ -7,8 +7,9 @@ import { ChevronsLeft, Menu } from "lucide-react";
 import Sidebar from "./Sidebar/Sidebar";
 import { useCollapsedContext } from "./Providers/CollapseProvider";
 import type { Board } from "@prisma/client";
+import SidebarSkeleton from "./Sidebar/SidebarSkeleton";
 
-export default function Navigation({ boards }: { boards: Board[] }) {
+export default function Navigation({ SidebarParent }: { SidebarParent: React.ReactNode }) {
   const sidebarRef = useRef<HTMLElement>(null);
   const navbarRef = useRef<ElementRef<"div">>(null);
   const isMobile = useMediaQuery("(max-width: 500px)");
@@ -77,7 +78,7 @@ export default function Navigation({ boards }: { boards: Board[] }) {
         >
           <ChevronsLeft className="h-6 w-6" />
         </div>
-        <Sidebar boards={boards} />
+        <Suspense fallback={<SidebarSkeleton />}>{SidebarParent}</Suspense>
       </aside>
 
       <div
