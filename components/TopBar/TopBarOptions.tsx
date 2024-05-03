@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { deleteBoard } from "@/utils/actions/boards/deleteBoard";
 import { copyBoard } from "@/utils/actions/boards/copyBoard";
 import { createId } from "@paralleldrive/cuid2";
+import { Board } from "@prisma/client";
 
 type BoardOptionsProps = {
   data: BoardType | null;
@@ -81,10 +82,16 @@ export default function TopBarOptions({ data }: BoardOptionsProps) {
 
   function exportAllBoards() {
     // export orderedBoards as JSON
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(orderedBoards));
+
+    const newAllBoards = orderedBoards.map((board) => {
+      const { userId, isCurrentBoard, ...rest } = board as Board;
+      return rest;
+    });
+
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(newAllBoards));
     const downloadAnchorNode = document.createElement("a");
     downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", "boards.json");
+    downloadAnchorNode.setAttribute("download", "All_Boards_export.json");
 
     document.body.appendChild(downloadAnchorNode); // required for firefox
 
