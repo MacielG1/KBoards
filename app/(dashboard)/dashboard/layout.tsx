@@ -2,6 +2,8 @@ import Navigation from "@/components/Navigation";
 import SidebarParent from "@/components/Sidebar/SidebarParent";
 import TopBar from "@/components/TopBar/TopBar";
 
+export const dynamic = "force-dynamic";
+
 export default async function DashBoardLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="relative flex h-full">

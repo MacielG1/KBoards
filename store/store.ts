@@ -2,43 +2,6 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { storage } from "./storage";
 
-export const defaultBoards: BoardType[] = [
-  {
-    id: "main",
-    name: "Main",
-    color: "#000000",
-    backgroundColor: "#000000",
-    order: 1,
-    lists: [
-      {
-        id: "list-1",
-        title: "List 1",
-        color: "#ff0000",
-        order: 1,
-        boardId: "main",
-        items: [
-          {
-            id: "item-1",
-            content: "Item 1",
-            listId: "list-1",
-            order: 1,
-            boardId: "main",
-            color: "#ff0000",
-          },
-          {
-            id: "item-2",
-            content: "Item 2",
-            listId: "list-1",
-            order: 2,
-            boardId: "main",
-            color: "#ff0000",
-          },
-        ],
-      },
-    ],
-  },
-];
-
 export type ListType = {
   id: string;
   title: string;
@@ -71,6 +34,9 @@ export type StoreType = {
   orderedBoards: BoardType[];
   setOrderedBoards: (boards: BoardType[]) => void;
 
+  currentBoardTitle: string | null;
+  setCurrentBoardTitle: (title: string | null) => void;
+
   addBoard: (board: BoardType) => void;
   removeBoard: (boardId: string) => void;
   updateBoard: (boardId: string, updatedBoard: Partial<BoardType>) => void;
@@ -102,6 +68,9 @@ export type StoreType = {
 export const useStore = create<StoreType>((set, get) => ({
   orderedBoards: [],
   setOrderedBoards: (boards) => set({ orderedBoards: boards }),
+
+  currentBoardTitle: null,
+  setCurrentBoardTitle: (title) => set({ currentBoardTitle: title }),
 
   addBoard: (board: BoardType) => set((state) => ({ orderedBoards: [...state.orderedBoards, board] })),
 

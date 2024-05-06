@@ -11,7 +11,7 @@ export default function BoardTitle({ board }: BoardTitleProps) {
   const [isEditing, setIsEditing] = useState(false);
 
   // const setBoardTitle = useStore((state) => state.setBoardTitle);
-  const [title, setTitle] = useState(board.name);
+  // const [title, setTitle] = useState(board.name);
 
   const inputRef = useRef<ElementRef<"input">>(null);
   const formRef = useRef<ElementRef<"form">>(null);
@@ -35,7 +35,7 @@ export default function BoardTitle({ board }: BoardTitleProps) {
       return disableEditing();
     }
 
-    setTitle(title);
+    // setTitle(title);
     disableEditing();
     // setBoardTitle(board.id, title);
 
@@ -62,7 +62,7 @@ export default function BoardTitle({ board }: BoardTitleProps) {
           <button type="submit" hidden />
         </form>
       ) : (
-        <h2 onClick={enableEditing} className="w-full truncate px-1 py-0 pl-2 pt-[0.1rem] font-medium md:text-xl">
+        <h2 onClick={enableEditing} className="w-full truncate whitespace-pre-wrap px-1 py-0 pl-2 pt-[0.1rem] font-medium md:text-xl">
           {board.name}
         </h2>
       )}

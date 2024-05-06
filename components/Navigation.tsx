@@ -4,9 +4,7 @@ import { ElementRef } from "react";
 import { cn } from "@/utils";
 import { useMediaQuery } from "usehooks-ts";
 import { ChevronsLeft, Menu } from "lucide-react";
-import Sidebar from "./Sidebar/Sidebar";
 import { useCollapsedContext } from "./Providers/CollapseProvider";
-import type { Board } from "@prisma/client";
 import SidebarSkeleton from "./Sidebar/SidebarSkeleton";
 
 export default function Navigation({ SidebarParent }: { SidebarParent: React.ReactNode }) {

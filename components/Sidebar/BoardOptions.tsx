@@ -8,7 +8,6 @@ import { Copy, MoreHorizontal, Pencil, Trash, X } from "lucide-react";
 import { ElementRef, useRef, useState } from "react";
 import ColorPicker from "../Form/ColorPicker";
 import DeleteModal from "../Modals/DeleteModal";
-import { useMediaQuery } from "usehooks-ts";
 import { deleteBoard } from "@/utils/actions/boards/deleteBoard";
 import { updateBoardColor } from "@/utils/actions/boards/updateBoardColor";
 import { useRouter } from "next/navigation";
