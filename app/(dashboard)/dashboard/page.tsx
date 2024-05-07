@@ -11,7 +11,7 @@ export default function Dashboard() {
   const orderedBoards = useStore((state) => state.orderedBoards);
 
   useEffect(() => {
-    if (currentBoardId) {
+    if (currentBoardId && orderedBoards.find((board) => board.id === currentBoardId)) {
       router.push(`/dashboard/${currentBoardId}`);
     } else {
       router.push(`/dashboard`);
