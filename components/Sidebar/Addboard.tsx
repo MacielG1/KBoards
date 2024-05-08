@@ -62,19 +62,21 @@ export default function AddBoard() {
         order: orderedBoards.length ?? 1,
       };
 
-      addBoard(newBoard);
       setCurrentBoardId(newBoard.id);
 
       formRef.current?.reset();
+
+      addBoard(newBoard);
 
       setIsEditing(false);
 
       setTimeout(() => {
         disableEditing();
-        // router.push(`/dashboard/${newBoard.id}`);
       }, 0);
 
       await createBoard(newBoard);
+
+      router.push(`/dashboard/${newBoard.id}`);
     } catch (error) {
       console.error("error", error);
     }

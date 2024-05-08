@@ -45,5 +45,4 @@ export async function createBoard(data: BoardType) {
       error: "Failed to create board",
     };
   }
-  redirect(`/dashboard/${data.id}`);
 }

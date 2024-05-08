@@ -16,7 +16,7 @@ export default function Dashboard() {
     } else {
       router.push(`/dashboard`);
     }
-  }, [currentBoardId, router]);
+  }, [currentBoardId, router, orderedBoards]);
 
   if (orderedBoards.length > 0) return null;
 

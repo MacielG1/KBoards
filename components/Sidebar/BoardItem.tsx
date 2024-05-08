@@ -18,7 +18,6 @@ type BoardItemProps = {
 };
 
 export default function BoardItem({ board, index }: BoardItemProps) {
-  console.log("boardTitle", board.name);
 
   const [isEditing, setIsEditing] = useState(false);
   const [textColor, setTextColor] = useState("var(--text-default)");
