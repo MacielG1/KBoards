@@ -40,7 +40,6 @@ export default function ColorPicker({ id, value, type, text = "Change Color", cl
     }, 50);
 
     const timer2 = setTimeout(async () => {
-      console.log("updating color");
       if (type === "list") await updateListColor({ id: id, color: value, boardId: params.boardId });
       else if (type === "board") await updateBoardColor({ id: id, color: value });
       else if (type === "background") await updateBoardBackgroundColor({ id: id, backgroundColor: value });

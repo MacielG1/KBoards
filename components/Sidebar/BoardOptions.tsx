@@ -35,22 +35,22 @@ export default function BoardOptions({ data, enableEditing, textColor }: BoardOp
 
   async function handleDelete() {
     removeBoard(data.id);
+
     closeRef.current?.click();
 
-    setTimeout(() => {
-      // router push to previous board in the orderedBoards array that comnes before the deleted board
-      if (currentBoardId === data.id) {
-        const index = orderedBoards.findIndex((board) => board.id === data.id);
-        const previousBoard = orderedBoards[index - 1];
-        if (previousBoard) {
-          setCurrentBoardId(previousBoard.id);
-          router.push(`/dashboard/${previousBoard.id}`);
-        } else {
-          router.push("/dashboard");
-          setCurrentBoardId("");
-        }
+    if (currentBoardId === data.id) {
+      const index = orderedBoards.findIndex((board) => board.id === data.id);
+      const previousBoard = orderedBoards[index - 1];
+      // const firstBoard = orderedBoards[0];
+      // if (firstBoard && firstBoard.id !== currentBoardId) {
+      if (previousBoard) {
+        setCurrentBoardId(previousBoard.id);
+        router.push(`/dashboard/${previousBoard.id}`);
+      } else {
+        setCurrentBoardId(null);
+        router.push("/dashboard");
       }
-    }, 0);
+    }
 
     await deleteBoard(data);
   }
@@ -150,7 +150,7 @@ export default function BoardOptions({ data, enableEditing, textColor }: BoardOp
         <DeleteModal message={`Delete Board: ${data.name}`} deleteHandler={handleDelete}>
           <Button
             onClick={(e) => {
-              e.stopPropagation();
+              // e.stopPropagation();
             }}
             variant="ghost"
             className="h-auto w-full justify-start rounded-none p-2 px-5 text-sm font-normal"

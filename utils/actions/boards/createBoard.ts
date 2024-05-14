@@ -4,6 +4,7 @@ import type { BoardType } from "@/store/store";
 import prisma from "../../prisma";
 import { createBoardSchema } from "../../schemas";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 export async function createBoard(data: BoardType) {
   try {
@@ -45,4 +46,5 @@ export async function createBoard(data: BoardType) {
       error: "Failed to create board",
     };
   }
+  revalidatePath("/dashboard");
 }

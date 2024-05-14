@@ -75,13 +75,10 @@ export const useStore = create<StoreType>((set, get) => ({
   addBoard: (board: BoardType) => set((state) => ({ orderedBoards: [...state.orderedBoards, board] })),
 
   removeBoard: (boardId: string) =>
-    // set((state) => ({ orderedBoards: state.orderedBoards.filter((board) => board.id !== boardId) })),
     set((state) => {
       const updatedBoards = state.orderedBoards.filter((board) => board.id !== boardId);
-      // const currentBoardId = state.currentBoardId === boardId ? updatedBoards?.at(-1)?.id : state.currentBoardId;
       return {
         orderedBoards: updatedBoards,
-        // currentBoardId,
       };
     }),
 

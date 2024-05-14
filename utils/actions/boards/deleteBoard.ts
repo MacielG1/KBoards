@@ -1,4 +1,5 @@
 "use server";
+
 import { auth } from "@clerk/nextjs/server";
 import type { BoardType } from "@/store/store";
 import prisma from "../../prisma";
@@ -53,5 +54,5 @@ export async function deleteBoard(data: BoardType) {
       error: "Failed to delete board",
     };
   }
-  revalidatePath("/dashboard");
+  // revalidatePath("/dashboard");
 }

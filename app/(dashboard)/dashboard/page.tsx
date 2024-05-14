@@ -13,18 +13,16 @@ export default function Dashboard() {
   useEffect(() => {
     if (currentBoardId && orderedBoards.find((board) => board.id === currentBoardId)) {
       router.push(`/dashboard/${currentBoardId}`);
-    } else {
-      router.push(`/dashboard`);
     }
   }, [currentBoardId, router, orderedBoards]);
 
-  if (orderedBoards.length > 0) return null;
-
-  return (
-    <div className="flex h-[70vh] w-full items-center justify-center">
-      <div className="flex flex-col items-center">
-        <AddBoard />
+  if (!currentBoardId) {
+    return (
+      <div className="flex h-[70vh] w-full items-center justify-center">
+        <div className="flex flex-col items-center">
+          <AddBoard />
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 }

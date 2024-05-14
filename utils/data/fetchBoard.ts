@@ -1,7 +1,10 @@
+import "server-only";
+
 import { auth } from "@clerk/nextjs/server";
 import prisma from "../prisma";
 
 export async function fetchBoard({ boardId }: { boardId: string }) {
+  console.log("fetchBoard", boardId);
   try {
     const { userId } = auth();
 
