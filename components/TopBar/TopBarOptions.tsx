@@ -91,7 +91,7 @@ export default function TopBarOptions({ data }: BoardOptionsProps) {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(newAllBoards));
     const downloadAnchorNode = document.createElement("a");
     downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", "All_Boards_export.json");
+    downloadAnchorNode.setAttribute("download", "All-Boards.json");
 
     document.body.appendChild(downloadAnchorNode); // required for firefox
 
@@ -155,7 +155,6 @@ export default function TopBarOptions({ data }: BoardOptionsProps) {
                 </span>
               )}
             </Button>
-            <ExportCSV data={data} />
 
             <DeleteModal message={`Delete Board: ${data.name}`} deleteHandler={handleDelete}>
               <Button
@@ -168,6 +167,8 @@ export default function TopBarOptions({ data }: BoardOptionsProps) {
                 <Trash className="mr-2 size-4" /> Delete Board
               </Button>
             </DeleteModal>
+
+            {data?.lists && data.lists?.length > 0 && <ExportCSV data={data} />}
           </>
         )}
 
