@@ -1,7 +1,7 @@
 "use client";
 
 import { ElementRef, useEffect, useRef, useState } from "react";
-import { BoardType, useStorePersisted } from "@/store/store";
+import { BoardType, useStore, useStorePersisted } from "@/store/store";
 
 import { cn } from "@/utils";
 import { Draggable, DraggableProvided, DraggableStateSnapshot, DraggableStyle } from "@hello-pangea/dnd";
@@ -18,13 +18,11 @@ type BoardItemProps = {
 };
 
 export default function BoardItem({ board, index }: BoardItemProps) {
-
   const [isEditing, setIsEditing] = useState(false);
   const [textColor, setTextColor] = useState("var(--text-default)");
 
-  // const [title, setTitle] = useState(board.name);
   const [currentBoardId, setCurrentBoardId] = useStorePersisted((state) => [state.currentBoardId, state.setCurrentBoardId]);
-  // const setBoardTitle = useStore((state) => state.setBoardTitle);
+  const updateCurrentBoardTitle = useStore((state) => state.updateCurrentBoardTitle);
 
   const { resolvedTheme } = useTheme();
 
@@ -57,8 +55,6 @@ export default function BoardItem({ board, index }: BoardItemProps) {
     router.prefetch(`/dashboard/${board.id}`);
     setCurrentBoardId(board.id);
     router.push(`/dashboard/${board.id}`);
-
-    // setCurrentBoard({ id: board.id });
   }
 
   async function changeBoardTitle(formData: FormData) {
@@ -68,9 +64,8 @@ export default function BoardItem({ board, index }: BoardItemProps) {
       return disableEditing();
     }
 
-    // setTitle(title);
     disableEditing();
-    // setBoardTitle(board.id, title);
+    updateCurrentBoardTitle(title, board.id);
 
     updateBoard({ ...board, name: title });
   }

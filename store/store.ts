@@ -34,8 +34,7 @@ export type StoreType = {
   orderedBoards: BoardType[];
   setOrderedBoards: (boards: BoardType[]) => void;
 
-  currentBoardTitle: string | null;
-  setCurrentBoardTitle: (title: string | null) => void;
+  updateCurrentBoardTitle: (title: string, boardId: string) => void;
 
   addBoard: (board: BoardType) => void;
   removeBoard: (boardId: string) => void;
@@ -69,8 +68,8 @@ export const useStore = create<StoreType>((set, get) => ({
   orderedBoards: [],
   setOrderedBoards: (boards) => set({ orderedBoards: boards }),
 
-  currentBoardTitle: null,
-  setCurrentBoardTitle: (title) => set({ currentBoardTitle: title }),
+  updateCurrentBoardTitle: (title: string, boardId: string) =>
+    set((state) => ({ orderedBoards: state.orderedBoards.map((board) => (board.id === boardId ? { ...board, name: title } : board)) })),
 
   addBoard: (board: BoardType) => set((state) => ({ orderedBoards: [...state.orderedBoards, board] })),
 

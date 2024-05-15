@@ -1,4 +1,4 @@
-import { BoardType } from "@/store/store";
+import { BoardType, useStore, useStorePersisted } from "@/store/store";
 import { ElementRef, useRef, useState } from "react";
 import { FormInput } from "../Form/FormInput";
 import { updateBoard } from "@/utils/actions/boards/updateBoard";
@@ -10,8 +10,7 @@ type BoardTitleProps = {
 export default function BoardTitle({ board }: BoardTitleProps) {
   const [isEditing, setIsEditing] = useState(false);
 
-  // const setBoardTitle = useStore((state) => state.setBoardTitle);
-  // const [title, setTitle] = useState(board.name);
+  const updateCurrentBoardTitle = useStore((state) => state.updateCurrentBoardTitle);
 
   const inputRef = useRef<ElementRef<"input">>(null);
   const formRef = useRef<ElementRef<"form">>(null);
@@ -22,9 +21,7 @@ export default function BoardTitle({ board }: BoardTitleProps) {
 
   function enableEditing() {
     setIsEditing(true);
-    setTimeout(() => {
-      inputRef.current?.focus();
-    });
+    setTimeout(() => inputRef.current?.focus());
   }
 
   async function changeBoardTitle(formData: FormData) {
@@ -35,9 +32,8 @@ export default function BoardTitle({ board }: BoardTitleProps) {
       return disableEditing();
     }
 
-    // setTitle(title);
     disableEditing();
-    // setBoardTitle(board.id, title);
+    updateCurrentBoardTitle(title, board.id);
 
     updateBoard({ ...board, name: title });
   }
