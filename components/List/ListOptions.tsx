@@ -26,6 +26,7 @@ export default function ListOptions({ data, onAddItem, textColor }: ListOptionsP
   const [isHovered, setIsHovered] = useState(false);
 
   const [listColor, setListColorState] = useState(data.color);
+  const orderedBoards = useStore((state) => state.orderedBoards);
 
   const params = useParams<{ boardId: string }>();
 
@@ -100,9 +101,13 @@ export default function ListOptions({ data, onAddItem, textColor }: ListOptionsP
         </Button>
 
         <Separator />
-        <ExportToBoard listId={data.id} popoverRef={closeRef} />
 
-        <Separator />
+        {orderedBoards.length > 1 && (
+          <>
+            <ExportToBoard listId={data.id} popoverRef={closeRef} />
+            <Separator />
+          </>
+        )}
 
         <DeleteModal message={`Delete List: ${data.title}`} deleteHandler={handleDelete}>
           <Button variant="ghost" className="h-auto w-full justify-start rounded-none p-2 px-5 text-sm font-normal">
