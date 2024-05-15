@@ -117,9 +117,9 @@ export default function TopBarOptions({ data }: BoardOptionsProps) {
       <PopoverContent className="w-48 px-0 pb-3 pt-3" side="bottom" align="center">
         {data && (
           <>
-            <div className="flex flex-wrap justify-center px-2 pb-2 text-center text-sm font-medium text-neutral-500">
+            <div className="text-md flex flex-wrap justify-center px-2 pb-2 text-center font-medium text-neutral-500">
               <div>Board Options</div>
-              <div className="w-full truncate">{data.name}</div>
+              <div className="w-full truncate px-2 pt-0.5 text-sm font-normal tracking-tight">{data.name}</div>
             </div>
 
             <Button
