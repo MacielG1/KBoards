@@ -71,6 +71,10 @@ export default function AddList({ board }: { board: BoardWithLists }) {
     }
   }
 
+  function onBlur() {
+    formRef.current?.requestSubmit();
+  }
+
   if (isEditing)
     return (
       <li className="ml-1 h-full w-[17rem] select-none">
@@ -81,6 +85,7 @@ export default function AddList({ board }: { board: BoardWithLists }) {
             ref={textAreaRef}
             className="h-8 w-full border-transparent px-2 py-1 font-medium transition hover:border-input focus:border-input"
             placeholder="Enter List Name"
+            onBlur={onBlur}
           />
           <div className="flex items-center gap-1 pt-2">
             <FormButton className="font-semibold" variant="primary">
