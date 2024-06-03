@@ -3,8 +3,9 @@ import { revalidatePath } from "next/cache";
 import prisma from "../../prisma";
 import { updateBoardColorSchema } from "../../schemas";
 import { auth } from "@clerk/nextjs/server";
+import { z } from "zod";
 
-export async function updateBoardColor(data: { id: string; color: string }) {
+export async function updateBoardColor(data: z.infer<typeof updateBoardColorSchema>) {
   let board;
 
   try {

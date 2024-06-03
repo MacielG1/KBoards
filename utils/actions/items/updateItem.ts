@@ -1,11 +1,11 @@
 "use server";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
-import type { ItemType } from "@/store/store";
 import prisma from "../../prisma";
 import { updateItemSchema } from "../../schemas";
+import { z } from "zod";
 
-export async function updateItem(data: ItemType) {
+export async function updateItem(data: z.infer<typeof updateItemSchema>) {
   let item;
   try {
     const { userId } = auth();
@@ -37,7 +37,7 @@ export async function updateItem(data: ItemType) {
     });
   } catch (error) {
     return {
-      error: "Failed to update list",
+      error: "Failed to update item",
     };
   }
   revalidatePath(`/dashboard/${data.boardId}`);

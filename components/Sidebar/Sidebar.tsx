@@ -33,7 +33,8 @@ export default function Sidebar({ boards }: { boards: BoardType[] }) {
 
   return (
     <div className="flex  w-[13rem] min-w-[13rem] max-w-[13rem] flex-col p-4">
-      <h1 className="mb-5 mt-2 whitespace-nowrap text-center text-xl tracking-wider">Boards</h1>
+      <h1 className="mb-3 mt-2 whitespace-nowrap text-center text-[1.9rem] font-semibold tracking-wide text-mainColor">KBoards</h1>
+      {/* <h2 className="mb-5 mt-2 whitespace-nowrap text-center text-xl tracking-wider">Boards</h2> */}
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="boards" type="board" direction="vertical">
           {(provided: DroppableProvided) => (

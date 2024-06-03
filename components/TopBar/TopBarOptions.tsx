@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { BoardType, useStore, useStorePersisted } from "@/store/store";
 import { Copy, Eraser, FileJson, ListOrdered, MoreHorizontal, Trash } from "lucide-react";
-import { ElementRef, useEffect, useRef, useState } from "react";
+import { ElementRef, Suspense, useEffect, useRef, useState } from "react";
 import DeleteModal from "../Modals/DeleteModal";
 import ExportCSV from "./ExportCSV";
 import ColorPicker from "../Form/ColorPicker";
@@ -14,12 +14,15 @@ import { deleteBoard } from "@/utils/actions/boards/deleteBoard";
 import { copyBoard } from "@/utils/actions/boards/copyBoard";
 import { createId } from "@paralleldrive/cuid2";
 import { Board } from "@prisma/client";
+import { toast } from "sonner";
+import { useProModalStore } from "@/store/useProModal";
 
 type BoardOptionsProps = {
   data: BoardType | null;
+  SubButton?: React.ReactNode;
 };
 
-export default function TopBarOptions({ data }: BoardOptionsProps) {
+export default function TopBarOptions({ data, SubButton }: BoardOptionsProps) {
   const closeRef = useRef<ElementRef<"button">>(null);
 
   const [bgColor, setBgColor] = useState(data?.backgroundColor ?? "");
@@ -33,6 +36,7 @@ export default function TopBarOptions({ data }: BoardOptionsProps) {
   const setBoardBackgroundColor = useStore((state) => state.setBoardBackgroundColor);
   const toggleItemsOrder = useStorePersisted((state) => state.toggleItemsOrder);
   const showItemsOrder = useStorePersisted((state) => state.showItemsOrder);
+  const onOpen = useProModalStore((state) => state.onOpen);
 
   useEffect(() => {
     if (data) setBgColor(data.backgroundColor);
@@ -66,10 +70,20 @@ export default function TopBarOptions({ data }: BoardOptionsProps) {
     if (!data) return;
 
     const newId = createId();
-    copyBoardState(data.id, newId);
     closeRef.current?.click();
 
-    await copyBoard({ boardId: data?.id, newId });
+    setTimeout(() => {
+      copyBoardState(data.id, newId);
+    }, 300);
+
+    const res = await copyBoard({ boardId: data?.id, newId });
+    if (res?.error) {
+      toast.error(res.error);
+      removeBoard(newId);
+      if (res.status === 403) {
+        return onOpen();
+      }
+    }
   }
 
   async function handleColorReset() {
@@ -175,6 +189,8 @@ export default function TopBarOptions({ data }: BoardOptionsProps) {
         <Button onClick={() => exportAllBoards()} variant="ghost" className="h-auto w-full justify-start rounded-none p-1 px-4 py-2 pl-4 text-sm font-normal">
           <FileJson className="mr-2 size-4" /> Export All Boards
         </Button>
+
+        <Suspense fallback={null}>{SubButton}</Suspense>
       </PopoverContent>
     </Popover>
   );

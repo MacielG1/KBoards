@@ -3,8 +3,9 @@ import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import prisma from "../../prisma";
 import { updateListColorSchema } from "../../schemas";
+import { z } from "zod";
 
-export async function updateListColor(data: { id: string; boardId: string; color: string }) {
+export async function updateListColor(data: z.infer<typeof updateListColorSchema>) {
   let list;
   try {
     const { userId } = auth();
@@ -17,7 +18,7 @@ export async function updateListColor(data: { id: string; boardId: string; color
 
     const validationResult = updateListColorSchema.safeParse(data);
     if (!validationResult.success) {
-      console.log("updateList validationResult.error.flatten().fieldErrors", validationResult.error.flatten().fieldErrors);
+      console.log("updateListColor validationResult.error.flatten().fieldErrors", validationResult.error.flatten().fieldErrors);
       return {
         fieldErrors: validationResult.error.flatten().fieldErrors,
       };

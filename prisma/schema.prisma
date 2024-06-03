@@ -57,13 +57,29 @@ model Item {
   @@index([listId])
 }
 
-// model UserSettings {
-//   id             String  @id @default(cuid())
-//   userId         String  @unique
-//   currentBoardId String?
+model FreeTierLimit {
+  id          String @id @default(cuid())
+  userId      String @unique
+  boardsCount Int    @default(0)
+  listsCount  Int    @default(0)
 
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-//   @@index([userId])
-// }
+  @@index([userId])
+}
+
+model PremiumSubscription {
+  id     String @id @default(cuid())
+  userId String @unique
+
+  stripeCustomerId       String?   @unique
+  stripeSubscriptionId   String?   @unique
+  stripePriceId          String?   @unique
+  stripeCurrentPeriodEnd DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}

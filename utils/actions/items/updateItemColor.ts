@@ -3,8 +3,9 @@ import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import prisma from "../../prisma";
 import { updateItemColorSchema } from "../../schemas";
+import { z } from "zod";
 
-export async function updateItemColor(data: { id: string; boardId: string; color: string }) {
+export async function updateItemColor(data: z.infer<typeof updateItemColorSchema>) {
   let list;
   try {
     const { userId } = auth();
@@ -17,7 +18,7 @@ export async function updateItemColor(data: { id: string; boardId: string; color
 
     const validationResult = updateItemColorSchema.safeParse(data);
     if (!validationResult.success) {
-      console.log("updateList validationResult.error.flatten().fieldErrors", validationResult.error.flatten().fieldErrors);
+      console.log("updateItemColor validationResult.error.flatten().fieldErrors", validationResult.error.flatten().fieldErrors);
       return {
         fieldErrors: validationResult.error.flatten().fieldErrors,
       };
@@ -36,7 +37,7 @@ export async function updateItemColor(data: { id: string; boardId: string; color
     });
   } catch (error) {
     return {
-      error: "Failed to update item",
+      error: "Failed to update item color",
     };
   }
 

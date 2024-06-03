@@ -1,11 +1,11 @@
 "use server";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
-import type { BoardType } from "@/store/store";
 import prisma from "../../prisma";
 import { updateBoardOrderSchema } from "../../schemas";
+import { z } from "zod";
 
-export async function updateBoardOrder(data: BoardType[]) {
+export async function updateBoardOrder(data: z.infer<typeof updateBoardOrderSchema>) {
   let boards;
 
   try {

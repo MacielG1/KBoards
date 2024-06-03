@@ -1,11 +1,11 @@
 "use server";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
-import type { ListType } from "@/store/store";
 import prisma from "../../prisma";
 import { updateListSchema } from "../../schemas";
+import { z } from "zod";
 
-export async function updateList(data: ListType) {
+export async function updateList(data: z.infer<typeof updateListSchema>) {
   let list;
   try {
     const { userId } = auth();

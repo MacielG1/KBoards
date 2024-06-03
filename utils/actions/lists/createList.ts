@@ -1,11 +1,13 @@
 "use server";
 import { revalidatePath } from "next/cache";
 import { auth } from "@clerk/nextjs/server";
-import type { ListType } from "@/store/store";
 import prisma from "../../prisma";
 import { createListSchema } from "../../schemas";
+import { z } from "zod";
+import { checkIsPremium } from "@/utils/checkSubscription";
+import { hasAvailableLists, increaseListCount } from "./listslimit";
 
-export async function createList(data: ListType) {
+export async function createList(data: z.infer<typeof createListSchema>) {
   let list;
   try {
     const { userId } = auth();
@@ -24,6 +26,15 @@ export async function createList(data: ListType) {
       };
     }
 
+    const [isPremium, canCreateList] = await Promise.all([checkIsPremium(), hasAvailableLists()]);
+
+    if (!isPremium && !canCreateList) {
+      return {
+        error: "Reached maximum number of free lists. Upgrade to premium to create more!",
+        status: 403,
+      };
+    }
+
     const { title, id, items, color, order, boardId } = data;
 
     list = await prisma.list.create({
@@ -38,6 +49,10 @@ export async function createList(data: ListType) {
         boardId,
       },
     });
+
+    if (!isPremium) {
+      await increaseListCount();
+    }
   } catch (error) {
     return {
       error: "Failed to create list",

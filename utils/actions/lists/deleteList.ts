@@ -1,11 +1,13 @@
 "use server";
 import { auth } from "@clerk/nextjs/server";
-import type { ListType } from "@/store/store";
 import prisma from "../../prisma";
 import { revalidatePath } from "next/cache";
 import { deleteListSchema } from "../../schemas";
+import { z } from "zod";
+import { checkIsPremium } from "@/utils/checkSubscription";
+import { decreaseListCount } from "./listslimit";
 
-export async function deleteList(data: ListType) {
+export async function deleteList(data: z.infer<typeof deleteListSchema>) {
   try {
     const { userId } = auth();
 
@@ -48,10 +50,16 @@ export async function deleteList(data: ListType) {
         },
       },
     });
+
+    const isPremium = await checkIsPremium();
+
+    if (!isPremium) {
+      await decreaseListCount();
+    }
   } catch (error) {
-    console.log("Failed to delete board", error);
+    console.log("Failed to delete list", error);
     return {
-      error: "Failed to delete board",
+      error: "Failed to delete list",
     };
   }
   revalidatePath(`/dashboard/${data.boardId}`);

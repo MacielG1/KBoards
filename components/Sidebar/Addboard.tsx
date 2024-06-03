@@ -1,19 +1,22 @@
 "use client";
 
-import { ElementRef, useRef, useState } from "react";
+import { ElementRef, useRef, useState, useTransition } from "react";
 import { useEventListener, useOnClickOutside } from "usehooks-ts";
 import { FormInput } from "../Form/FormInput";
 import { useStore, useStorePersisted } from "@/store/store";
 import { Button } from "../ui/button";
-import { PlusIcon, X } from "lucide-react";
+import { ArrowUpNarrowWide, ArrowUpWideNarrow, PlusIcon, X } from "lucide-react";
 import FormButton from "../Form/FormButton";
 import { createId } from "@paralleldrive/cuid2";
 import { createBoard } from "@/utils/actions/boards/createBoard";
 import { useRouter } from "next/navigation";
 import { ListWithItems } from "@/utils/types";
+import { toast } from "sonner";
+import { useProModalStore } from "@/store/useProModal";
 
 export default function AddBoard() {
   const [isEditing, setIsEditing] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   const formRef = useRef<ElementRef<"form">>(null);
   const inputRef = useRef<ElementRef<"input">>(null);
@@ -21,6 +24,9 @@ export default function AddBoard() {
   const addBoard = useStore((state) => state.addBoard);
   const setCurrentBoardId = useStorePersisted((state) => state.setCurrentBoardId);
   const orderedBoards = useStore((state) => state.orderedBoards);
+  const removeBoard = useStore((state) => state.removeBoard);
+
+  const onOpen = useProModalStore((state) => state.onOpen);
 
   const router = useRouter();
 
@@ -45,41 +51,51 @@ export default function AddBoard() {
   useOnClickOutside(formRef, disableEditing);
 
   async function handleSubmit(formData: FormData) {
-    try {
-      const title = formData.get("title") as string;
+    startTransition(async () => {
+      try {
+        const title = formData.get("title") as string;
 
-      if (!title) {
-        return console.log("Title is required");
+        if (!title) {
+          return console.log("Title is required");
+        }
+
+        const newId = createId();
+        const newBoard = {
+          id: newId,
+          name: title,
+          lists: [] as ListWithItems[],
+          color: "",
+          backgroundColor: "",
+          order: orderedBoards.length ?? 1,
+        };
+
+        setCurrentBoardId(newBoard.id);
+
+        formRef.current?.reset();
+
+        addBoard(newBoard);
+
+        setIsEditing(false);
+
+        setTimeout(() => {
+          disableEditing();
+        }, 0);
+
+        router.prefetch(`/dashboard/${newBoard.id}`);
+
+        const res = await createBoard(newBoard);
+        if (res?.error) {
+          toast.error(res.error);
+          removeBoard(newBoard.id);
+          if (res.status === 403) {
+            return onOpen();
+          }
+        }
+        router.push(`/dashboard/${newBoard.id}`);
+      } catch (error) {
+        console.error("error", error);
       }
-
-      const newId = createId();
-      const newBoard = {
-        id: newId,
-        name: title,
-        lists: [] as ListWithItems[],
-        color: "",
-        backgroundColor: "",
-        order: orderedBoards.length ?? 1,
-      };
-
-      setCurrentBoardId(newBoard.id);
-
-      formRef.current?.reset();
-
-      addBoard(newBoard);
-
-      setIsEditing(false);
-
-      setTimeout(() => {
-        disableEditing();
-      }, 0);
-
-      await createBoard(newBoard);
-
-      router.push(`/dashboard/${newBoard.id}`);
-    } catch (error) {
-      console.error("error", error);
-    }
+    });
   }
 
   if (isEditing) {

@@ -11,23 +11,9 @@ export const createBoardSchema = z.object({
   id: z.string(),
   color: z.string(),
   backgroundColor: z.string(),
+  order: z.number(),
 
   lists: z.array(z.object({})),
-});
-
-export const createListSchema = z.object({
-  title: z
-    .string({
-      required_error: "Title is required",
-    })
-    .min(1, {
-      message: "Title must be at least 1 characters long",
-    }),
-  id: z.string(),
-  items: z.array(z.object({})),
-  color: z.string(),
-  order: z.number(),
-  boardId: z.string(),
 });
 
 export const createItemSchema = z.object({
@@ -41,7 +27,24 @@ export const createItemSchema = z.object({
   id: z.string(),
   boardId: z.string(),
   order: z.number(),
+  color: z.string(),
   listId: z.string(),
+});
+
+export const createListSchema = z.object({
+  title: z
+    .string({
+      required_error: "Title is required",
+    })
+    .min(1, {
+      message: "Title must be at least 1 characters long",
+    }),
+  id: z.string(),
+  items: z.array(createItemSchema),
+
+  color: z.string(),
+  order: z.number(),
+  boardId: z.string(),
 });
 
 export const updateBoardSchema = z.object({
@@ -94,31 +97,42 @@ export const updateBoardOrderSchema = z.array(
 export const updateListOrderSchema = z.object({
   id: z.string(),
   order: z.number(),
+  lists: z.array(
+    z.object({
+      id: z.string(),
+      order: z.number(),
+    }),
+  ),
 });
 
 export const UpdateItemOrderSchema = z.object({
   items: z.array(
     z.object({
       id: z.string(),
+      listId: z.string(),
       order: z.number(),
     }),
   ),
+
   boardId: z.string(),
 });
 
 export const deleteBoardSchema = z.object({
   id: z.string(),
+  order: z.number(),
 });
 
 export const deleteListSchema = z.object({
   id: z.string(),
   boardId: z.string(),
+  order: z.number(),
 });
 
 export const deleteItemSchema = z.object({
   id: z.string(),
   boardId: z.string(),
   listId: z.string(),
+  order: z.number(),
 });
 
 export const updateBoardBackgroundColorSchema = z.object({

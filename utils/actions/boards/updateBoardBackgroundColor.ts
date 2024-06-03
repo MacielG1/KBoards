@@ -3,8 +3,9 @@ import { revalidatePath } from "next/cache";
 import prisma from "../../prisma";
 import { updateBoardBackgroundColorSchema } from "../../schemas";
 import { auth } from "@clerk/nextjs/server";
+import { z } from "zod";
 
-export async function updateBoardBackgroundColor(data: { id: string; backgroundColor: string }) {
+export async function updateBoardBackgroundColor(data: z.infer<typeof updateBoardBackgroundColorSchema>) {
   let board;
   try {
     const { userId } = auth();

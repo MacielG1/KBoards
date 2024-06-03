@@ -5,7 +5,7 @@ import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "@/compone
 import { Separator } from "@/components/ui/separator";
 import { BoardType, useStore, useStorePersisted } from "@/store/store";
 import { Copy, MoreHorizontal, Pencil, Trash, X } from "lucide-react";
-import { ElementRef, useRef, useState } from "react";
+import { ElementRef, useRef, useState, useTransition } from "react";
 import ColorPicker from "../Form/ColorPicker";
 import DeleteModal from "../Modals/DeleteModal";
 import { deleteBoard } from "@/utils/actions/boards/deleteBoard";
@@ -13,6 +13,8 @@ import { updateBoardColor } from "@/utils/actions/boards/updateBoardColor";
 import { useRouter } from "next/navigation";
 import { copyBoard } from "@/utils/actions/boards/copyBoard";
 import { createId } from "@paralleldrive/cuid2";
+import { toast } from "sonner";
+import { useProModalStore } from "@/store/useProModal";
 
 type BoardOptionsProps = {
   data: BoardType;
@@ -22,6 +24,7 @@ type BoardOptionsProps = {
 
 export default function BoardOptions({ data, enableEditing, textColor }: BoardOptionsProps) {
   const [boardColor, setBoardColorState] = useState(data.color);
+  const [isPending, startTransition] = useTransition();
 
   const closeRef = useRef<ElementRef<"button">>(null);
 
@@ -32,34 +35,47 @@ export default function BoardOptions({ data, enableEditing, textColor }: BoardOp
   const currentBoardId = useStorePersisted((state) => state.currentBoardId);
   const orderedBoards = useStore((state) => state.orderedBoards);
   const setCurrentBoardId = useStorePersisted((state) => state.setCurrentBoardId);
+  const onOpen = useProModalStore((state) => state.onOpen);
 
   async function handleDelete() {
-    removeBoard(data.id);
+    startTransition(async () => {
+      closeRef.current?.click();
 
-    closeRef.current?.click();
+      removeBoard(data.id);
 
-    if (currentBoardId === data.id) {
-      const index = orderedBoards.findIndex((board) => board.id === data.id);
-      const previousBoard = orderedBoards[index - 1];
-      // const firstBoard = orderedBoards[0];
-      // if (firstBoard && firstBoard.id !== currentBoardId) {
-      if (previousBoard) {
-        setCurrentBoardId(previousBoard.id);
-        router.push(`/dashboard/${previousBoard.id}`);
-      } else {
-        setCurrentBoardId(null);
-        router.push("/dashboard");
+      if (currentBoardId === data.id) {
+        const index = orderedBoards.findIndex((board) => board.id === data.id);
+        const previousBoard = orderedBoards[index - 1];
+
+        if (previousBoard) {
+          setCurrentBoardId(previousBoard.id);
+          router.push(`/dashboard/${previousBoard.id}`);
+        } else {
+          setCurrentBoardId(null);
+          router.push("/dashboard");
+        }
       }
-    }
 
-    await deleteBoard(data);
+      await deleteBoard(data);
+    });
   }
 
   async function handleCopy() {
     const newId = createId();
-    copyBoardState(data.id, newId);
     closeRef.current?.click();
-    await copyBoard({ boardId: data.id, newId });
+
+    setTimeout(() => {
+      copyBoardState(data.id, newId);
+    }, 300);
+
+    const res = await copyBoard({ boardId: data?.id, newId });
+    if (res?.error) {
+      toast.error(res.error);
+      removeBoard(newId);
+      if (res.status === 403) {
+        return onOpen();
+      }
+    }
   }
   async function handleColorReset() {
     setBoardColorState("");
@@ -149,6 +165,7 @@ export default function BoardOptions({ data, enableEditing, textColor }: BoardOp
         <Separator />
         <DeleteModal message={`Delete Board: ${data.name}`} deleteHandler={handleDelete}>
           <Button
+            disabled={isPending}
             onClick={(e) => {
               // e.stopPropagation();
             }}

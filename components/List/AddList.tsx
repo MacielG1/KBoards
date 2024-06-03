@@ -11,6 +11,8 @@ import { createList } from "@/utils/actions/lists/createList";
 import { createId } from "@paralleldrive/cuid2";
 import { useParams } from "next/navigation";
 import { BoardWithLists } from "@/utils/types";
+import { toast } from "sonner";
+import { useProModalStore } from "@/store/useProModal";
 
 export default function AddList({ board }: { board: BoardWithLists }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -19,6 +21,8 @@ export default function AddList({ board }: { board: BoardWithLists }) {
   const textAreaRef = useRef<ElementRef<"textarea">>(null);
 
   const addList = useStore((state) => state.addList);
+  const removeList = useStore((state) => state.removeList);
+  const onOpen = useProModalStore((state) => state.onOpen);
 
   const params = useParams<{ boardId: string }>();
   const isMobile = useMediaQuery("(max-width: 1000px)");
@@ -58,7 +62,15 @@ export default function AddList({ board }: { board: BoardWithLists }) {
       disableEditing();
     }, 0);
 
-    await createList(newList);
+    const res = await createList(newList);
+
+    if (res?.error) {
+      toast.error(res.error);
+      removeList(newList.id, params.boardId);
+      if (res.status === 403) {
+        return onOpen();
+      }
+    }
 
     if (!isMobile) {
       // setTimeout(() => {
@@ -85,7 +97,7 @@ export default function AddList({ board }: { board: BoardWithLists }) {
             ref={textAreaRef}
             className="h-8 w-full border-transparent px-2 py-1 font-medium transition hover:border-input focus:border-input"
             placeholder="Enter List Name"
-            onBlur={onBlur}
+            // onBlur={onBlur}
           />
           <div className="flex items-center gap-1 pt-2">
             <FormButton className="font-semibold" variant="primary">

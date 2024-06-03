@@ -4,8 +4,9 @@ import prisma from "../../prisma";
 import { revalidatePath } from "next/cache";
 import { copyItemSchema } from "../../schemas";
 import type { Item } from "@prisma/client";
+import { z } from "zod";
 
-export async function copyItem(data: { boardId: string; listId: string; newId: string; id: string; color: string }) {
+export async function copyItem(data: z.infer<typeof copyItemSchema>) {
   let newItem: Item;
 
   try {
@@ -18,7 +19,7 @@ export async function copyItem(data: { boardId: string; listId: string; newId: s
     }
     const validationResult = copyItemSchema.safeParse(data);
     if (!validationResult.success) {
-      console.log("createBoard validationResult.error.flatten().fieldErrors", validationResult.error.flatten().fieldErrors);
+      console.log("copyItem validationResult.error.flatten().fieldErrors", validationResult.error.flatten().fieldErrors);
 
       return {
         fieldErrors: validationResult.error.flatten().fieldErrors,

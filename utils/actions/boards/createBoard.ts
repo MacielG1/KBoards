@@ -1,12 +1,13 @@
 "use server";
 import { auth } from "@clerk/nextjs/server";
-import type { BoardType } from "@/store/store";
 import prisma from "../../prisma";
 import { createBoardSchema } from "../../schemas";
-import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { hasAvailableBoards, increaseBoardCount } from "./boardsLimit";
+import { checkIsPremium } from "@/utils/checkSubscription";
+import { z } from "zod";
 
-export async function createBoard(data: BoardType) {
+export async function createBoard(data: z.infer<typeof createBoardSchema>) {
   try {
     const { userId } = auth();
 
@@ -27,6 +28,15 @@ export async function createBoard(data: BoardType) {
 
     const { name, id, color, backgroundColor, order } = data;
 
+    const [isPremium, canCreateBoard] = await Promise.all([checkIsPremium(), hasAvailableBoards()]);
+
+    if (!isPremium && !canCreateBoard) {
+      return {
+        error: "Reached maximum number of free boards. Upgrade to premium to create more!",
+        status: 403,
+      };
+    }
+
     await prisma.board.create({
       data: {
         name,
@@ -40,6 +50,10 @@ export async function createBoard(data: BoardType) {
         },
       },
     });
+
+    if (!isPremium) {
+      await increaseBoardCount();
+    }
   } catch (error) {
     console.log("error", error);
     return {

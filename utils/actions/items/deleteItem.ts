@@ -1,11 +1,11 @@
 "use server";
 import { auth } from "@clerk/nextjs/server";
-import type { ItemType } from "@/store/store";
 import prisma from "../../prisma";
 import { revalidatePath } from "next/cache";
 import { deleteItemSchema } from "../../schemas";
+import { z } from "zod";
 
-export async function deleteItem(data: ItemType) {
+export async function deleteItem(data: z.infer<typeof deleteItemSchema>) {
   try {
     const { userId } = auth();
 
@@ -51,9 +51,9 @@ export async function deleteItem(data: ItemType) {
       },
     });
   } catch (error) {
-    console.log("Failed to delete board", error);
+    console.log("Failed to delete item", error);
     return {
-      error: "Failed to delete board",
+      error: "Failed to delete item",
     };
   }
   revalidatePath(`/dashboard/${data.boardId}`);

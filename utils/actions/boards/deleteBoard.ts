@@ -1,12 +1,14 @@
 "use server";
 
 import { auth } from "@clerk/nextjs/server";
-import type { BoardType } from "@/store/store";
 import prisma from "../../prisma";
-import { revalidatePath } from "next/cache";
 import { deleteBoardSchema } from "../../schemas";
+import { decreaseBoardCount } from "./boardsLimit";
+import { checkIsPremium } from "@/utils/checkSubscription";
+import { z } from "zod";
+import { revalidatePath } from "next/cache";
 
-export async function deleteBoard(data: BoardType) {
+export async function deleteBoard(data: z.infer<typeof deleteBoardSchema>) {
   try {
     const { userId } = auth();
 
@@ -49,6 +51,12 @@ export async function deleteBoard(data: BoardType) {
         },
       },
     });
+
+    const isPremium = await checkIsPremium();
+
+    if (!isPremium) {
+      await decreaseBoardCount();
+    }
   } catch (error) {
     return {
       error: "Failed to delete board",

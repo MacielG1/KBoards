@@ -13,7 +13,7 @@ type FormButtonProps = {
 };
 
 export default function FormButton({ children, className, disabled, size = "sm", variant = "primary" }: FormButtonProps) {
-  const { pending } = useFormStatus();
+  // const { pending } = useFormStatus();
   return (
     <Button size={size} className={cn(className)} type="submit" variant={variant} disabled={disabled}>
       {children}

@@ -8,7 +8,7 @@ import { useCollapsedContext } from "../Providers/CollapseProvider";
 import { UserButton } from "@clerk/nextjs";
 import { useParams } from "next/navigation";
 
-export default function TopBar() {
+export default function TopBar({ SubButton }: { SubButton: React.ReactNode }) {
   const { isCollapsed } = useCollapsedContext();
   const params = useParams<{ boardId: string }>();
 
@@ -31,7 +31,7 @@ export default function TopBar() {
       <div className="ml-auto flex space-x-1 pl-1">
         {/* {currentBoardData && <TopBarOptions data={currentBoardData} />} */}
 
-        <TopBarOptions data={currentBoardData} />
+        <TopBarOptions data={currentBoardData} SubButton={SubButton} />
         <ThemeSwitcher />
         <UserButton
           afterSignOutUrl="/"

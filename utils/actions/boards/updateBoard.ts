@@ -1,11 +1,11 @@
 "use server";
 import { revalidatePath } from "next/cache";
-import type { BoardType } from "@/store/store";
 import prisma from "../../prisma";
 import { updateBoardSchema } from "../../schemas";
 import { auth } from "@clerk/nextjs/server";
+import { z } from "zod";
 
-export async function updateBoard(data: BoardType) {
+export async function updateBoard(data: z.infer<typeof updateBoardSchema>) {
   let board;
   const { userId } = auth();
 

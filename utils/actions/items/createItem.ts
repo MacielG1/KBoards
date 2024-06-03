@@ -1,11 +1,11 @@
 "use server";
 import { revalidatePath } from "next/cache";
 import { auth } from "@clerk/nextjs/server";
-import type { ItemType } from "@/store/store";
 import prisma from "../../prisma";
 import { createItemSchema } from "../../schemas";
+import { z } from "zod";
 
-export async function createItem(data: ItemType) {
+export async function createItem(data: z.infer<typeof createItemSchema>) {
   let item;
   try {
     const { userId } = auth();
@@ -38,7 +38,7 @@ export async function createItem(data: ItemType) {
     });
   } catch (error) {
     return {
-      error: "Failed to create list",
+      error: "Failed to create item",
     };
   }
   revalidatePath(`/dashboard/${data.boardId}`);

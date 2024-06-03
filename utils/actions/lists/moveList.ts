@@ -3,8 +3,9 @@ import { auth } from "@clerk/nextjs/server";
 import prisma from "../../prisma";
 import { revalidatePath } from "next/cache";
 import { moveListSchema } from "../../schemas";
+import { z } from "zod";
 
-export async function moveList(data: { boardId: string; listId: string }) {
+export async function moveList(data: z.infer<typeof moveListSchema>) {
   try {
     const { userId } = auth();
 
@@ -16,7 +17,7 @@ export async function moveList(data: { boardId: string; listId: string }) {
 
     const validationResult = moveListSchema.safeParse(data);
     if (!validationResult.success) {
-      console.log("createBoard validationResult.error.flatten().fieldErrors", validationResult.error.flatten().fieldErrors);
+      console.log("moveList validationResult.error.flatten().fieldErrors", validationResult.error.flatten().fieldErrors);
 
       return {
         fieldErrors: validationResult.error.flatten().fieldErrors,
@@ -71,7 +72,7 @@ export async function moveList(data: { boardId: string; listId: string }) {
   } catch (error) {
     console.log("error", error);
     return {
-      error: "Failed to copy board",
+      error: "Failed to move list",
     };
   }
   revalidatePath(`/dashboard/${data.boardId}`);

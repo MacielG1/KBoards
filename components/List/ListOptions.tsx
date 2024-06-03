@@ -14,6 +14,8 @@ import { useParams } from "next/navigation";
 import { copyList } from "@/utils/actions/lists/copyList";
 import { createId } from "@paralleldrive/cuid2";
 import ExportToBoard from "./ExportToBoard";
+import { toast } from "sonner";
+import { useProModalStore } from "@/store/useProModal";
 
 type ListOptionsProps = {
   data: ListType;
@@ -33,6 +35,7 @@ export default function ListOptions({ data, onAddItem, textColor }: ListOptionsP
   const copyListState = useStore((state) => state.copyList);
   const removeList = useStore((state) => state.removeList);
   const setListColor = useStore((state) => state.setListColor);
+  const onOpen = useProModalStore((state) => state.onOpen);
 
   async function handleDelete() {
     removeList(data.id, data.boardId);
@@ -44,7 +47,14 @@ export default function ListOptions({ data, onAddItem, textColor }: ListOptionsP
     const newId = createId();
     closeRef.current?.click();
     copyListState(data.id, newId);
-    await copyList({ listId: data.id, boardId: data.boardId, newId });
+
+    const res = await copyList({ listId: data.id, boardId: data.boardId, newId });
+    if (res?.error) {
+      toast.error(res.error);
+      if (res.status === 403) {
+        return onOpen();
+      }
+    }
   }
 
   function handleColorReset() {
