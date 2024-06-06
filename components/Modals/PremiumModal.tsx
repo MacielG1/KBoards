@@ -55,7 +55,7 @@ export default function PremiumModal() {
           <div className="grid grid-cols-[25px_1fr] items-center gap-4">
             <Check className="h-5 w-5 text-green-400" />
             <div>
-              <p className="font-medium">... and more</p>
+              <p className="font-medium">and more...</p>
               <p className="text-sm text-gray-500 dark:text-gray-400">Get access to new features early.</p>
             </div>
           </div>

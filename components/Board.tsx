@@ -107,11 +107,9 @@ export default function Board({ board }: Props) {
   return (
     <div
       className={`flex h-full w-full flex-col items-center justify-start px-3 pt-5 ${isCollapsed && "md:pl-[4rem]"}`}
-      // className=" flex h-full w-full flex-col items-center justify-start p-1 px-8 py-2 "
       id={board.id}
       style={{
         backgroundColor: currentBoard?.backgroundColor,
-        // paddingLeft: isCollapsed ? "3rem" : "",
         transition: `padding-left 0.3s ease-in-out`,
       }}
     >

@@ -3,9 +3,10 @@ import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { ElementRef } from "react";
 import { cn } from "@/utils";
 import { useMediaQuery } from "usehooks-ts";
-import { ChevronsLeft, Menu } from "lucide-react";
+import { ChevronsLeft } from "lucide-react";
 import { useCollapsedContext } from "./Providers/CollapseProvider";
 import SidebarSkeleton from "./Sidebar/SidebarSkeleton";
+import { Icons } from "@/assets/Icons";
 
 export default function Navigation({ SidebarParent }: { SidebarParent: React.ReactNode }) {
   const sidebarRef = useRef<HTMLElement>(null);
@@ -62,7 +63,7 @@ export default function Navigation({ SidebarParent }: { SidebarParent: React.Rea
       <aside
         ref={sidebarRef}
         className={cn(
-          `group/sidebar relative z-[9999] flex h-full flex-col overflow-x-hidden bg-neutral-200 dark:bg-neutral-800 `,
+          `group/sidebar relative z-[9999] flex h-full flex-col overflow-x-hidden bg-neutral-200 dark:bg-neutral-800`,
           isResetting && "transition-all duration-300 ease-in-out",
           isCollapsed && "w-0",
         )}
@@ -82,7 +83,7 @@ export default function Navigation({ SidebarParent }: { SidebarParent: React.Rea
       <div
         ref={navbarRef}
         className={cn(
-          "absolute left-60 top-3 z-[99999] w-[calc(100%-208px)] ",
+          "absolute left-60 top-3 z-[99999] w-[calc(100%-208px)]",
           isCollapsed && "left-0 w-full",
           // isResetting && "transition-all ease-in-out",
           // isMobile && "left-0 w-full",
@@ -90,9 +91,9 @@ export default function Navigation({ SidebarParent }: { SidebarParent: React.Rea
       >
         {isCollapsed && (
           <>
-            <Menu
+            <Icons.MenuIcon
               role="button"
-              className="absolute z-[99999] ml-2 mt-[5px] h-6 w-6 text-neutral-500  duration-200 hover:text-neutral-900 dark:hover:text-neutral-300"
+              className="absolute z-[99999] ml-2 mt-[5px] h-6 w-6 flex-shrink-0 text-neutral-500 duration-200 hover:text-neutral-900 dark:hover:text-neutral-300"
               onClick={resetWidth}
             />
           </>

@@ -7,37 +7,50 @@ import { cn } from "@/utils";
 import { useCollapsedContext } from "../Providers/CollapseProvider";
 import { UserButton } from "@clerk/nextjs";
 import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import getContrastColor from "@/utils/getConstrastColor";
+import { useTheme } from "next-themes";
 
 export default function TopBar({ SubButton }: { SubButton: React.ReactNode }) {
   const { isCollapsed } = useCollapsedContext();
+  const { resolvedTheme } = useTheme();
   const params = useParams<{ boardId: string }>();
 
   const orderedBoards = useStore((state) => state.orderedBoards);
 
   // const currentBoardId = useStorePersisted((state) => state.currentBoardId);
   const currentBoardData = orderedBoards?.find((board) => board.id === params.boardId) || null;
-  // const currentBoardData = orderedBoards?.find((board) => board.id === currentBoardId) || null;
+
+  const [textColor, setTextColor] = useState(currentBoardData?.color || "#fff");
+
+  useEffect(() => {
+    const color = currentBoardData?.backgroundColor;
+    if (color) return setTextColor(getContrastColor(color));
+
+    setTextColor(resolvedTheme === "dark" ? "#b3b3b3" : "#0a0a0a");
+  }, [currentBoardData?.backgroundColor, resolvedTheme]);
 
   return (
     <div
+      style={{
+        backgroundColor: currentBoardData?.backgroundColor,
+        transition: `padding-left 0.3s ease-in-out`,
+      }}
       className={cn(
-        "fixed inset-x-0 z-[50] flex h-14 w-screen items-center justify-center bg-background p-1 px-8 py-2 transition-all duration-300",
+        "fixed inset-x-0 z-[50] flex h-14 w-screen items-center justify-center p-1 px-8 py-2 transition-all duration-300",
         isCollapsed ? "pl-[4rem]" : "pl-[18rem]",
       )}
     >
-      {currentBoardData && <BoardTitle board={currentBoardData} />}
-      {/* {!currentBoardData && <Skeleton className="h-7 w-64" />} */}
+      {currentBoardData && <BoardTitle board={currentBoardData} textColor={textColor} />}
 
       <div className="ml-auto flex space-x-1 pl-1">
-        {/* {currentBoardData && <TopBarOptions data={currentBoardData} />} */}
-
         <TopBarOptions data={currentBoardData} SubButton={SubButton} />
         <ThemeSwitcher />
         <UserButton
           afterSignOutUrl="/"
           appearance={{
             elements: {
-              userButtonTrigger: "focus:outline-none ml-3  focus:ring-0 focus:ring-offset-0 focus:ring-offset-transparent focus:border-0",
+              userButtonTrigger: "focus:outline-none ml-3 focus:ring-0 focus:ring-offset-0 focus:ring-offset-transparent focus:border-0",
               userButtonPopoverCard: "z-[99999]",
             },
           }}

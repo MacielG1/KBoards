@@ -123,8 +123,12 @@ export default function TopBarOptions({ data, SubButton }: BoardOptionsProps) {
         }}
         asChild
       >
-        <Button variant="ghost" size="icon" className="h-[36px] w-[36px]  transition-all duration-300 ">
-          <MoreHorizontal className="size-6" />
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-[36px] w-[36px] bg-neutral-200 transition-all duration-300 hover:bg-neutral-300 dark:bg-neutral-800 dark:hover:bg-neutral-900"
+        >
+          <MoreHorizontal className="size-6 text-black dark:text-white" />
         </Button>
       </PopoverTrigger>
       <PopoverClose ref={closeRef} />
@@ -176,7 +180,7 @@ export default function TopBarOptions({ data, SubButton }: BoardOptionsProps) {
                   e.stopPropagation();
                 }}
                 variant="ghost"
-                className="h-auto w-full justify-start rounded-none p-1 px-4 py-2 pl-4  text-sm font-normal"
+                className="h-auto w-full justify-start rounded-none p-1 px-4 py-2 pl-4 text-sm font-normal"
               >
                 <Trash className="mr-2 size-4" /> Delete Board
               </Button>

@@ -5,9 +5,10 @@ import { updateBoard } from "@/utils/actions/boards/updateBoard";
 
 type BoardTitleProps = {
   board: BoardType;
+  textColor: string;
 };
 
-export default function BoardTitle({ board }: BoardTitleProps) {
+export default function BoardTitle({ board, textColor }: BoardTitleProps) {
   const [isEditing, setIsEditing] = useState(false);
 
   const updateCurrentBoardTitle = useStore((state) => state.updateCurrentBoardTitle);
@@ -43,14 +44,20 @@ export default function BoardTitle({ board }: BoardTitleProps) {
   }
 
   return (
-    <div className="peer flex w-[12rem] items-center justify-between sm:w-[30rem] lg:w-[50rem]">
+    <div
+      className="peer flex w-[12rem] items-center justify-between sm:w-[30rem] lg:w-[50rem]"
+      style={{
+        backgroundColor: board.color || "var(--background)",
+      }}
+    >
       {isEditing ? (
         <form action={changeBoardTitle} className="flex-1" ref={formRef}>
           <input hidden id="boardName" value={board.name} name="boardName" readOnly />
           <FormInput
             ref={inputRef}
             id="title"
-            className="bg-transparent px-1 py-0 pl-2 text-xl font-medium transition focus:border-0 focus:bg-neutral-200 focus:outline-0 focus:ring-0 dark:focus-visible:bg-neutral-800"
+            className="px-1 py-0 pl-2 text-xl font-medium transition focus:border-0 focus:bg-neutral-200 focus:outline-0 focus:ring-0 dark:focus-visible:bg-neutral-800"
+            // className="dark:transparent bg-transparent px-1 py-0 pl-2 text-xl font-medium transition hover:border-input focus:border-0 focus:border-input focus:outline-0 focus:ring-0"
             placeholder="Enter board title..."
             defaultValue={board.name}
             onBlur={onBlur}
@@ -58,7 +65,11 @@ export default function BoardTitle({ board }: BoardTitleProps) {
           <button type="submit" hidden />
         </form>
       ) : (
-        <h2 onClick={enableEditing} className="w-full truncate whitespace-pre-wrap px-1 py-0 pl-2 pt-[0.1rem] font-medium md:text-xl">
+        <h2
+          style={{ color: textColor }}
+          onClick={enableEditing}
+          className="w-full truncate whitespace-pre-wrap px-1 py-0 pl-2 pt-[0.1rem] font-medium md:text-xl"
+        >
           {board.name}
         </h2>
       )}

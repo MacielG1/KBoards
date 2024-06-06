@@ -51,6 +51,7 @@ export default function ListOptions({ data, onAddItem, textColor }: ListOptionsP
     const res = await copyList({ listId: data.id, boardId: data.boardId, newId });
     if (res?.error) {
       toast.error(res.error);
+      removeList(newId, data.boardId);
       if (res.status === 403) {
         return onOpen();
       }
@@ -72,16 +73,16 @@ export default function ListOptions({ data, onAddItem, textColor }: ListOptionsP
           style={{
             borderColor: isHovered ? textColor : "transparent",
           }}
-          className=" h-auto w-auto border p-1 transition-all duration-300 hover:bg-transparent dark:hover:bg-transparent"
+          className="h-auto w-auto border p-1 transition-all duration-300 hover:bg-transparent dark:hover:bg-transparent"
           variant="ghost"
         >
-          <MoreHorizontal style={{ color: textColor }} className="size-4 " />
+          <MoreHorizontal style={{ color: textColor }} className="size-4" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className=" px-0 pb-3 pt-3" side="bottom" align="start">
+      <PopoverContent className="px-0 pb-3 pt-3" side="bottom" align="start">
         <div className="flex items-center justify-center pb-4 text-center text-sm font-medium text-neutral-500">List Options</div>
         <PopoverClose asChild ref={closeRef}>
-          <Button className="absolute right-2 top-2  h-auto w-auto p-2 text-neutral-600 focus-visible:ring-neutral-700" variant="ghost">
+          <Button className="absolute right-2 top-2 h-auto w-auto p-2 text-neutral-600 focus-visible:ring-neutral-700" variant="ghost">
             <X className="size-4" />
           </Button>
         </PopoverClose>
