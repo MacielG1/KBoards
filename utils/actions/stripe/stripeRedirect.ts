@@ -1,11 +1,13 @@
 "use server";
 
 import { auth, currentUser } from "@clerk/nextjs/server";
-import prisma from "../../prisma";
 import { revalidatePath } from "next/cache";
 import { getAbsoluteUrl } from "@/utils/getAbsoluteUrl";
 import { stripe } from "@/utils/stripe";
 import { CURRENT_PRICE } from "@/utils/constants";
+import { db } from "@/utils/db";
+import { eq } from "drizzle-orm";
+import { PremiumSubscription } from "@/drizzle/schema";
 
 export async function stripeRedirect() {
   let url = "";
@@ -21,10 +23,8 @@ export async function stripeRedirect() {
 
     const settingsUrl = getAbsoluteUrl("/");
 
-    const subscription = await prisma.premiumSubscription.findUnique({
-      where: {
-        userId,
-      },
+    const subscription = await db.query.PremiumSubscription.findFirst({
+      where: eq(PremiumSubscription.userId, userId),
     });
 
     if (subscription && subscription.stripeCustomerId) {

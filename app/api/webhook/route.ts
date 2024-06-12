@@ -1,8 +1,10 @@
 import Stripe from "stripe";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
-import prisma from "@/utils/prisma";
 import { stripe } from "@/utils/stripe";
+import { db } from "@/utils/db";
+import { PremiumSubscription } from "@/drizzle/schema";
+import { eq } from "drizzle-orm";
 
 export async function POST(req: Request) {
   const body = await req.text();
@@ -28,28 +30,24 @@ export async function POST(req: Request) {
       return new NextResponse("User not found", { status: 404 });
     }
 
-    await prisma.premiumSubscription.create({
-      data: {
-        userId: session.metadata.userId,
-        stripeCustomerId: session.customer as string,
-        stripeSubscriptionId: session.id as string,
-        stripePriceId: subscription.items.data[0].price.id,
-        stripeCurrentPeriodEnd: new Date(subscription.current_period_end * 1000),
-      },
+    await db.insert(PremiumSubscription).values({
+      userId: session.metadata.userId,
+      stripeCustomerId: session.customer as string,
+      stripeSubscriptionId: session.id as string,
+      stripePriceId: subscription.items.data[0].price.id,
+      stripeCurrentPeriodEnd: new Date(subscription.current_period_end * 1000),
     });
   }
   if (event.type === "invoice.payment_succeeded") {
     const subscription = await stripe.subscriptions.retrieve(session.subscription as string);
 
-    await prisma.premiumSubscription.update({
-      where: {
-        stripeSubscriptionId: subscription.id,
-      },
-      data: {
+    await db
+      .update(PremiumSubscription)
+      .set({
         stripePriceId: subscription.items.data[0].price.id,
         stripeCurrentPeriodEnd: new Date(subscription.current_period_end * 1000),
-      },
-    });
+      })
+      .where(eq(PremiumSubscription.stripeSubscriptionId, subscription.id));
   }
 
   return new NextResponse(null, { status: 200 });

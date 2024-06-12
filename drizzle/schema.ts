@@ -1,0 +1,126 @@
+import { relations, sql } from "drizzle-orm";
+import { createId } from "@paralleldrive/cuid2";
+
+import { pgTable, uuid, varchar, pgSchema, integer, pgEnum, index, uniqueIndex, boolean, real, timestamp, primaryKey, text } from "drizzle-orm/pg-core";
+
+export const Board = pgTable(
+  "board",
+  {
+    id: varchar("id", { length: 128 })
+      .$defaultFn(() => createId())
+      .primaryKey()
+      .notNull(),
+    userId: text("userId").notNull(),
+    name: text("name").notNull(),
+    color: text("color").notNull(),
+    backgroundColor: text("backgroundColor").notNull(),
+    order: integer("order").notNull(),
+    isCurrentBoard: boolean("isCurrentBoard").default(false).notNull(),
+    createdAt: timestamp("createdAt").defaultNow(),
+  },
+  (table) => {
+    return {
+      userId: index("userId_board").on(table.userId),
+    };
+  },
+);
+
+export const List = pgTable(
+  "list",
+  {
+    id: varchar("id", { length: 128 })
+      .$defaultFn(() => createId())
+      .primaryKey()
+      .notNull(),
+    title: text("title").notNull(),
+    order: integer("order").notNull(),
+    color: text("color").notNull(),
+    boardId: text("boardId")
+      .notNull()
+      .references(() => Board.id, { onDelete: "cascade" }),
+    createdAt: timestamp("createdAt").defaultNow(),
+  },
+  (table) => {
+    return {
+      boardId: index("boardId").on(table.boardId),
+    };
+  },
+);
+
+export const Item = pgTable(
+  "item",
+  {
+    id: varchar("id", { length: 128 })
+      .$defaultFn(() => createId())
+      .primaryKey()
+      .notNull(),
+    content: text("content").notNull(),
+    order: integer("order").notNull(),
+    color: text("color").notNull(),
+    listId: text("listId")
+      .notNull()
+      .references(() => List.id, { onDelete: "cascade" }),
+    boardId: text("boardId")
+      .notNull()
+      .references(() => Board.id, { onDelete: "cascade" }),
+    createdAt: timestamp("createdAt").defaultNow(),
+  },
+  (table) => {
+    return {
+      listId: index("listId").on(table.listId),
+    };
+  },
+);
+
+export const FreeTierLimit = pgTable(
+  "free_tier_limit",
+  {
+    id: varchar("id", { length: 128 })
+      .$defaultFn(() => createId())
+      .primaryKey()
+      .notNull(),
+    userId: text("userId").notNull().unique(),
+    boardsCount: integer("boardsCount").default(0).notNull(),
+    listsCount: integer("listsCount").default(0).notNull(),
+    createdAt: timestamp("createdAt").defaultNow(),
+  },
+  (table) => {
+    return {
+      userId: index("userId_free_tier_limit").on(table.userId),
+    };
+  },
+);
+
+export const PremiumSubscription = pgTable(
+  "premium_subscription",
+  {
+    id: varchar("id", { length: 128 })
+      .$defaultFn(() => createId())
+      .primaryKey()
+      .notNull(),
+    userId: text("userId").notNull().unique(),
+    stripeCustomerId: text("stripeCustomerId").unique(),
+    stripeSubscriptionId: text("stripeSubscriptionId").unique(),
+    stripePriceId: text("stripePriceId").unique(),
+    stripeCurrentPeriodEnd: timestamp("stripeCurrentPeriodEnd"),
+    createdAt: timestamp("createdAt").defaultNow(),
+  },
+  (table) => {
+    return {
+      userId: index("userId_premium_subscription").on(table.userId),
+    };
+  },
+);
+
+export const ListRelations = relations(List, ({ one, many }) => ({
+  board: one(Board, { fields: [List.boardId], references: [Board.id] }),
+  items: many(Item),
+}));
+
+export const ItemRelations = relations(Item, ({ one }) => ({
+  list: one(List, { fields: [Item.listId], references: [List.id] }),
+}));
+
+export const BoardRelations = relations(Board, ({ many }) => ({
+  lists: many(List),
+}));

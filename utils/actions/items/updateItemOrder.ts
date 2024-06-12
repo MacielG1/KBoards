@@ -1,9 +1,10 @@
 "use server";
 import { auth } from "@clerk/nextjs/server";
-import { revalidatePath } from "next/cache";
-import prisma from "../../prisma";
 import { UpdateItemOrderSchema } from "../../schemas";
 import { z } from "zod";
+import { db } from "@/utils/db";
+import { Item, List } from "@/drizzle/schema";
+import { and, eq } from "drizzle-orm";
 
 export async function updateItemOrder(data: z.infer<typeof UpdateItemOrderSchema>) {
   let updatedItems;
@@ -27,29 +28,21 @@ export async function updateItemOrder(data: z.infer<typeof UpdateItemOrderSchema
 
     const { items, boardId } = data;
 
-    const transaction = items.map((item) =>
-      prisma.item.update({
-        where: {
-          id: item.id,
-          list: {
-            boardId,
-          },
-        },
-        data: {
-          order: item.order,
-          listId: item.listId,
-        },
-      }),
-    );
-
-    updatedItems = await prisma.$transaction(transaction);
+    await db.transaction(async (db) => {
+      for (const item of items) {
+        await db
+          .update(Item)
+          .set({ order: item.order, listId: item.listId })
+          .where(and(eq(Item.id, item.id), eq(Item.boardId, boardId)));
+      }
+    });
   } catch (error) {
     console.log("Failed to reorder items", error);
     return {
       error: "Failed to reorder items",
     };
   }
-  revalidatePath(`/dashboard/${data.boardId}`);
+  // revalidatePath(`/dashboard/${data.boardId}`);
 
   return {
     data: updatedItems,

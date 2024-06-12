@@ -1,9 +1,9 @@
 "use server";
-import { revalidatePath } from "next/cache";
 import { auth } from "@clerk/nextjs/server";
-import prisma from "../../prisma";
 import { createItemSchema } from "../../schemas";
 import { z } from "zod";
+import { db } from "@/utils/db";
+import { Item } from "@/drizzle/schema";
 
 export async function createItem(data: z.infer<typeof createItemSchema>) {
   let item;
@@ -26,22 +26,20 @@ export async function createItem(data: z.infer<typeof createItemSchema>) {
 
     const { content, id, listId, order, boardId, color } = data;
 
-    item = await prisma.item.create({
-      data: {
-        content,
-        id,
-        boardId,
-        listId,
-        order,
-        color,
-      },
+    item = await db.insert(Item).values({
+      content,
+      id,
+      boardId,
+      listId,
+      order,
+      color,
     });
   } catch (error) {
     return {
       error: "Failed to create item",
     };
   }
-  revalidatePath(`/dashboard/${data.boardId}`);
+  // revalidatePath(`/dashboard/${data.boardId}`);
 
   return {
     data: item,

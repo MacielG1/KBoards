@@ -1,12 +1,13 @@
 "use server";
 
 import { auth } from "@clerk/nextjs/server";
-import prisma from "../../prisma";
 import { deleteBoardSchema } from "../../schemas";
 import { decreaseBoardCount } from "./boardsLimit";
 import { checkIsPremium } from "@/utils/checkSubscription";
 import { z } from "zod";
-import { revalidatePath } from "next/cache";
+import { db } from "@/utils/db";
+import { Board } from "@/drizzle/schema";
+import { and, eq, gte, ne, sql } from "drizzle-orm";
 
 export async function deleteBoard(data: z.infer<typeof deleteBoardSchema>) {
   try {
@@ -28,29 +29,14 @@ export async function deleteBoard(data: z.infer<typeof deleteBoardSchema>) {
 
     const { id } = data;
 
-    await prisma.board.delete({
-      where: {
-        id,
-        userId,
-      },
-    });
+    await db.delete(Board).where(and(eq(Board.id, id), eq(Board.userId, userId)));
 
-    await prisma.board.updateMany({
-      where: {
-        userId,
-        id: {
-          not: id,
-        },
-        order: {
-          gte: data.order,
-        },
-      },
-      data: {
-        order: {
-          decrement: 1,
-        },
-      },
-    });
+    await db
+      .update(Board)
+      .set({
+        order: sql`${Board.order} - 1`,
+      })
+      .where(and(eq(Board.userId, userId), ne(Board.id, id), gte(Board.order, data.order)));
 
     const isPremium = await checkIsPremium();
 

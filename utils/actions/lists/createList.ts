@@ -1,11 +1,11 @@
 "use server";
-import { revalidatePath } from "next/cache";
 import { auth } from "@clerk/nextjs/server";
-import prisma from "../../prisma";
 import { createListSchema } from "../../schemas";
 import { z } from "zod";
 import { checkIsPremium } from "@/utils/checkSubscription";
 import { hasAvailableLists, increaseListCount } from "./listslimit";
+import { db } from "@/utils/db";
+import { List } from "@/drizzle/schema";
 
 export async function createList(data: z.infer<typeof createListSchema>) {
   let list;
@@ -37,17 +37,12 @@ export async function createList(data: z.infer<typeof createListSchema>) {
 
     const { title, id, items, color, order, boardId } = data;
 
-    list = await prisma.list.create({
-      data: {
-        title,
-        id,
-        items: {
-          create: items,
-        },
-        color,
-        order,
-        boardId,
-      },
+    list = await db.insert(List).values({
+      title,
+      id,
+      color,
+      order,
+      boardId,
     });
 
     if (!isPremium) {
@@ -58,7 +53,7 @@ export async function createList(data: z.infer<typeof createListSchema>) {
       error: "Failed to create list",
     };
   }
-  revalidatePath(`/dashboard/${data.boardId}`);
+  // revalidatePath(`/dashboard/${data.boardId}`);
 
   return {
     data: list,

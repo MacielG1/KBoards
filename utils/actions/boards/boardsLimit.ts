@@ -1,6 +1,8 @@
+import { FreeTierLimit } from "@/drizzle/schema";
 import { BOARDS_LIMIT } from "@/utils/constants";
-import prisma from "@/utils/prisma";
+import { db } from "@/utils/db";
 import { auth } from "@clerk/nextjs/server";
+import { eq } from "drizzle-orm";
 
 export async function increaseBoardCount() {
   try {
@@ -8,28 +10,22 @@ export async function increaseBoardCount() {
 
     if (!userId) throw new Error("Unauthorized");
 
-    const limit = await prisma.freeTierLimit.findUnique({
-      where: {
-        userId,
-      },
+    const limit = await db.query.FreeTierLimit.findFirst({
+      where: eq(FreeTierLimit.userId, userId),
     });
 
     if (!limit) {
-      await prisma.freeTierLimit.create({
-        data: {
-          userId,
-          boardsCount: 1,
-        },
+      await db.insert(FreeTierLimit).values({
+        userId,
+        boardsCount: 1,
       });
     } else {
-      await prisma.freeTierLimit.update({
-        where: {
-          userId,
-        },
-        data: {
+      await db
+        .update(FreeTierLimit)
+        .set({
           boardsCount: limit.boardsCount + 1,
-        },
-      });
+        })
+        .where(eq(FreeTierLimit.userId, userId));
     }
   } catch (error) {
     console.error("increaseBoardCount error", error);
@@ -42,23 +38,19 @@ export async function decreaseBoardCount() {
 
     if (!userId) throw new Error("Unauthorized");
 
-    const limit = await prisma.freeTierLimit.findUnique({
-      where: {
-        userId,
-      },
+    const limit = await db.query.FreeTierLimit.findFirst({
+      where: eq(FreeTierLimit.userId, userId),
     });
 
     if (!limit) {
       return;
     } else {
-      await prisma.freeTierLimit.update({
-        where: {
-          userId,
-        },
-        data: {
+      await db
+        .update(FreeTierLimit)
+        .set({
           boardsCount: limit.boardsCount > 0 ? limit.boardsCount - 1 : 0,
-        },
-      });
+        })
+        .where(eq(FreeTierLimit.userId, userId));
     }
   } catch (error) {
     console.error("decreaseBoardCount error", error);
@@ -72,10 +64,8 @@ export async function hasAvailableBoards() {
 
     if (!userId) throw new Error("Unauthorized");
 
-    const limit = await prisma.freeTierLimit.findUnique({
-      where: {
-        userId,
-      },
+    const limit = await db.query.FreeTierLimit.findFirst({
+      where: eq(FreeTierLimit.userId, userId),
     });
 
     if (!limit || limit.boardsCount < BOARDS_LIMIT) return true;
@@ -92,10 +82,8 @@ export async function getAvailableBoardCount() {
 
     if (!userId) throw new Error("Unauthorized");
 
-    const limit = await prisma.freeTierLimit.findUnique({
-      where: {
-        userId,
-      },
+    const limit = await db.query.FreeTierLimit.findFirst({
+      where: eq(FreeTierLimit.userId, userId),
     });
 
     if (!limit) return BOARDS_LIMIT;

@@ -63,7 +63,7 @@ export default function ColorPicker({ id, value, type, text = "Change Color", cl
     <>
       <input
         className={cn(
-          "peer mr-[0.4rem] h-6 w-5 min-w-[1rem] shrink-0 cursor-pointer rounded-full border-0 bg-transparent outline-none transition duration-100 focus-visible:scale-110 focus-visible:outline-none focus-visible:outline-4",
+          "peer ml-[1px] mr-[0.4rem] h-6 w-5 min-w-[1rem] shrink-0 cursor-pointer rounded-full border-0 bg-transparent outline-none transition duration-100 focus-visible:scale-110 focus-visible:outline-none focus-visible:outline-4",
           className,
         )}
         type="color"
@@ -71,7 +71,7 @@ export default function ColorPicker({ id, value, type, text = "Change Color", cl
         onChange={handleChange}
         id={`${type}-${id}`}
       />
-      <label htmlFor={`${type}-${id}`} className="flex cursor-pointer items-center justify-start py-2  ">
+      <label htmlFor={`${type}-${id}`} className="flex cursor-pointer items-center justify-start py-2">
         {text}
       </label>
     </>

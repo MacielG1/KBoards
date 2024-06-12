@@ -1,6 +1,8 @@
+import { FreeTierLimit } from "@/drizzle/schema";
 import { LISTS_LIMIT } from "@/utils/constants";
-import prisma from "@/utils/prisma";
+import { db } from "@/utils/db";
 import { auth } from "@clerk/nextjs/server";
+import { eq } from "drizzle-orm";
 
 export async function increaseListCount() {
   try {
@@ -8,28 +10,22 @@ export async function increaseListCount() {
 
     if (!userId) throw new Error("Unauthorized");
 
-    const limit = await prisma.freeTierLimit.findUnique({
-      where: {
-        userId,
-      },
+    const limit = await db.query.FreeTierLimit.findFirst({
+      where: eq(FreeTierLimit.userId, userId),
     });
 
     if (!limit) {
-      await prisma.freeTierLimit.create({
-        data: {
-          userId,
-          listsCount: 1,
-        },
+      await db.insert(FreeTierLimit).values({
+        userId,
+        listsCount: 1,
       });
     } else {
-      await prisma.freeTierLimit.update({
-        where: {
-          userId,
-        },
-        data: {
+      await db
+        .update(FreeTierLimit)
+        .set({
           listsCount: limit.listsCount + 1,
-        },
-      });
+        })
+        .where(eq(FreeTierLimit.userId, userId));
     }
   } catch (error) {
     console.error("increaseListCount error", error);
@@ -42,23 +38,19 @@ export async function decreaseListCount() {
 
     if (!userId) throw new Error("Unauthorized");
 
-    const limit = await prisma.freeTierLimit.findUnique({
-      where: {
-        userId,
-      },
+    const limit = await db.query.FreeTierLimit.findFirst({
+      where: eq(FreeTierLimit.userId, userId),
     });
 
     if (!limit) {
       return;
     } else {
-      await prisma.freeTierLimit.update({
-        where: {
-          userId,
-        },
-        data: {
+      await db
+        .update(FreeTierLimit)
+        .set({
           listsCount: limit.listsCount > 0 ? limit.listsCount - 1 : 0,
-        },
-      });
+        })
+        .where(eq(FreeTierLimit.userId, userId));
     }
   } catch (error) {
     console.error("decreaseListCount error", error);
@@ -72,10 +64,8 @@ export async function hasAvailableLists() {
 
     if (!userId) throw new Error("Unauthorized");
 
-    const limit = await prisma.freeTierLimit.findUnique({
-      where: {
-        userId,
-      },
+    const limit = await db.query.FreeTierLimit.findFirst({
+      where: eq(FreeTierLimit.userId, userId),
     });
 
     if (!limit || limit.listsCount < LISTS_LIMIT) return true;
@@ -92,10 +82,8 @@ export async function getAvailableListCount() {
 
     if (!userId) throw new Error("Unauthorized");
 
-    const limit = await prisma.freeTierLimit.findUnique({
-      where: {
-        userId,
-      },
+    const limit = await db.query.FreeTierLimit.findFirst({
+      where: eq(FreeTierLimit.userId, userId),
     });
 
     if (!limit) return LISTS_LIMIT;

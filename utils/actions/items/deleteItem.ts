@@ -1,9 +1,10 @@
 "use server";
 import { auth } from "@clerk/nextjs/server";
-import prisma from "../../prisma";
-import { revalidatePath } from "next/cache";
 import { deleteItemSchema } from "../../schemas";
 import { z } from "zod";
+import { db } from "@/utils/db";
+import { Item } from "@/drizzle/schema";
+import { and, eq, gte, ne, sql } from "drizzle-orm";
 
 export async function deleteItem(data: z.infer<typeof deleteItemSchema>) {
   try {
@@ -25,36 +26,17 @@ export async function deleteItem(data: z.infer<typeof deleteItemSchema>) {
 
     const { id, boardId, listId } = data;
 
-    await prisma.item.delete({
-      where: {
-        id,
-        boardId,
-        listId,
-      },
-    });
+    await db.delete(Item).where(and(eq(Item.id, id), eq(Item.boardId, boardId), eq(Item.listId, listId)));
 
-    await prisma.item.updateMany({
-      where: {
-        boardId,
-        listId,
-        id: {
-          not: id,
-        },
-        order: {
-          gte: data.order,
-        },
-      },
-      data: {
-        order: {
-          decrement: 1,
-        },
-      },
-    });
+    await db
+      .update(Item)
+      .set({ order: sql`${Item.order} - 1` })
+      .where(and(ne(Item.id, id), eq(Item.boardId, boardId), eq(Item.listId, listId), gte(Item.order, data.order)));
   } catch (error) {
     console.log("Failed to delete item", error);
     return {
       error: "Failed to delete item",
     };
   }
-  revalidatePath(`/dashboard/${data.boardId}`);
+  // revalidatePath(`/dashboard/${data.boardId}`);
 }

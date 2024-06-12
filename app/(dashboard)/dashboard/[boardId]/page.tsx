@@ -1,5 +1,5 @@
 import Board from "@/components/Board";
-import { fetchBoard } from "@/utils/data/fetchBoard";
+import { fetchBoard } from "@/utils/fetchBoard";
 import { notFound } from "next/navigation";
 
 export default async function page({ params }: { params: { boardId: string } }) {

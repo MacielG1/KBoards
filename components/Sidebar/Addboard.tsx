@@ -100,17 +100,15 @@ export default function AddBoard() {
 
   if (isEditing) {
     return (
-      <div className="h-full w-[10rem] select-none ">
+      <div className="h-full w-[10rem] select-none">
         <form action={handleSubmit} ref={formRef} className="w-full space-y-1 rounded-md bg-white p-2 py-3 shadow-md dark:bg-neutral-700">
           <FormInput
             id="title"
             ref={inputRef}
-            className="
-              h-9
-              w-full border-transparent px-2 py-1 font-medium transition hover:border-input focus:border-input dark:focus-visible:bg-transparent"
+            className="h-9 w-full border-transparent px-2 py-1 font-medium transition hover:border-input focus:border-input dark:focus-visible:bg-transparent"
             placeholder="Enter Board Name"
           />
-          <p className="flex items-center justify-center gap-1 pt-2 ">
+          <p className="flex items-center justify-center gap-1 pt-2">
             <FormButton size={"superSmall"} variant="primary" className="font-semibold">
               Add Board
             </FormButton>
@@ -127,7 +125,7 @@ export default function AddBoard() {
       <Button
         variant="primary"
         onClick={enableEditing}
-        className="flex w-full items-center justify-center rounded-xl p-2 py-[0.6rem] text-sm font-medium text-black transition duration-300 "
+        className="flex w-full items-center justify-center rounded-xl p-2 py-[0.6rem] text-sm font-medium text-black transition duration-300"
       >
         <PlusIcon className="mr-2 size-4" />
         Add Board

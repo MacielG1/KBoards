@@ -1,9 +1,10 @@
 "use server";
 import { auth } from "@clerk/nextjs/server";
-import prisma from "../../prisma";
-import { revalidatePath } from "next/cache";
 import { moveListSchema } from "../../schemas";
 import { z } from "zod";
+import { db } from "@/utils/db";
+import { and, count, eq, gt, sql } from "drizzle-orm";
+import { List } from "@/drizzle/schema";
 
 export async function moveList(data: z.infer<typeof moveListSchema>) {
   try {
@@ -26,13 +27,8 @@ export async function moveList(data: z.infer<typeof moveListSchema>) {
 
     const { boardId, listId: id } = data;
 
-    const listToMove = await prisma.list.findUnique({
-      where: {
-        id: id,
-        Board: {
-          userId,
-        },
-      },
+    const listToMove = await db.query.List.findFirst({
+      where: eq(List.id, id),
     });
 
     if (!listToMove) {
@@ -41,39 +37,21 @@ export async function moveList(data: z.infer<typeof moveListSchema>) {
       };
     }
 
-    await prisma.list.update({
-      where: {
-        id,
-      },
-      data: {
-        boardId,
-        order: await prisma.list.count({
-          where: {
-            boardId,
-          },
-        }),
-      },
-    });
+    const countResult = await db.select({ count: count() }).from(List).where(eq(List.boardId, boardId));
 
-    // update order of lists from original board
-    await prisma.list.updateMany({
-      where: {
-        boardId: listToMove.boardId,
-        order: {
-          gt: listToMove.order,
-        },
-      },
-      data: {
-        order: {
-          decrement: 1,
-        },
-      },
-    });
+    const order = countResult[0]?.count ?? 0;
+
+    await db.update(List).set({ boardId, order }).where(eq(List.id, id));
+
+    await db
+      .update(List)
+      .set({ order: sql`${List.order} - 1` })
+      .where(and(eq(List.boardId, listToMove.boardId), gt(List.order, listToMove.order)));
   } catch (error) {
     console.log("error", error);
     return {
       error: "Failed to move list",
     };
   }
-  revalidatePath(`/dashboard/${data.boardId}`);
+  // revalidatePath(`/dashboard/${data.boardId}`);
 }

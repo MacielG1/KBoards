@@ -32,10 +32,10 @@ export default function PremiumModal() {
       <DialogContent className="sm:max-w-[450px]">
         <DialogHeader>
           <DialogTitle>Upgrade to Premium</DialogTitle>
-          <DialogDescription>Unlock more features and support the app's development</DialogDescription>
+          <DialogDescription>Unlock more features and support the app&apos;s development</DialogDescription>
         </DialogHeader>
         <p className="text-center text-green-400">
-          <span className="text-4xl ">$ {(CURRENT_PRICE / 100).toLocaleString("en-US", { minimumFractionDigits: 2 })}</span> /mo
+          <span className="text-4xl">$ {(CURRENT_PRICE / 100).toLocaleString("en-US", { minimumFractionDigits: 2 })}</span> /mo
         </p>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-[25px_1fr] items-center gap-4">

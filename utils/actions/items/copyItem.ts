@@ -1,13 +1,14 @@
 "use server";
 import { auth } from "@clerk/nextjs/server";
-import prisma from "../../prisma";
-import { revalidatePath } from "next/cache";
+
 import { copyItemSchema } from "../../schemas";
-import type { Item } from "@prisma/client";
 import { z } from "zod";
+import { db } from "@/utils/db";
+import { and, eq, gte, ne } from "drizzle-orm";
+import { Item } from "@/drizzle/schema";
 
 export async function copyItem(data: z.infer<typeof copyItemSchema>) {
-  let newItem: Item;
+  let newItem;
 
   try {
     const { userId } = auth();
@@ -28,12 +29,8 @@ export async function copyItem(data: z.infer<typeof copyItemSchema>) {
 
     const { boardId, listId, id, newId, color } = data;
 
-    const itemToCopy = await prisma.item.findUnique({
-      where: {
-        id: id,
-        boardId,
-        listId,
-      },
+    const itemToCopy = await db.query.Item.findFirst({
+      where: and(eq(Item.id, id), eq(Item.boardId, boardId), eq(Item.listId, listId)),
     });
 
     if (!itemToCopy) {
@@ -42,39 +39,24 @@ export async function copyItem(data: z.infer<typeof copyItemSchema>) {
       };
     }
 
-    newItem = await prisma.item.create({
-      data: {
-        id: newId,
-        content: itemToCopy.content,
-        listId: itemToCopy.listId,
-        boardId: itemToCopy.boardId,
-        order: itemToCopy.order + 1,
-        color,
-      },
+    newItem = await db.insert(Item).values({
+      id: newId,
+      content: itemToCopy.content,
+      listId: itemToCopy.listId,
+      boardId: itemToCopy.boardId,
+      order: itemToCopy.order + 1,
+      color,
     });
 
-    await prisma.item.updateMany({
-      where: {
-        boardId,
-        listId,
-        id: {
-          not: newItem.id,
-        },
-        order: {
-          gte: itemToCopy.order + 1,
-        },
-      },
-      data: {
-        order: {
-          increment: 1,
-        },
-      },
-    });
+    await db
+      .update(Item)
+      .set({ order: itemToCopy.order + 1 })
+      .where(and(ne(Item.id, newId), eq(Item.boardId, boardId), eq(Item.listId, listId), gte(Item.order, itemToCopy.order + 1)));
   } catch (error) {
     console.log("error", error);
     return {
       error: "Failed to copy Item",
     };
   }
-  revalidatePath(`/dashboard/${data.boardId}`);
+  // revalidatePath(`/dashboard/${data.boardId}`);
 }

@@ -1,9 +1,11 @@
 "use server";
 import { revalidatePath } from "next/cache";
-import prisma from "../../prisma";
 import { updateBoardColorSchema } from "../../schemas";
 import { auth } from "@clerk/nextjs/server";
 import { z } from "zod";
+import { db } from "@/utils/db";
+import { Board } from "@/drizzle/schema";
+import { eq } from "drizzle-orm";
 
 export async function updateBoardColor(data: z.infer<typeof updateBoardColorSchema>) {
   let board;
@@ -27,14 +29,7 @@ export async function updateBoardColor(data: z.infer<typeof updateBoardColorSche
 
     const { id, color } = data;
 
-    board = await prisma.board.update({
-      where: {
-        id,
-      },
-      data: {
-        color,
-      },
-    });
+    board = await db.update(Board).set({ color }).where(eq(Board.id, id));
   } catch (error) {
     return {
       error: "Failed to update board",

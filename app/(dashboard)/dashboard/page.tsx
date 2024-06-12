@@ -16,7 +16,7 @@ export default function Dashboard() {
     }
   }, [currentBoardId, router, orderedBoards]);
 
-  if (!currentBoardId) {
+  if (!currentBoardId || !orderedBoards.find((board) => board.id === currentBoardId)) {
     return (
       <div className="flex h-[70vh] w-full items-center justify-center">
         <div className="flex flex-col items-center">

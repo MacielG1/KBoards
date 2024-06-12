@@ -44,12 +44,7 @@ export default function BoardTitle({ board, textColor }: BoardTitleProps) {
   }
 
   return (
-    <div
-      className="peer flex w-[12rem] items-center justify-between sm:w-[30rem] lg:w-[50rem]"
-      style={{
-        backgroundColor: board.color || "var(--background)",
-      }}
-    >
+    <div className="peer flex w-[12rem] items-center justify-between sm:w-[30rem] lg:w-[50rem]">
       {isEditing ? (
         <form action={changeBoardTitle} className="flex-1" ref={formRef}>
           <input hidden id="boardName" value={board.name} name="boardName" readOnly />

@@ -1,4 +1,4 @@
-import prisma from "@/utils/prisma";
+import { db } from "@/utils/db";
 import { NextResponse } from "next/server";
 
 const cronKey = process.env.CRON_KEY;
@@ -11,7 +11,7 @@ export async function GET(req: Request) {
   }
 
   try {
-    await prisma.board.findFirst();
+    await db.query.Board.findFirst();
     return NextResponse.json({ message: "Success" });
   } catch (error) {
     console.error(error);

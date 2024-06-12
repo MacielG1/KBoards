@@ -1,7 +1,7 @@
 import "server-only";
 
 import { auth } from "@clerk/nextjs/server";
-import prisma from "../prisma";
+import { db } from "@/utils/db";
 
 export async function fetchBoard({ boardId }: { boardId: string }) {
   try {
@@ -11,21 +11,14 @@ export async function fetchBoard({ boardId }: { boardId: string }) {
       return null;
     }
 
-    const board = await prisma.board.findUnique({
-      where: {
-        id: boardId,
-        userId,
-      },
-      include: {
+    const board = await db.query.Board.findFirst({
+      where: (board, { eq, and }) => and(eq(board.id, boardId), eq(board.userId, userId)),
+      with: {
         lists: {
-          orderBy: {
-            order: "asc",
-          },
-          include: {
+          orderBy: (List, { asc }) => [asc(List.order)],
+          with: {
             items: {
-              orderBy: {
-                order: "asc",
-              },
+              orderBy: (Item, { asc }) => [asc(Item.order)],
             },
           },
         },

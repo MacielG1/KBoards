@@ -1,9 +1,10 @@
 "use server";
 import { auth } from "@clerk/nextjs/server";
-import { revalidatePath } from "next/cache";
-import prisma from "../../prisma";
 import { updateBoardOrderSchema } from "../../schemas";
 import { z } from "zod";
+import { db } from "@/utils/db";
+import { Board } from "@/drizzle/schema";
+import { and, eq } from "drizzle-orm";
 
 export async function updateBoardOrder(data: z.infer<typeof updateBoardOrderSchema>) {
   let boards;
@@ -26,26 +27,24 @@ export async function updateBoardOrder(data: z.infer<typeof updateBoardOrderSche
         fieldErrors: validationResult.error.flatten().fieldErrors,
       };
     }
-    const transaction = data.map((board) =>
-      prisma.board.update({
-        where: {
-          id: board.id,
-          userId,
-        },
-        data: {
-          order: board.order,
-        },
-      }),
-    );
 
-    boards = await prisma.$transaction(transaction);
+    console.log("data", data);
+
+    await db.transaction(async (db) => {
+      for (const board of data) {
+        await db
+          .update(Board)
+          .set({ order: board.order })
+          .where(and(eq(Board.id, board.id), eq(Board.userId, userId)));
+      }
+    });
   } catch (error) {
     console.log("Failed to reorder lists", error);
     return {
       error: "Failed to reorder lists",
     };
   }
-  revalidatePath(`/dashboard`);
+  // revalidatePath(`/dashboard`);
 
   return {
     data: boards,

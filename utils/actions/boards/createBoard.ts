@@ -1,11 +1,11 @@
 "use server";
 import { auth } from "@clerk/nextjs/server";
-import prisma from "../../prisma";
 import { createBoardSchema } from "../../schemas";
-import { revalidatePath } from "next/cache";
 import { hasAvailableBoards, increaseBoardCount } from "./boardsLimit";
 import { checkIsPremium } from "@/utils/checkSubscription";
 import { z } from "zod";
+import { db } from "@/utils/db";
+import { Board } from "@/drizzle/schema";
 
 export async function createBoard(data: z.infer<typeof createBoardSchema>) {
   try {
@@ -37,18 +37,13 @@ export async function createBoard(data: z.infer<typeof createBoardSchema>) {
       };
     }
 
-    await prisma.board.create({
-      data: {
-        name,
-        id,
-        userId,
-        order,
-        color,
-        backgroundColor,
-        lists: {
-          create: [],
-        },
-      },
+    await db.insert(Board).values({
+      name,
+      id,
+      userId,
+      order,
+      color,
+      backgroundColor,
     });
 
     if (!isPremium) {
@@ -60,5 +55,5 @@ export async function createBoard(data: z.infer<typeof createBoardSchema>) {
       error: "Failed to create board",
     };
   }
-  revalidatePath("/dashboard");
+  // revalidatePath("/dashboard");
 }

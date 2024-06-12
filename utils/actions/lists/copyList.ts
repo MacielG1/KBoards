@@ -1,16 +1,14 @@
 "use server";
 import { auth } from "@clerk/nextjs/server";
-import prisma from "../../prisma";
-import { revalidatePath } from "next/cache";
 import { copyListSchema } from "../../schemas";
-import type { List } from "@prisma/client";
 import { z } from "zod";
 import { checkIsPremium } from "@/utils/checkSubscription";
 import { hasAvailableLists, increaseListCount } from "./listslimit";
+import { db } from "@/utils/db";
+import { and, eq, gte, ne } from "drizzle-orm";
+import { Item, List } from "@/drizzle/schema";
 
 export async function copyList(data: z.infer<typeof copyListSchema>) {
-  let newList: List;
-
   try {
     const { userId } = auth();
 
@@ -37,15 +35,9 @@ export async function copyList(data: z.infer<typeof copyListSchema>) {
 
     const { boardId, listId: id, newId } = data;
 
-    const listToCopy = await prisma.list.findUnique({
-      where: {
-        id: id,
-        Board: {
-          id: boardId,
-          userId,
-        },
-      },
-      include: {
+    const listToCopy = await db.query.List.findFirst({
+      where: and(eq(List.id, id), eq(List.boardId, boardId)),
+      with: {
         items: true,
       },
     });
@@ -56,46 +48,36 @@ export async function copyList(data: z.infer<typeof copyListSchema>) {
       };
     }
 
-    await prisma.$transaction(async (prisma) => {
-      newList = await prisma.list.create({
-        data: {
+    await db.transaction(async (tx) => {
+      const newBoard = await tx
+        .insert(List)
+        .values({
           id: newId,
           title: `${listToCopy.title} (copy)`,
           color: listToCopy.color,
           order: listToCopy.order + 1,
           boardId: listToCopy.boardId,
-          items: {
-            createMany: {
-              data: listToCopy.items.map((item) => ({
-                content: item.content,
-                order: item.order,
-                boardId: listToCopy.boardId,
-                color: item.color,
-              })),
-            },
-          },
-        },
-      });
+        })
+        .returning({ id: List.id });
 
-      await prisma.list.updateMany({
-        where: {
-          Board: {
-            userId,
-            id: listToCopy.boardId,
-          },
-          id: {
-            not: newList.id,
-          },
-          order: {
-            gte: listToCopy.order + 1,
-          },
-        },
-        data: {
-          order: {
-            increment: 1,
-          },
-        },
-      });
+      const newListId = newBoard[0].id;
+
+      const itemData = listToCopy.items.map((item) => ({
+        content: item.content,
+        order: item.order,
+        boardId: listToCopy.boardId,
+        color: item.color,
+        listId: newListId,
+      }));
+
+      await tx.insert(Item).values(itemData);
+
+      await tx
+        .update(List)
+        .set({
+          order: listToCopy.order + 1,
+        })
+        .where(and(ne(List.id, newId), eq(List.boardId, boardId), gte(List.order, listToCopy.order + 1)));
     });
 
     if (!isPremium) {
@@ -107,5 +89,5 @@ export async function copyList(data: z.infer<typeof copyListSchema>) {
       error: "Failed to copy list",
     };
   }
-  revalidatePath(`/dashboard/${data.boardId}`);
+  // revalidatePath(`/dashboard/${data.boardId}`);
 }

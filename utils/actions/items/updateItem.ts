@@ -1,9 +1,10 @@
 "use server";
 import { auth } from "@clerk/nextjs/server";
-import { revalidatePath } from "next/cache";
-import prisma from "../../prisma";
 import { updateItemSchema } from "../../schemas";
 import { z } from "zod";
+import { db } from "@/utils/db";
+import { Item } from "@/drizzle/schema";
+import { and, eq } from "drizzle-orm";
 
 export async function updateItem(data: z.infer<typeof updateItemSchema>) {
   let item;
@@ -26,21 +27,18 @@ export async function updateItem(data: z.infer<typeof updateItemSchema>) {
 
     const { content, id, listId } = data;
 
-    item = await prisma.item.update({
-      where: {
-        id,
-        listId,
-      },
-      data: {
+    item = await db
+      .update(Item)
+      .set({
         content,
-      },
-    });
+      })
+      .where(and(eq(Item.id, id), eq(Item.listId, listId)));
   } catch (error) {
     return {
       error: "Failed to update item",
     };
   }
-  revalidatePath(`/dashboard/${data.boardId}`);
+  // revalidatePath(`/dashboard/${data.boardId}`);
 
   return {
     data: item,

@@ -13,9 +13,9 @@ import { useRouter } from "next/navigation";
 import { deleteBoard } from "@/utils/actions/boards/deleteBoard";
 import { copyBoard } from "@/utils/actions/boards/copyBoard";
 import { createId } from "@paralleldrive/cuid2";
-import { Board } from "@prisma/client";
 import { toast } from "sonner";
 import { useProModalStore } from "@/store/useProModal";
+import { Board } from "@/drizzle/schema";
 
 type BoardOptionsProps = {
   data: BoardType | null;
@@ -96,9 +96,8 @@ export default function TopBarOptions({ data, SubButton }: BoardOptionsProps) {
 
   function exportAllBoards() {
     // export orderedBoards as JSON
-
     const newAllBoards = orderedBoards.map((board) => {
-      const { userId, isCurrentBoard, ...rest } = board as Board;
+      const { userId, isCurrentBoard, ...rest } = board as typeof Board.$inferSelect;
       return rest;
     });
 

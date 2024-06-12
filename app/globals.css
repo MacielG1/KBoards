@@ -130,9 +130,36 @@ input[type="color"]::-webkit-color-swatch {
   border-radius: 50%;
 }
 
-input[type="color"]::-moz-color-swatch {
+
+/* input[type="color"]::-moz-color-swatch {
   border: 1px solid #474747;
   border-radius: 50%;
-  width: 1.7rem;
-  height: 1.7rem;
+  width: 1.5rem;
+  height: 1.5rem; */
+
+
+
+
+@-moz-document url-prefix() {
+  input[type="color"] {
+    appearance: none;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background-color: inherit;
+    border: none;
+    outline: none;
+    margin-left: 0.25rem;
+    margin-right: 0.45rem;
+  }
+
+  input[type="color"]::-moz-color-swatch {
+    border: 1px solid #474747;
+    border-radius: 50%;
+  }
+
+  input[type="color"]::-moz-color-swatch-wrapper {
+    padding: 0;
+    border-radius: 50%;
+  }
 }

@@ -1,11 +1,13 @@
 "use server";
 import { auth } from "@clerk/nextjs/server";
-import prisma from "../../prisma";
 import { revalidatePath } from "next/cache";
 import { deleteListSchema } from "../../schemas";
 import { z } from "zod";
 import { checkIsPremium } from "@/utils/checkSubscription";
 import { decreaseListCount } from "./listslimit";
+import { db } from "@/utils/db";
+import { List } from "@/drizzle/schema";
+import { and, eq, gte, ne, sql } from "drizzle-orm";
 
 export async function deleteList(data: z.infer<typeof deleteListSchema>) {
   try {
@@ -27,29 +29,14 @@ export async function deleteList(data: z.infer<typeof deleteListSchema>) {
 
     const { id, boardId } = data;
 
-    await prisma.list.delete({
-      where: {
-        id,
-        boardId,
-      },
-    });
+    await db.delete(List).where(and(eq(List.id, id), eq(List.boardId, boardId)));
 
-    await prisma.list.updateMany({
-      where: {
-        boardId,
-        id: {
-          not: id,
-        },
-        order: {
-          gte: data.order,
-        },
-      },
-      data: {
-        order: {
-          decrement: 1,
-        },
-      },
-    });
+    await db
+      .update(List)
+      .set({
+        order: sql`${List.order} - 1`,
+      })
+      .where(and(eq(List.boardId, boardId), ne(List.id, id), gte(List.order, data.order)));
 
     const isPremium = await checkIsPremium();
 
