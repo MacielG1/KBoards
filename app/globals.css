@@ -88,7 +88,10 @@ body,
 
 @media (max-height : 800px) {
   .listItemHeight {
-    max-height: 53vh;
+    max-height: 56vh;
+  }
+  .board-pt{
+    padding-top: 0rem 
   }
 }
 
@@ -103,7 +106,6 @@ body,
 }
 
 
-
 ::-webkit-scrollbar {
   width: 4px;
 }
@@ -116,27 +118,12 @@ body,
   @apply bg-neutral-500/70 rounded-xl;
 }
 
-body::-webkit-scrollbar-track {
-  @apply dark:bg-neutral-800 bg-neutral-200
-}
 
-
-/* .task> ::-webkit-scrollbar-thumb {
-  @apply bg-sky-500 rounded-xl;
-} */
 
 input[type="color"]::-webkit-color-swatch {
   border: 1px solid #474747;
   border-radius: 50%;
 }
-
-
-/* input[type="color"]::-moz-color-swatch {
-  border: 1px solid #474747;
-  border-radius: 50%;
-  width: 1.5rem;
-  height: 1.5rem; */
-
 
 
 
@@ -162,4 +149,10 @@ input[type="color"]::-webkit-color-swatch {
     padding: 0;
     border-radius: 50%;
   }
+    
+  .scrollbar {
+      scrollbar-color: #696969 #ffffff00;
+      scrollbar-width: thin;     
+    }
+  
 }

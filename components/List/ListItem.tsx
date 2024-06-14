@@ -7,6 +7,7 @@ import Item from "../Item/Item";
 import ListHeader from "./ListHeader";
 import AddItem from "../Item/AddItem";
 import { cn } from "@/utils";
+import { getTextLength } from "@/utils/getTextLength";
 
 type ListItemProps = {
   index: number;
@@ -54,15 +55,15 @@ export default function ListItem({ data, index }: ListItemProps) {
             <div {...provided.dragHandleProps} className={data.items?.length > 0 ? "pb-2" : "mt-0"} style={{ cursor: "pointer" }}>
               <ListHeader onAddItem={enableEditing} data={data} />
             </div>
-            <div ref={scrollableRef} className={cn("listItemHeight mx-1 flex max-h-[68vh] flex-col overflow-y-auto", showItemsOrder && "mr-1.5")}>
+            <div ref={scrollableRef} className={cn("listItemHeight scrollbar mx-1 mb-2 flex max-h-[68vh] flex-col overflow-y-auto", showItemsOrder && "ml-0")}>
               <Droppable droppableId={data.id} type="item">
                 {(provided) => (
                   <ol
                     ref={provided.innerRef}
                     {...provided.droppableProps}
-                    className={cn("space-y-[0.35rem]", data.items?.length <= 0 ? "py-0.5" : "mx-0 mt-1 py-0 ")}
+                    className={cn("space-y-[0.35rem]", data.items?.length <= 0 ? "py-0.5" : "mx-0 py-0", showItemsOrder ? "mr-0.5 pr-1" : "")}
                   >
-                    {data.items?.map((item, index) => <Item key={item.id} index={index} data={item} />)}
+                    {data.items?.map((item, index) => <Item key={item.id} index={index} data={item} listLength={data.items.length} />)}
                     {provided.placeholder}
                   </ol>
                 )}

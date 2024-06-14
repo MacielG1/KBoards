@@ -71,7 +71,7 @@ export default function ItemContent({ data }: { data: ItemType }) {
   return (
     <div
       style={{ backgroundColor: data.color || "var(--item-color)" }}
-      className={`flex items-center justify-between overflow-hidden rounded-md border-2 border-transparent text-sm shadow-sm  ${isFocused ? "border-transparent" : "hover:border-neutral-500 dark:hover:border-neutral-950"} ${showItemsOrder ? "w-[91%]" : "w-full"}`}
+      className={`flex w-full items-center justify-between overflow-hidden rounded-md border-2 border-transparent text-sm shadow-sm ${isFocused ? "border-transparent" : "hover:border-neutral-500 dark:hover:border-neutral-950"}`}
     >
       <div className="flex w-full items-start justify-between rounded-t-md text-sm font-semibold">
         {isEditing ? (
@@ -92,7 +92,7 @@ export default function ItemContent({ data }: { data: ItemType }) {
               {content}
             </div>
             <span
-              className={`absolute right-0 top-0 z-50 pt-[0.35rem] transition duration-100 md:opacity-0 md:group-hover:opacity-100 ${showItemsOrder ? "mr-3" : "mr-1"}`}
+              className={`absolute right-0 top-0 z-50 pt-[0.35rem] transition duration-100 md:opacity-0 md:group-hover:opacity-100 ${showItemsOrder ? "mr-[2%]" : "mr-1"}`}
             >
               <ItemOptions data={data} />
             </span>

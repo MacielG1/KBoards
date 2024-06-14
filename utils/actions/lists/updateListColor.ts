@@ -38,7 +38,7 @@ export async function updateListColor(data: z.infer<typeof updateListColorSchema
     };
   }
 
-  revalidatePath(`/dashboard/${data.boardId}`);
+  // revalidatePath(`/dashboard/${data.boardId}`);
 
   return {
     data: list,

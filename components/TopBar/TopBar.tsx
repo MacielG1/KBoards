@@ -43,15 +43,18 @@ export default function TopBar({ SubButton }: { SubButton: React.ReactNode }) {
     >
       {currentBoardData && <BoardTitle board={currentBoardData} textColor={textColor} />}
 
-      <div className="ml-auto flex space-x-1 pl-1">
+      <div className="ml-auto flex space-x-1.5 pl-1">
         <TopBarOptions data={currentBoardData} SubButton={SubButton} />
         <ThemeSwitcher />
         <UserButton
           afterSignOutUrl="/"
           appearance={{
             elements: {
-              userButtonTrigger: "focus:outline-none ml-3 focus:ring-0 focus:ring-offset-0 focus:ring-offset-transparent focus:border-0",
+              userButtonTrigger:
+                "focus:outline-none ml-0.5 size-7 transition-all duration-100  focus:ring-0 focus:ring-offset-0 focus:ring-offset-transparent focus:border-0 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-50 ",
               userButtonPopoverCard: "z-[99999]",
+              avatarBox: "size-6",
+              // userButtonBox: "bg-neutral-200 dark:bg-neutral-800",
             },
           }}
         />

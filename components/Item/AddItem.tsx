@@ -4,12 +4,14 @@ import { Button } from "@/components/ui/button";
 import { PlusIcon, X } from "lucide-react";
 import { ElementRef, forwardRef, useRef } from "react";
 import { useEventListener, useOnClickOutside } from "usehooks-ts";
-import { useStore } from "@/store/store";
+import { useStore, useStorePersisted } from "@/store/store";
 import { createId } from "@paralleldrive/cuid2";
 import FormButton from "../Form/FormButton";
 import FormTextArea from "../Form/FormTextArea";
 import { createItem } from "@/utils/actions/items/createItem";
 import { useParams } from "next/navigation";
+import { cn } from "@/utils";
+import { getTextLength } from "@/utils/getTextLength";
 
 type AddItemProps = {
   isEditing: boolean;
@@ -22,11 +24,9 @@ type AddItemProps = {
 const AddItem = forwardRef<HTMLTextAreaElement, AddItemProps>(({ isEditing, enableEditing, disableEditing, listId, scrollableRef }, ref) => {
   const formRef = useRef<ElementRef<"form">>(null);
 
+  const showItemsOrder = useStorePersisted((state) => state.showItemsOrder);
   const addItem = useStore((state) => state.addItem);
-  // const currentBoardId = useStore((state) => state.currentBoardId);
-
   const lists = useStore((state) => state.lists);
-
   const params = useParams<{ boardId: string }>();
 
   function onKeyDown(e: KeyboardEvent) {
@@ -86,7 +86,7 @@ const AddItem = forwardRef<HTMLTextAreaElement, AddItemProps>(({ isEditing, enab
   return (
     <>
       {isEditing ? (
-        <form ref={formRef} action={onSubmit} className="mx-0.5 mt-2 space-y-4 px-2 py-0.5 ">
+        <form ref={formRef} action={onSubmit} className={cn(`mx-0.5 mt-2 space-y-4 px-2 py-0.5`)}>
           <FormTextArea
             id="content"
             onKeyDown={onTextAreaKeyDown}
@@ -95,7 +95,7 @@ const AddItem = forwardRef<HTMLTextAreaElement, AddItemProps>(({ isEditing, enab
             placeholder="Item Content"
           />
           <input hidden id="listId" value={listId} name="listId" readOnly />
-          <div className="flex items-center gap-1 ">
+          <div className="flex items-center gap-1">
             <FormButton variant="primary" className="px-4 font-semibold">
               Add Item
             </FormButton>
@@ -105,16 +105,18 @@ const AddItem = forwardRef<HTMLTextAreaElement, AddItemProps>(({ isEditing, enab
           </div>
         </form>
       ) : (
-        <div className="mt-2 px-2 py-0.5">
-          <Button
-            variant="ghost"
-            onClick={enableEditing}
-            size="sm"
-            className="h-auto w-full justify-start px-2 py-1.5 text-sm text-muted-foreground hover:border-neutral-600 dark:hover:border-neutral-900"
-          >
-            <PlusIcon className="mr-2 size-4" />
-            Add Item
-          </Button>
+        <div className={`mx-0 flex justify-center px-1.5 py-0.5`}>
+          <div className={`mx-0.5 w-full ${showItemsOrder && "mx-1"}`}>
+            <Button
+              variant="ghost"
+              onClick={enableEditing}
+              size="sm"
+              className={`h-auto w-full justify-start px-2 py-1.5 text-sm text-muted-foreground hover:border-neutral-600 dark:hover:border-neutral-900`}
+            >
+              <PlusIcon className="mr-2 size-4" />
+              Add Item
+            </Button>
+          </div>
         </div>
       )}
     </>

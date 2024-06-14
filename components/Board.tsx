@@ -106,7 +106,7 @@ export default function Board({ board }: Props) {
 
   return (
     <div
-      className={`flex h-full w-full flex-col items-center justify-start px-3 pt-5 ${isCollapsed && "md:pl-[4rem]"}`}
+      className={`board-pt flex h-full w-full flex-col items-center justify-start px-3 pt-2 ${isCollapsed && "md:pl-[4rem]"}`}
       id={board.id}
       style={{
         backgroundColor: currentBoard?.backgroundColor,
@@ -114,7 +114,20 @@ export default function Board({ board }: Props) {
       }}
     >
       <div className="grid place-items-center py-2 pr-2" ref={containerRef}>
-        <DragDropContext onDragEnd={onDragEnd}>
+        <DragDropContext
+          autoScrollerOptions={{
+            startFromPercentage: 0.2,
+            maxScrollAtPercentage: 0.05,
+            maxPixelScroll: 10,
+            ease: (percentage) => Math.pow(percentage, 2),
+            durationDampening: {
+              stopDampeningAt: 200,
+              accelerateAt: 1000,
+            },
+            disabled: false,
+          }}
+          onDragEnd={onDragEnd}
+        >
           <Droppable droppableId="lists" type="list" direction="horizontal">
             {(provided: DroppableProvided) => (
               <div {...provided.droppableProps} ref={provided.innerRef}>

@@ -40,7 +40,7 @@ export async function updateItemColor(data: z.infer<typeof updateItemColorSchema
     };
   }
 
-  revalidatePath(`/dashboard/${data.boardId}`);
+  // revalidatePath(`/dashboard/${data.boardId}`);
 
   return {
     data: list,

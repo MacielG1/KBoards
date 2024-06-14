@@ -125,9 +125,9 @@ export default function TopBarOptions({ data, SubButton }: BoardOptionsProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="h-[36px] w-[36px] bg-neutral-200 transition-all duration-300 hover:bg-neutral-300 dark:bg-neutral-800 dark:hover:bg-neutral-900"
+          className="size-7 bg-neutral-200 transition-all duration-300 hover:bg-neutral-300 dark:bg-neutral-800 dark:hover:bg-neutral-900"
         >
-          <MoreHorizontal className="size-6 text-black dark:text-white" />
+          <MoreHorizontal className="size-5 text-black dark:text-white" />
         </Button>
       </PopoverTrigger>
       <PopoverClose ref={closeRef} />

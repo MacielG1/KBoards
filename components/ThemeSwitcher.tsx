@@ -14,10 +14,10 @@ export function ThemeSwitcher() {
       onClick={onClick}
       variant="ghost"
       size="icon"
-      className="z-[9999] h-9 w-9 bg-neutral-200 transition-all duration-100 hover:bg-neutral-300 dark:bg-neutral-800 dark:hover:bg-neutral-900"
+      className="z-[9999] size-7 bg-neutral-200 transition-all duration-100 hover:bg-neutral-300 dark:bg-neutral-800 dark:hover:bg-neutral-900"
     >
-      <Moon className="block dark:hidden" height="20" />
-      <Sun className="hidden dark:block" height="20" />
+      <Moon className="block dark:hidden" height="18" />
+      <Sun className="hidden dark:block" height="18" />
     </Button>
   );
 }
