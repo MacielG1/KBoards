@@ -18,8 +18,6 @@ type Props = {
 
 export default function Board({ board }: Props) {
   const [lists, setLists] = useStore((state) => [state.lists, state.setLists]);
-  const orderedBoards = useStore((state) => state.orderedBoards);
-  const currentBoard = orderedBoards.find((b) => b.id === board.id);
   const { isCollapsed } = useCollapsedContext();
 
   useEffect(() => {
@@ -109,22 +107,20 @@ export default function Board({ board }: Props) {
       className={`board-pt flex h-full w-full flex-col items-center justify-start px-3 pt-2 ${isCollapsed && "md:pl-[4rem]"}`}
       id={board.id}
       style={{
-        backgroundColor: currentBoard?.backgroundColor,
         transition: `padding-left 0.3s ease-in-out`,
       }}
     >
       <div className="grid place-items-center py-2 pr-2" ref={containerRef}>
         <DragDropContext
           autoScrollerOptions={{
-            startFromPercentage: 0.2,
-            maxScrollAtPercentage: 0.05,
-            maxPixelScroll: 10,
+            startFromPercentage: 0.1,
+            maxScrollAtPercentage: 0.001,
+            maxPixelScroll: 15,
             ease: (percentage) => Math.pow(percentage, 2),
             durationDampening: {
-              stopDampeningAt: 200,
-              accelerateAt: 1000,
+              stopDampeningAt: 1200,
+              accelerateAt: 400,
             },
-            disabled: false,
           }}
           onDragEnd={onDragEnd}
         >

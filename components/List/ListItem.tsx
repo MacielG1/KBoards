@@ -41,7 +41,6 @@ export default function ListItem({ data, index }: ListItemProps) {
       transitionDuration: `0.1s`,
     };
   }
-
   return (
     <Draggable draggableId={data.id} index={index}>
       {(provided: DraggableProvided, snapshot) => (

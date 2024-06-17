@@ -93,7 +93,7 @@ export default function Navigation({ SidebarParent }: { SidebarParent: React.Rea
           <>
             <Icons.MenuIcon
               role="button"
-              className="absolute z-[99999] ml-2 mt-[5px] h-6 w-6 flex-shrink-0 text-neutral-500 duration-200 hover:text-neutral-900 dark:hover:text-neutral-300"
+              className="absolute z-[99999] ml-2 mt-[5px] h-6 w-6 flex-shrink-0 text-neutral-600 duration-200 hover:text-neutral-950 dark:text-neutral-400 dark:hover:text-neutral-100"
               onClick={resetWidth}
             />
           </>
