@@ -9,7 +9,7 @@ export default function Landing() {
       <nav className="fixed top-0 flex h-14 w-full items-center border-b border-gray-800 px-4 shadow-sm">
         <div className="mx-auto flex w-full items-center justify-between md:max-w-screen-2xl">
           <Logo />
-          <div className=" block  w-auto items-center justify-end space-x-4">
+          <div className="block w-auto items-center justify-end space-x-4">
             <Button className="text-lg" variant="primary" size="sm" asChild>
               <Link href="/sign-in">Login</Link>
             </Button>
@@ -20,7 +20,7 @@ export default function Landing() {
         </div>
       </nav>
       <div
-        className="absolute left-[calc(50%-4rem)] top-5 -z-10 transform-gpu blur-3xl sm:left-[calc(50%-18rem)]  xl:left-[calc(50%-24rem)] xl:top-[calc(50%-30rem)]"
+        className="absolute left-[calc(50%-4rem)] top-5 -z-10 transform-gpu blur-3xl sm:left-[calc(50%-18rem)] xl:left-[calc(50%-24rem)] xl:top-[calc(50%-30rem)]"
         aria-hidden="true"
       >
         <div
@@ -31,18 +31,15 @@ export default function Landing() {
           }}
         />
       </div>
-      <div className="mx-auto max-w-[100rem] px-6 pb-24 pt-4 sm:pb-32 xl:flex xl:px-8 2xl:pt-16">
+      <div className="mx-auto max-w-[100rem] px-6 pb-24 pt-4 sm:pb-32 xl:flex xl:px-8 2xl:pt-24">
         <div className="mx-auto max-w-2xl flex-shrink-0 px-8 xl:mx-0 xl:max-w-lg xl:pt-3 2xl:max-w-xl 2xl:pt-8">
-          <h1 className="mt-12 text-balance text-4xl font-bold tracking-tight text-white sm:text-6xl sm:leading-tight ">Organize your ideas</h1>
+          <h1 className="mt-12 text-balance text-4xl font-bold tracking-tight text-white sm:text-6xl sm:leading-tight">Organize your ideas</h1>
           <p className="mt-6 text-lg leading-8 text-gray-300">
-            Kboards facilitates the management of your tasks, with a simple and intuitive interface, you can arrange your ideas as you wish.
+            Kboards makes it easy for you to manage your tasks. With a simple and intuitive interface, you can arrange the lists and items as you wish.
           </p>
           <div className="mt-10 flex items-center gap-x-6">
             <Button className="text-lg" variant="primary" size="default" asChild>
-              <Link href="/sign-in">Login</Link>
-            </Button>
-            <Button className="text-lg" variant="outline2" size="default" asChild>
-              <Link href="/sign-up">Signup</Link>
+              <Link href="/sign-in">Enter</Link>
             </Button>
           </div>
         </div>
@@ -59,7 +56,7 @@ export default function Landing() {
         </div>
       </div>
       <footer className="absolute bottom-0 w-full border-t border-t-gray-800">
-        <div className="mx-auto max-w-7xl px-6 py-10 md:flex md:items-center md:justify-between lg:px-8 ">
+        <div className="mx-auto max-w-7xl px-6 py-10 md:flex md:items-center md:justify-between lg:px-8">
           <div className="flex justify-center space-x-6 md:order-2"></div>
           <div className="mt-8 md:order-1 md:mt-0">
             <p className="text-center text-xs leading-5 text-gray-500">&copy; {new Date().getFullYear()} MacielG1. All rights reserved.</p>
