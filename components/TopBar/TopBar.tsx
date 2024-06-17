@@ -32,12 +32,8 @@ export default function TopBar({ SubButton }: { SubButton: React.ReactNode }) {
 
   return (
     <div
-      style={{
-        backgroundColor: currentBoardData?.backgroundColor,
-        transition: `padding-left 0.3s ease-in-out`,
-      }}
       className={cn(
-        "fixed inset-x-0 z-[50] flex h-14 w-screen items-center justify-center p-1 px-8 py-2 transition-all duration-300",
+        "fixed inset-x-0 z-[50] flex h-14 w-screen items-center justify-center px-8 py-2 transition-all duration-300",
         isCollapsed ? "pl-[4rem]" : "pl-[18rem]",
       )}
     >
@@ -52,10 +48,10 @@ export default function TopBar({ SubButton }: { SubButton: React.ReactNode }) {
             elements: {
               userButtonTrigger:
                 "focus:outline-none ml-0.5 size-7 transition-all duration-100  focus:ring-0 focus:ring-offset-0 focus:ring-offset-transparent focus:border-0 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-50 ",
-              userButtonPopoverCard: "z-[99999]",
+              userButtonBox: "bg-neutral-100 dark:bg-neutral-800 p-[1px] rounded-full",
+              userButtonPopoverCard: "z-[99999] ",
               avatarBox: "size-6",
               userButtonPopoverFooter: "hidden",
-              // userButtonBox: "bg-neutral-200 dark:bg-neutral-800",
             },
           }}
         />
