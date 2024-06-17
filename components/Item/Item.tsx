@@ -68,8 +68,7 @@ export default function Item({ index, data, listLength }: ItemProps) {
           className={cn("group relative mb-0 flex items-center overflow-hidden", showItemsOrder ? "mx-0" : "mx-1")}
         >
           <span
-            // className={`flex items-center justify-center ${showItemsOrder && "mx-0.5"}`}
-            className={cn(`flex items-center justify-center ${showItemsOrder && "mx-0.5"}`, getTextLength(listLength) === "1ch" && "px-1")}
+            className={cn(`flex items-center justify-center ${showItemsOrder && "mx-0.5"}`, getTextLength(listLength) === "1ch" && showItemsOrder && "px-1")}
             style={{ minWidth: showItemsOrder ? getTextLength(listLength) : 0 }}
           >
             {showItemsOrder && !snapshot.isDragging && <span className="text-xs font-normal text-neutral-400">{index + 1}</span>}

@@ -55,7 +55,7 @@ export default function ListItem({ data, index }: ListItemProps) {
             <div {...provided.dragHandleProps} className={data.items?.length > 0 ? "pb-2" : "mt-0"} style={{ cursor: "pointer" }}>
               <ListHeader onAddItem={enableEditing} data={data} />
             </div>
-            <div ref={scrollableRef} className={cn("listItemHeight scrollbar mx-1 mb-2 flex max-h-[68vh] flex-col overflow-y-auto", showItemsOrder && "ml-0")}>
+            <div ref={scrollableRef} className={cn("listItemHeight scrollbar mx-1 mb-2 flex max-h-[69vh] flex-col overflow-y-auto", showItemsOrder && "ml-0")}>
               <Droppable droppableId={data.id} type="item">
                 {(provided) => (
                   <ol

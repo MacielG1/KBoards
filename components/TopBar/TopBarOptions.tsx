@@ -149,18 +149,11 @@ export default function TopBarOptions({ data, SubButton }: BoardOptionsProps) {
             >
               <Copy className="mr-2 size-4" /> Copy Board
             </Button>
-            <Button
-              variant="ghost"
-              onClick={() => toggleItemsOrder()}
-              className="h-auto w-full justify-start rounded-none p-1 px-4 py-2 pl-4 text-sm font-normal"
-            >
-              <ListOrdered className={`mr-2 size-4 ${showItemsOrder && "text-emerald-500 dark:text-green-500"}`} />{" "}
-              <span>{showItemsOrder ? "Hide Items Order" : "Show Items Order"}</span>
-            </Button>
+
             <Button
               tabIndex={-1}
               variant="ghost"
-              className="group flex h-auto w-full cursor-default items-center justify-start rounded-none p-0 px-[0.87rem] text-sm font-normal"
+              className="group flex h-auto w-full cursor-default items-center justify-start rounded-none p-0 px-3 text-sm font-normal"
             >
               <ColorPicker className="mr-[0.35rem] h-6 w-5" id={data.id} value={bgColor} type="background" text="Background Color" setter={setBgColor} />
               {bgColor !== "" && (
@@ -184,6 +177,15 @@ export default function TopBarOptions({ data, SubButton }: BoardOptionsProps) {
                 <Trash className="mr-2 size-4" /> Delete Board
               </Button>
             </DeleteModal>
+
+            <Button
+              variant="ghost"
+              onClick={() => toggleItemsOrder()}
+              className="h-auto w-full justify-start rounded-none p-1 px-4 py-2 pl-4 text-sm font-normal"
+            >
+              <ListOrdered className={`mr-2 size-4 ${showItemsOrder && "text-emerald-500 dark:text-green-500"}`} />{" "}
+              <span>{showItemsOrder ? "Hide Items Order" : "Show Items Order"}</span>
+            </Button>
 
             {data?.lists && data.lists?.length > 0 && <ExportCSV data={data} />}
           </>

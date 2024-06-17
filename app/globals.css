@@ -119,12 +119,14 @@ body,
 }
 
 
-
 input[type="color"]::-webkit-color-swatch {
   border: 1px solid #474747;
   border-radius: 50%;
 }
 
+.cl-internal-180wb59 {
+  display: none;
+}
 
 
 @-moz-document url-prefix() {
@@ -156,3 +158,5 @@ input[type="color"]::-webkit-color-swatch {
     }
   
 }
+
+
