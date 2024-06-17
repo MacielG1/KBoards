@@ -28,6 +28,7 @@
     "@types/react-dom": "^18.3.0",
     "@vercel/speed-insights": "^1.0.12",
     "autoprefixer": "^10.4.19",
+    "braces": "^3.0.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.31.2",
