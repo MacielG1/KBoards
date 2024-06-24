@@ -1,5 +1,5 @@
 "use server";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/auth";
 import { updateItemSchema } from "../../schemas";
 import { z } from "zod";
 import { db } from "@/utils/db";
@@ -9,13 +9,8 @@ import { and, eq } from "drizzle-orm";
 export async function updateItem(data: z.infer<typeof updateItemSchema>) {
   let item;
   try {
-    const { userId } = auth();
-
-    if (!userId) {
-      return {
-        error: "Unauthorized",
-      };
-    }
+    const session = await auth();
+    if (!session?.user?.id) return { error: "Unauthorized" };
 
     const validationResult = updateItemSchema.safeParse(data);
     if (!validationResult.success) {

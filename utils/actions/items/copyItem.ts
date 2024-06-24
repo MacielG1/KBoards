@@ -1,5 +1,5 @@
 "use server";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/auth";
 
 import { copyItemSchema } from "../../schemas";
 import { z } from "zod";
@@ -11,13 +11,9 @@ export async function copyItem(data: z.infer<typeof copyItemSchema>) {
   let newItem;
 
   try {
-    const { userId } = auth();
+    const session = await auth();
+    if (!session?.user?.id) return { error: "Unauthorized" };
 
-    if (!userId) {
-      return {
-        error: "Unauthorized",
-      };
-    }
     const validationResult = copyItemSchema.safeParse(data);
     if (!validationResult.success) {
       console.log("copyItem validationResult.error.flatten().fieldErrors", validationResult.error.flatten().fieldErrors);

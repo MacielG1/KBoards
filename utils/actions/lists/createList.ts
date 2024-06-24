@@ -1,5 +1,5 @@
 "use server";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/auth";
 import { createListSchema } from "../../schemas";
 import { z } from "zod";
 import { checkIsPremium } from "@/utils/checkSubscription";
@@ -10,13 +10,8 @@ import { List } from "@/drizzle/schema";
 export async function createList(data: z.infer<typeof createListSchema>) {
   let list;
   try {
-    const { userId } = auth();
-
-    if (!userId) {
-      return {
-        error: "Unauthorized",
-      };
-    }
+    const session = await auth();
+    if (!session?.user?.id) return { error: "Unauthorized" };
 
     const validationResult = createListSchema.safeParse(data);
     if (!validationResult.success) {

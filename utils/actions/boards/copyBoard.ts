@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/auth";
 import { copyBoardSchema } from "../../schemas";
 import { z } from "zod";
 import { checkIsPremium } from "@/utils/checkSubscription";
@@ -11,11 +11,10 @@ import { Board, List, Item } from "@/drizzle/schema";
 
 export async function copyBoard(data: z.infer<typeof copyBoardSchema>) {
   try {
-    const { userId } = auth();
+    const session = await auth();
+    if (!session?.user?.id) return { error: "Unauthorized" };
 
-    if (!userId) {
-      return { error: "Unauthorized" };
-    }
+    const { id: userId } = session.user;
 
     const validationResult = copyBoardSchema.safeParse(data);
     if (!validationResult.success) {

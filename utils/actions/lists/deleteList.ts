@@ -1,5 +1,5 @@
 "use server";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
 import { deleteListSchema } from "../../schemas";
 import { z } from "zod";
@@ -11,13 +11,8 @@ import { and, eq, gte, ne, sql } from "drizzle-orm";
 
 export async function deleteList(data: z.infer<typeof deleteListSchema>) {
   try {
-    const { userId } = auth();
-
-    if (!userId) {
-      return {
-        error: "Unauthorized",
-      };
-    }
+    const session = await auth();
+    if (!session?.user?.id) return { error: "Unauthorized" };
 
     const validationResult = deleteListSchema.safeParse(data);
     if (!validationResult.success) {

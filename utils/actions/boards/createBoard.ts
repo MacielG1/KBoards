@@ -1,21 +1,19 @@
 "use server";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/auth";
 import { createBoardSchema } from "../../schemas";
 import { hasAvailableBoards, increaseBoardCount } from "./boardsLimit";
 import { checkIsPremium } from "@/utils/checkSubscription";
 import { z } from "zod";
 import { db } from "@/utils/db";
 import { Board } from "@/drizzle/schema";
+import { redirect } from "next/navigation";
 
 export async function createBoard(data: z.infer<typeof createBoardSchema>) {
   try {
-    const { userId } = auth();
+    const session = await auth();
+    if (!session?.user?.id) return { error: "Unauthorized" };
 
-    if (!userId) {
-      return {
-        error: "Unauthorized",
-      };
-    }
+    const { id: userId } = session.user;
 
     const validationResult = createBoardSchema.safeParse(data);
     if (!validationResult.success) {
@@ -56,4 +54,5 @@ export async function createBoard(data: z.infer<typeof createBoardSchema>) {
     };
   }
   // revalidatePath("/dashboard");
+  // redirect(`/dashboard/${data.id}`);
 }

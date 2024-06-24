@@ -8,7 +8,7 @@ import { Draggable, DraggableProvided, DraggableStateSnapshot, DraggableStyle } 
 import BoardOptions from "./BoardOptions";
 import getContrastColor from "@/utils/getConstrastColor";
 import { useTheme } from "next-themes";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { updateBoard } from "@/utils/actions/boards/updateBoard";
 import FormTextArea from "../Form/FormTextArea";
 
@@ -28,6 +28,7 @@ export default function BoardItem({ board, index }: BoardItemProps) {
 
   const textAreaRef = useRef<ElementRef<"textarea">>(null);
   const formRef = useRef<ElementRef<"form">>(null);
+  const params = useParams<{ boardId: string }>();
 
   const router = useRouter();
 
@@ -48,9 +49,7 @@ export default function BoardItem({ board, index }: BoardItemProps) {
   }
 
   async function changeCurrentBoard() {
-    if (board.id === currentBoardId) {
-      return;
-    }
+    if (board.id === currentBoardId && params.boardId === board.id) return;
 
     router.prefetch(`/dashboard/${board.id}`);
     setCurrentBoardId(board.id);

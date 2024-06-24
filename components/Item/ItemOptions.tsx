@@ -71,6 +71,7 @@ export default function ItemOptions({ data }: ItemOptionsProps) {
         <Button onClick={handleCopy} variant="ghost" className="h-auto w-full justify-start rounded-none p-2 px-5 text-sm font-normal">
           <Copy className="mr-2 size-4" /> Copy Item
         </Button>
+
         <Separator />
         <Button
           tabIndex={-1}

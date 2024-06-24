@@ -3,8 +3,8 @@
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
-import { ListType, useStore } from "@/store/store";
-import { Copy, MoreHorizontal, Plus, Trash, X } from "lucide-react";
+import { ListType, useStore, useStorePersisted } from "@/store/store";
+import { AlignJustify, AlignLeft, AlignRight, Copy, MoreHorizontal, Plus, Trash, X } from "lucide-react";
 import { ElementRef, useRef, useState } from "react";
 import ColorPicker from "../Form/ColorPicker";
 import DeleteModal from "../Modals/DeleteModal";
@@ -36,6 +36,8 @@ export default function ListOptions({ data, onAddItem, textColor }: ListOptionsP
   const removeList = useStore((state) => state.removeList);
   const setListColor = useStore((state) => state.setListColor);
   const onOpen = useProModalStore((state) => state.onOpen);
+  const setTextAlignment = useStorePersisted((state) => state.setTextAlignment);
+  const textAlignment = useStorePersisted((state) => state.textAlignment);
 
   async function handleDelete() {
     removeList(data.id, data.boardId);
@@ -79,7 +81,7 @@ export default function ListOptions({ data, onAddItem, textColor }: ListOptionsP
           <MoreHorizontal style={{ color: textColor }} className="size-4" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="px-0 pb-3 pt-3" side="bottom" align="start">
+      <PopoverContent className="w-60 px-0 pb-3 pt-3" side="bottom" align="start">
         <div className="flex items-center justify-center pb-4 text-center text-sm font-medium text-neutral-500">List Options</div>
         <PopoverClose asChild ref={closeRef}>
           <Button className="absolute right-2 top-2 h-auto w-auto p-2 text-neutral-600 focus-visible:ring-neutral-700" variant="ghost">
@@ -120,6 +122,25 @@ export default function ListOptions({ data, onAddItem, textColor }: ListOptionsP
           </>
         )}
 
+        <div className="inline-flex h-auto w-full items-center justify-start whitespace-nowrap rounded-none p-2 px-5 text-sm font-normal ring-offset-background transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-50">
+          {/* <AlignCenter className="mr-2 size-4 shrink-0" /> */}
+          {textAlignment === "left" && <AlignLeft className="mr-2 size-4 shrink-0" />}
+          {textAlignment === "center" && <AlignJustify className="mr-2 size-4 shrink-0" />}
+          {textAlignment === "right" && <AlignRight className="mr-2 size-4 shrink-0" />}
+          Align Items
+          <div className="flex items-center justify-center gap-1 px-5 pt-0.5">
+            <Button onClick={() => setTextAlignment("left")} className="h-auto w-auto p-0 text-sm font-normal" variant="transparent">
+              <AlignLeft className={`size-[18px] ${textAlignment === "left" && "text-mainColor"}`} />
+            </Button>
+            <Button onClick={() => setTextAlignment("center")} className="h-auto w-auto p-0 text-sm font-normal" variant="transparent">
+              <AlignJustify className={`size-[18px] ${textAlignment === "center" && "text-mainColor"}`} />
+            </Button>
+            <Button onClick={() => setTextAlignment("right")} className="h-auto w-auto p-0 text-sm font-normal" variant="transparent">
+              <AlignRight className={`size-[18px] ${textAlignment === "right" && "text-mainColor"}`} />
+            </Button>
+          </div>
+        </div>
+        <Separator />
         <DeleteModal message={`Delete List: ${data.title}`} deleteHandler={handleDelete}>
           <Button variant="ghost" className="h-auto w-full justify-start rounded-none p-2 px-5 text-sm font-normal">
             <Trash className="mr-2 size-4" /> Delete List

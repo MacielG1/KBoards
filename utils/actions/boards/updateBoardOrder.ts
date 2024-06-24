@@ -1,5 +1,5 @@
 "use server";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/auth";
 import { updateBoardOrderSchema } from "../../schemas";
 import { z } from "zod";
 import { db } from "@/utils/db";
@@ -10,14 +10,10 @@ export async function updateBoardOrder(data: z.infer<typeof updateBoardOrderSche
   let boards;
 
   try {
-    const { userId } = auth();
+    const session = await auth();
+    if (!session?.user?.id) return { error: "Unauthorized" };
 
-    if (!userId) {
-      console.log("Unauthorized");
-      return {
-        error: "Unauthorized",
-      };
-    }
+    const { id: userId } = session.user;
 
     const validationResult = updateBoardOrderSchema.safeParse(data);
     if (!validationResult.success) {

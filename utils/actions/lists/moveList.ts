@@ -1,5 +1,5 @@
 "use server";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/auth";
 import { moveListSchema } from "../../schemas";
 import { z } from "zod";
 import { db } from "@/utils/db";
@@ -8,13 +8,8 @@ import { List } from "@/drizzle/schema";
 
 export async function moveList(data: z.infer<typeof moveListSchema>) {
   try {
-    const { userId } = auth();
-
-    if (!userId) {
-      return {
-        error: "Unauthorized",
-      };
-    }
+    const session = await auth();
+    if (!session?.user?.id) return { error: "Unauthorized" };
 
     const validationResult = moveListSchema.safeParse(data);
     if (!validationResult.success) {

@@ -55,20 +55,19 @@ export default function Board({ board }: Props) {
 
       if (!sourceList || !destinationList) return;
 
-      // check if sources lists has items
       if (!sourceList.items) {
         sourceList.items = [];
       }
 
-      // check if destination lists has items
       if (!destinationList.items) {
         destinationList.items = [];
       }
 
       // move item in the same list
-
       if (source.droppableId === destination.droppableId) {
         const reorderedItems = reorder(sourceList.items, source.index, destination.index);
+
+        if (!reorderedItems) return;
 
         reorderedItems.forEach((item, index) => {
           item.order = index;

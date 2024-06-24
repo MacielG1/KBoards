@@ -1,14 +1,15 @@
 import { FreeTierLimit } from "@/drizzle/schema";
 import { LISTS_LIMIT } from "@/utils/constants";
 import { db } from "@/utils/db";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/auth";
 import { eq } from "drizzle-orm";
 
 export async function increaseListCount() {
   try {
-    const { userId } = auth();
+    const session = await auth();
+    if (!session?.user?.id) throw new Error("Unauthorized");
 
-    if (!userId) throw new Error("Unauthorized");
+    const { id: userId } = session.user;
 
     const limit = await db.query.FreeTierLimit.findFirst({
       where: eq(FreeTierLimit.userId, userId),
@@ -34,9 +35,10 @@ export async function increaseListCount() {
 }
 export async function decreaseListCount() {
   try {
-    const { userId } = auth();
+    const session = await auth();
+    if (!session?.user?.id) throw new Error("Unauthorized");
 
-    if (!userId) throw new Error("Unauthorized");
+    const { id: userId } = session.user;
 
     const limit = await db.query.FreeTierLimit.findFirst({
       where: eq(FreeTierLimit.userId, userId),
@@ -60,9 +62,10 @@ export async function decreaseListCount() {
 
 export async function hasAvailableLists() {
   try {
-    const { userId } = auth();
+    const session = await auth();
+    if (!session?.user?.id) throw new Error("Unauthorized");
 
-    if (!userId) throw new Error("Unauthorized");
+    const { id: userId } = session.user;
 
     const limit = await db.query.FreeTierLimit.findFirst({
       where: eq(FreeTierLimit.userId, userId),
@@ -78,9 +81,10 @@ export async function hasAvailableLists() {
 
 export async function getAvailableListCount() {
   try {
-    const { userId } = auth();
+    const session = await auth();
+    if (!session?.user?.id) throw new Error("Unauthorized");
 
-    if (!userId) throw new Error("Unauthorized");
+    const { id: userId } = session.user;
 
     const limit = await db.query.FreeTierLimit.findFirst({
       where: eq(FreeTierLimit.userId, userId),

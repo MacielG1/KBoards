@@ -1,45 +1,26 @@
-// import { authMiddleware, redirectToSignIn } from "@clerk/nextjs";
-// import { NextResponse } from "next/server";
-
-// export default authMiddleware({
-//   publicRoutes: ["/"],
-
-//   afterAuth(auth, req) {
-//     if (auth?.userId && auth?.isPublicRoute) {
-//       let path = "/dashboard";
-//       const orgSelected = new URL(path, req.url);
-//       return NextResponse.redirect(orgSelected);
-//     }
-
-//     if (!auth?.userId && !auth?.isPublicRoute) {
-//       return redirectToSignIn({ returnBackUrl: req.url });
-//     }
-//     if (auth.userId && !auth.isPublicRoute) {
-//       return NextResponse.next();
-//     }
-//     // Allow users visiting public routes to access them
-//     return NextResponse.next();
-//   },
-// });
-
-// export const config = {
-//   matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
-// };
-
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
+import authConfig from "./auth.config";
+import NextAuth from "next-auth";
 
-const isPublicRoute = createRouteMatcher(["/", "/api/webhook"]);
-const isPrivateRoute = createRouteMatcher(["/dashboard(.*)"]);
+export const { auth } = NextAuth(authConfig);
 
-export default clerkMiddleware((auth, req) => {
-  const { userId, protect } = auth();
+export const publicRoutes = ["/"];
 
-  if (userId && isPublicRoute(req)) {
-    return NextResponse.redirect(new URL("/dashboard", req.url));
+export default auth((req) => {
+  const { nextUrl } = req;
+  const isLoggedIn = !!req.auth;
+
+  const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
+
+  const isNextAuthRoute = nextUrl.pathname.startsWith("/api/auth");
+  if (isNextAuthRoute) return;
+
+  if (isLoggedIn && isPublicRoute) {
+    return Response.redirect(new URL("/dashboard", nextUrl));
   }
-
-  if (!userId && isPrivateRoute(req)) protect();
+  if (!isLoggedIn && !isPublicRoute) {
+    return Response.redirect(new URL("/", nextUrl));
+  }
 
   return NextResponse.next();
 });

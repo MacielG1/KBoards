@@ -1,5 +1,5 @@
 "use server";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/auth";
 import { copyListSchema } from "../../schemas";
 import { z } from "zod";
 import { checkIsPremium } from "@/utils/checkSubscription";
@@ -10,13 +10,8 @@ import { Item, List } from "@/drizzle/schema";
 
 export async function copyList(data: z.infer<typeof copyListSchema>) {
   try {
-    const { userId } = auth();
-
-    if (!userId) {
-      return {
-        error: "Unauthorized",
-      };
-    }
+    const session = await auth();
+    if (!session?.user?.id) return { error: "Unauthorized" };
 
     const validationResult = copyListSchema.safeParse(data);
     if (!validationResult.success) {

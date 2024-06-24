@@ -1,6 +1,5 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
 import { deleteBoardSchema } from "../../schemas";
 import { decreaseBoardCount } from "./boardsLimit";
 import { checkIsPremium } from "@/utils/checkSubscription";
@@ -8,16 +7,14 @@ import { z } from "zod";
 import { db } from "@/utils/db";
 import { Board } from "@/drizzle/schema";
 import { and, eq, gte, ne, sql } from "drizzle-orm";
+import { auth } from "@/auth";
 
 export async function deleteBoard(data: z.infer<typeof deleteBoardSchema>) {
   try {
-    const { userId } = auth();
+    const session = await auth();
+    if (!session?.user?.id) return { error: "Unauthorized" };
 
-    if (!userId) {
-      return {
-        error: "Unauthorized",
-      };
-    }
+    const { id: userId } = session.user;
 
     const validationResult = deleteBoardSchema.safeParse(data);
     if (!validationResult.success) {

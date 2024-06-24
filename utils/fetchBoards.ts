@@ -1,18 +1,17 @@
 import "server-only";
 
-import { auth } from "@clerk/nextjs/server";
 import { db } from "./db";
+import { auth } from "@/auth";
 
 export async function fetchBoards() {
   try {
-    const { userId } = auth();
+    const session = await auth();
+    if (!session?.user?.id) return null;
 
-    if (!userId) {
-      return null;
-    }
+    const { id } = session.user;
 
     const data = await db.query.Board.findMany({
-      where: (board, { eq }) => eq(board.userId, userId),
+      where: (board, { eq }) => eq(board.userId, id),
       orderBy: (board, { asc }) => [asc(board.order)],
 
       with: {

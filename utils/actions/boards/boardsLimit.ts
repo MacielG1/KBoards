@@ -1,14 +1,14 @@
 import { FreeTierLimit } from "@/drizzle/schema";
 import { BOARDS_LIMIT } from "@/utils/constants";
 import { db } from "@/utils/db";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/auth";
 import { eq } from "drizzle-orm";
 
 export async function increaseBoardCount() {
   try {
-    const { userId } = auth();
-
-    if (!userId) throw new Error("Unauthorized");
+    const session = await auth();
+    if (!session?.user?.id) throw new Error("Unauthorized");
+    const { id: userId } = session.user;
 
     const limit = await db.query.FreeTierLimit.findFirst({
       where: eq(FreeTierLimit.userId, userId),
@@ -34,9 +34,10 @@ export async function increaseBoardCount() {
 }
 export async function decreaseBoardCount() {
   try {
-    const { userId } = auth();
+    const session = await auth();
+    if (!session?.user?.id) throw new Error("Unauthorized");
 
-    if (!userId) throw new Error("Unauthorized");
+    const { id: userId } = session.user;
 
     const limit = await db.query.FreeTierLimit.findFirst({
       where: eq(FreeTierLimit.userId, userId),
@@ -60,9 +61,10 @@ export async function decreaseBoardCount() {
 
 export async function hasAvailableBoards() {
   try {
-    const { userId } = auth();
+    const session = await auth();
+    if (!session?.user?.id) throw new Error("Unauthorized");
 
-    if (!userId) throw new Error("Unauthorized");
+    const { id: userId } = session.user;
 
     const limit = await db.query.FreeTierLimit.findFirst({
       where: eq(FreeTierLimit.userId, userId),
@@ -78,9 +80,10 @@ export async function hasAvailableBoards() {
 
 export async function getAvailableBoardCount() {
   try {
-    const { userId } = auth();
+    const session = await auth();
+    if (!session?.user?.id) throw new Error("Unauthorized");
 
-    if (!userId) throw new Error("Unauthorized");
+    const { id: userId } = session.user;
 
     const limit = await db.query.FreeTierLimit.findFirst({
       where: eq(FreeTierLimit.userId, userId),

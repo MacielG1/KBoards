@@ -1,5 +1,5 @@
 "use server";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
 import { updateItemColorSchema } from "../../schemas";
 import { z } from "zod";
@@ -10,13 +10,8 @@ import { and, eq } from "drizzle-orm";
 export async function updateItemColor(data: z.infer<typeof updateItemColorSchema>) {
   let list;
   try {
-    const { userId } = auth();
-
-    if (!userId) {
-      return {
-        error: "Unauthorized",
-      };
-    }
+    const session = await auth();
+    if (!session?.user?.id) return { error: "Unauthorized" };
 
     const validationResult = updateItemColorSchema.safeParse(data);
     if (!validationResult.success) {

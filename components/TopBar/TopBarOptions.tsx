@@ -97,7 +97,7 @@ export default function TopBarOptions({ data, SubButton }: BoardOptionsProps) {
   function exportAllBoards() {
     // export orderedBoards as JSON
     const newAllBoards = orderedBoards.map((board) => {
-      const { userId, isCurrentBoard, ...rest } = board as typeof Board.$inferSelect;
+      const { userId, ...rest } = board as typeof Board.$inferSelect;
       return rest;
     });
 

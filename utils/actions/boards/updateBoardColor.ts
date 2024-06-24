@@ -1,23 +1,20 @@
 "use server";
 import { revalidatePath } from "next/cache";
 import { updateBoardColorSchema } from "../../schemas";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/auth";
 import { z } from "zod";
 import { db } from "@/utils/db";
 import { Board } from "@/drizzle/schema";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
 export async function updateBoardColor(data: z.infer<typeof updateBoardColorSchema>) {
   let board;
 
   try {
-    const { userId } = auth();
+    const session = await auth();
+    if (!session?.user?.id) return { error: "Unauthorized" };
 
-    if (!userId) {
-      return {
-        error: "Unauthorized",
-      };
-    }
+    const { id: userId } = session.user;
 
     const validationResult = updateBoardColorSchema.safeParse(data);
     if (!validationResult.success) {
@@ -29,7 +26,10 @@ export async function updateBoardColor(data: z.infer<typeof updateBoardColorSche
 
     const { id, color } = data;
 
-    board = await db.update(Board).set({ color }).where(eq(Board.id, id));
+    board = await db
+      .update(Board)
+      .set({ color })
+      .where(and(eq(Board.id, id), eq(Board.userId, userId)));
   } catch (error) {
     return {
       error: "Failed to update board",

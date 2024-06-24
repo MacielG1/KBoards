@@ -207,6 +207,9 @@ export type StoreTypePersisted = {
 
   showItemsOrder: boolean;
   toggleItemsOrder: () => void;
+
+  textAlignment: "left" | "center" | "right";
+  setTextAlignment: (textAlignment: "left" | "center" | "right") => void;
 };
 
 export const useStorePersisted = create<StoreTypePersisted>()(
@@ -220,6 +223,9 @@ export const useStorePersisted = create<StoreTypePersisted>()(
 
       showItemsOrder: false,
       toggleItemsOrder: () => set((state) => ({ showItemsOrder: !state.showItemsOrder })),
+
+      textAlignment: "left",
+      setTextAlignment: (textAlignment) => set({ textAlignment }),
     }),
 
     {

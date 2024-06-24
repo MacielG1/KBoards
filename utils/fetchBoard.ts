@@ -1,18 +1,20 @@
 import "server-only";
 
-import { auth } from "@clerk/nextjs/server";
 import { db } from "@/utils/db";
+import { auth } from "@/auth";
+import { and, eq } from "drizzle-orm";
+import { Board } from "@/drizzle/schema";
 
 export async function fetchBoard({ boardId }: { boardId: string }) {
   try {
-    const { userId } = auth();
+    const session = await auth();
 
-    if (!userId) {
-      return null;
-    }
+    if (!session?.user?.id) return null;
+
+    const { id } = session.user;
 
     const board = await db.query.Board.findFirst({
-      where: (board, { eq, and }) => and(eq(board.id, boardId), eq(board.userId, userId)),
+      where: and(eq(Board.id, boardId), eq(Board.userId, id)),
       with: {
         lists: {
           orderBy: (List, { asc }) => [asc(List.order)],

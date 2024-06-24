@@ -1,6 +1,5 @@
 "use server";
 
-import { auth, currentUser } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { getAbsoluteUrl } from "@/utils/getAbsoluteUrl";
 import { stripe } from "@/utils/stripe";
@@ -8,18 +7,15 @@ import { CURRENT_PRICE } from "@/utils/constants";
 import { db } from "@/utils/db";
 import { eq } from "drizzle-orm";
 import { PremiumSubscription } from "@/drizzle/schema";
+import { auth } from "@/auth";
 
 export async function stripeRedirect() {
   let url = "";
   try {
-    const { userId } = auth();
-    const user = await currentUser();
+    const session = await auth();
+    if (!session?.user?.id || !session?.user?.email) return { error: "Unauthorized" };
 
-    if (!userId || !user) {
-      return {
-        error: "Unauthorized",
-      };
-    }
+    const { id: userId, email } = session.user;
 
     const settingsUrl = getAbsoluteUrl("/");
 
@@ -43,7 +39,7 @@ export async function stripeRedirect() {
         payment_method_types: ["card"],
         mode: "subscription",
         billing_address_collection: "auto",
-        customer_email: user.emailAddresses[0].emailAddress,
+        customer_email: email,
         metadata: {
           userId,
         },

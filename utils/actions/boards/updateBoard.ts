@@ -1,7 +1,7 @@
 "use server";
 import { revalidatePath } from "next/cache";
 import { updateBoardSchema } from "../../schemas";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/auth";
 import { z } from "zod";
 import { db } from "@/utils/db";
 import { Board } from "@/drizzle/schema";
@@ -9,13 +9,11 @@ import { and, eq } from "drizzle-orm";
 
 export async function updateBoard(data: z.infer<typeof updateBoardSchema>) {
   let board;
-  const { userId } = auth();
 
-  if (!userId) {
-    return {
-      error: "Unauthorized",
-    };
-  }
+  const session = await auth();
+  if (!session?.user?.id) return { error: "Unauthorized" };
+
+  const { id: userId } = session.user;
 
   try {
     const validationResult = updateBoardSchema.safeParse(data);

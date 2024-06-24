@@ -1,22 +1,16 @@
-import { auth, clerkClient } from "@clerk/nextjs/server";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
 import { PremiumSubscription } from "@/drizzle/schema";
+import { auth } from "@/auth";
 
 const DAY_MILISECONDS = 86400000;
 
 export async function checkIsPremium() {
   try {
-    const { userId } = auth();
+    const session = await auth();
+    if (!session?.user?.id) return false;
 
-    if (!userId) {
-      console.log("No user found");
-      return false;
-    }
-
-    const user = await clerkClient.users.getUser(userId);
-
-    if (user?.privateMetadata?.isPremium === "true") return true;
+    const { id: userId } = session.user;
 
     const sub = await db.query.PremiumSubscription.findFirst({
       where: eq(PremiumSubscription.userId, userId),

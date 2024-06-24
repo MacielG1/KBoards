@@ -1,7 +1,49 @@
-import { relations, sql } from "drizzle-orm";
+import { relations } from "drizzle-orm";
 import { createId } from "@paralleldrive/cuid2";
 
-import { pgTable, uuid, varchar, pgSchema, integer, pgEnum, index, uniqueIndex, boolean, real, timestamp, primaryKey, text } from "drizzle-orm/pg-core";
+import { pgTable, varchar, integer, index, timestamp, primaryKey, text } from "drizzle-orm/pg-core";
+import postgres from "postgres";
+import { drizzle } from "drizzle-orm/postgres-js";
+import type { AdapterAccountType } from "next-auth/adapters";
+
+const connectionString = process.env.DATABASE_URL!;
+const pool = postgres(connectionString, { max: 1 });
+
+export const db = drizzle(pool);
+
+export const users = pgTable("user", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: text("name"),
+  email: text("email").notNull(),
+  emailVerified: timestamp("emailVerified", { mode: "date" }),
+  image: text("image"),
+});
+
+export const accounts = pgTable(
+  "account",
+  {
+    userId: text("userId")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    type: text("type").$type<AdapterAccountType>().notNull(),
+    provider: text("provider").notNull(),
+    providerAccountId: text("providerAccountId").notNull(),
+    refresh_token: text("refresh_token"),
+    access_token: text("access_token"),
+    expires_at: integer("expires_at"),
+    token_type: text("token_type"),
+    scope: text("scope"),
+    id_token: text("id_token"),
+    session_state: text("session_state"),
+  },
+  (account) => ({
+    compoundKey: primaryKey({
+      columns: [account.provider, account.providerAccountId],
+    }),
+  }),
+);
 
 export const Board = pgTable(
   "board",
@@ -10,12 +52,14 @@ export const Board = pgTable(
       .$defaultFn(() => createId())
       .primaryKey()
       .notNull(),
-    userId: text("userId").notNull(),
+    // userId: text("userId").notNull(),
+    userId: text("userId")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
     name: text("name").notNull(),
     color: text("color").notNull(),
     backgroundColor: text("backgroundColor").notNull(),
     order: integer("order").notNull(),
-    isCurrentBoard: boolean("isCurrentBoard").default(false).notNull(),
     createdAt: timestamp("createdAt").defaultNow(),
   },
   (table) => {
@@ -79,7 +123,11 @@ export const FreeTierLimit = pgTable(
       .$defaultFn(() => createId())
       .primaryKey()
       .notNull(),
-    userId: text("userId").notNull().unique(),
+    // userId: text("userId").notNull().unique(),
+    userId: text("userId")
+      .notNull()
+      .unique()
+      .references(() => users.id, { onDelete: "cascade" }),
     boardsCount: integer("boardsCount").default(0).notNull(),
     listsCount: integer("listsCount").default(0).notNull(),
     createdAt: timestamp("createdAt").defaultNow(),
@@ -98,7 +146,11 @@ export const PremiumSubscription = pgTable(
       .$defaultFn(() => createId())
       .primaryKey()
       .notNull(),
-    userId: text("userId").notNull().unique(),
+    // userId: text("userId").notNull().unique(),
+    userId: text("userId")
+      .notNull()
+      .unique()
+      .references(() => users.id, { onDelete: "cascade" }),
     stripeCustomerId: text("stripeCustomerId").unique(),
     stripeSubscriptionId: text("stripeSubscriptionId").unique(),
     stripePriceId: text("stripePriceId").unique(),
@@ -121,6 +173,13 @@ export const ItemRelations = relations(Item, ({ one }) => ({
   list: one(List, { fields: [Item.listId], references: [List.id] }),
 }));
 
-export const BoardRelations = relations(Board, ({ many }) => ({
+export const BoardRelations = relations(Board, ({ many, one }) => ({
   lists: many(List),
+  users: one(users, { fields: [Board.userId], references: [users.id] }),
+}));
+
+export const UserRelations = relations(users, ({ one, many }) => ({
+  boards: many(Board),
+  freeTierLimit: one(FreeTierLimit, { fields: [users.id], references: [FreeTierLimit.userId] }),
+  premiumSubscription: one(PremiumSubscription, { fields: [users.id], references: [PremiumSubscription.userId] }),
 }));

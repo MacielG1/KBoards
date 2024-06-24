@@ -11,6 +11,7 @@ export default function ItemContent({ data }: { data: ItemType }) {
   const [isFocused, setIsFocused] = useState(false);
 
   const showItemsOrder = useStorePersisted((state) => state.showItemsOrder);
+  const textAlignment = useStorePersisted((state) => state.textAlignment);
 
   const formRef = useRef<ElementRef<"form">>(null);
   const textAreaRef = useRef<ElementRef<"textarea">>(null);
@@ -68,6 +69,8 @@ export default function ItemContent({ data }: { data: ItemType }) {
 
   useEventListener("keydown", onKeyDown);
 
+  const textAlign = textAlignment === "center" ? "text-center" : textAlignment === "right" ? "text-right" : "text-left";
+
   return (
     <div
       style={{ backgroundColor: data.color || "var(--item-color)" }}
@@ -83,12 +86,15 @@ export default function ItemContent({ data }: { data: ItemType }) {
               onKeyDown={onTextAreaKeyDown}
               defaultValue={content}
               ref={textAreaRef}
-              className={"bg-transparent px-1 py-1 pl-2 backdrop-brightness-[1.17] dark:bg-transparent dark:focus-visible:bg-transparent"}
+              className={`bg-transparent px-1 py-1 pl-2 backdrop-brightness-[1.17] dark:bg-transparent dark:focus-visible:bg-transparent ${textAlign}`}
             />
           </form>
         ) : (
           <>
-            <div onClick={enableEditing} className="relative w-full whitespace-pre-wrap break-words border-transparent bg-transparent px-1 py-1 pl-2 text-sm">
+            <div
+              onClick={enableEditing}
+              className={`relative w-full whitespace-pre-wrap break-words border-transparent bg-transparent px-1 py-1 pl-2 text-sm ${textAlign}`}
+            >
               {content}
             </div>
             <span

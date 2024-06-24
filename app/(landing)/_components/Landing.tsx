@@ -1,7 +1,7 @@
 import Image from "next/image";
-import { Button } from "../../../components/ui/button";
-import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import Logo from "@/components/Logo";
+import LoginModal from "./LoginModal";
 
 export default function Landing() {
   return (
@@ -10,12 +10,11 @@ export default function Landing() {
         <div className="mx-auto flex w-full items-center justify-between md:max-w-screen-2xl">
           <Logo />
           <div className="block w-auto items-center justify-end space-x-4">
-            <Button className="text-lg" variant="primary" size="sm" asChild>
-              <Link href="/sign-in">Login</Link>
-            </Button>
-            <Button className="text-lg" variant="ghost" size="sm" asChild>
-              <Link href="/sign-up">Signup</Link>
-            </Button>
+            <LoginModal asChild>
+              <Button className="text-lg" variant="primary" size="md">
+                Sign In
+              </Button>
+            </LoginModal>
           </div>
         </div>
       </nav>
@@ -38,9 +37,11 @@ export default function Landing() {
             Kboards makes it easy for you to manage your tasks. With a simple and intuitive interface, you can arrange the lists and items as you wish.
           </p>
           <div className="mt-10 flex items-center gap-x-6">
-            <Button className="text-lg" variant="primary" size="default" asChild>
-              <Link href="/sign-in">Enter</Link>
-            </Button>
+            <LoginModal asChild>
+              <Button className="text-lg" variant="primary" size="md">
+                Enter
+              </Button>
+            </LoginModal>
           </div>
         </div>
         <div className="mx-auto mt-16 flex max-w-2xl items-center sm:mt-24 xl:ml-16 xl:mr-0 xl:mt-5 xl:max-w-none xl:flex-none 2xl:ml-32">

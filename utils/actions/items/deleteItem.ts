@@ -1,5 +1,5 @@
 "use server";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/auth";
 import { deleteItemSchema } from "../../schemas";
 import { z } from "zod";
 import { db } from "@/utils/db";
@@ -8,13 +8,8 @@ import { and, eq, gte, ne, sql } from "drizzle-orm";
 
 export async function deleteItem(data: z.infer<typeof deleteItemSchema>) {
   try {
-    const { userId } = auth();
-
-    if (!userId) {
-      return {
-        error: "Unauthorized",
-      };
-    }
+    const session = await auth();
+    if (!session?.user?.id) return { error: "Unauthorized" };
 
     const validationResult = deleteItemSchema.safeParse(data);
     if (!validationResult.success) {

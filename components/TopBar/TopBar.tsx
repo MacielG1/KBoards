@@ -5,11 +5,11 @@ import BoardTitle from "./BoardTitle";
 import TopBarOptions from "./TopBarOptions";
 import { cn } from "@/utils";
 import { useCollapsedContext } from "../Providers/CollapseProvider";
-import { UserButton } from "@clerk/nextjs";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import getContrastColor from "@/utils/getConstrastColor";
 import { useTheme } from "next-themes";
+import UserButton from "../UserButton";
 
 export default function TopBar({ SubButton }: { SubButton: React.ReactNode }) {
   const { isCollapsed } = useCollapsedContext();
@@ -43,17 +43,8 @@ export default function TopBar({ SubButton }: { SubButton: React.ReactNode }) {
         <TopBarOptions data={currentBoardData} SubButton={SubButton} />
         <ThemeSwitcher />
         <UserButton
-          afterSignOutUrl="/"
-          appearance={{
-            elements: {
-              userButtonTrigger:
-                "focus:outline-none ml-0.5 size-7 transition-all duration-100  focus:ring-0 focus:ring-offset-0 focus:ring-offset-transparent focus:border-0 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-50 ",
-              userButtonBox: "bg-neutral-100 dark:bg-neutral-800 p-[1px] rounded-full",
-              userButtonPopoverCard: "z-[99999] ",
-              avatarBox: "size-6",
-              userButtonPopoverFooter: "hidden",
-            },
-          }}
+        // afterSignOutUrl="/"
+        // }}
         />
       </div>
     </div>

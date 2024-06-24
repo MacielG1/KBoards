@@ -69,29 +69,28 @@ export default function AddBoard() {
           order: orderedBoards.length ?? 1,
         };
 
-        setCurrentBoardId(newBoard.id);
-
         formRef.current?.reset();
-
-        addBoard(newBoard);
-
         setIsEditing(false);
-
         setTimeout(() => {
           disableEditing();
         }, 0);
 
-        router.prefetch(`/dashboard/${newBoard.id}`);
+        setCurrentBoardId(newBoard.id);
+        addBoard(newBoard);
+
+        // router.prefetch(`/dashboard/${newBoard.id}`);
 
         const res = await createBoard(newBoard);
+
         if (res?.error) {
           toast.error(res.error);
           removeBoard(newBoard.id);
           if (res.status === 403) {
             return onOpen();
           }
+        } else {
+          router.push(`/dashboard/${newBoard.id}`);
         }
-        router.push(`/dashboard/${newBoard.id}`);
       } catch (error) {
         console.error("error", error);
       }
@@ -112,7 +111,7 @@ export default function AddBoard() {
             <FormButton size={"superSmall"} variant="primary" className="font-semibold">
               Add Board
             </FormButton>
-            <Button variant="ghost" size="superSmall" onClick={disableEditing} className="dark:hover:bg-neutral-800">
+            <Button disabled={isPending} variant="ghost" size="superSmall" onClick={disableEditing} className="dark:hover:bg-neutral-800">
               <X className="size-5" />
             </Button>
           </p>

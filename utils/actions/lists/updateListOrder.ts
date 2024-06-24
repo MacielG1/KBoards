@@ -1,5 +1,5 @@
 "use server";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/auth";
 import { updateListOrderSchema } from "../../schemas";
 import { z } from "zod";
 import { db } from "@/utils/db";
@@ -10,14 +10,8 @@ export async function updateListOrder(data: z.infer<typeof updateListOrderSchema
   let updatedLists;
 
   try {
-    const { userId } = auth();
-
-    if (!userId) {
-      console.log("Unauthorized");
-      return {
-        error: "Unauthorized",
-      };
-    }
+    const session = await auth();
+    if (!session?.user?.id) return { error: "Unauthorized" };
 
     const validationResult = updateListOrderSchema.safeParse(data);
     if (!validationResult.success) {
