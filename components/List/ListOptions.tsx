@@ -81,7 +81,7 @@ export default function ListOptions({ data, onAddItem, textColor }: ListOptionsP
           <MoreHorizontal style={{ color: textColor }} className="size-4" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-60 px-0 pb-3 pt-3" side="bottom" align="start">
+      <PopoverContent className="w-60 px-0 pb-3 pt-3" side="bottom" align="start" alignOffset={10}>
         <div className="flex items-center justify-center pb-4 text-center text-sm font-medium text-neutral-500">List Options</div>
         <PopoverClose asChild ref={closeRef}>
           <Button className="absolute right-2 top-2 h-auto w-auto p-2 text-neutral-600 focus-visible:ring-neutral-700" variant="ghost">
