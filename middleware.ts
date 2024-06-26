@@ -8,12 +8,14 @@ export const publicRoutes = ["/"];
 
 export default auth((req) => {
   const { nextUrl } = req;
+
   const isLoggedIn = !!req.auth;
 
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
-
   const isNextAuthRoute = nextUrl.pathname.startsWith("/api/auth");
-  if (isNextAuthRoute) return;
+  const isWebhookRoute = nextUrl.pathname.startsWith("/api/webhook");
+
+  if (isNextAuthRoute || isWebhookRoute) return;
 
   if (isLoggedIn && isPublicRoute) {
     return Response.redirect(new URL("/dashboard", nextUrl));
