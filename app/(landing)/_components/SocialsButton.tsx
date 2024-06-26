@@ -14,7 +14,7 @@ export default function SocialsButton({ provider }: { provider: "google" | "gith
         }}
       >
         <Button
-          className="w-full duration-300 hover:ring-1 hover:ring-neutral-700 hover:ring-offset-0 hover:ring-offset-transparent dark:bg-neutral-950 dark:hover:bg-neutral-950/50"
+          className="w-full duration-300 hover:ring-1 hover:ring-neutral-700 hover:ring-offset-0 hover:ring-offset-transparent dark:bg-neutral-900 dark:hover:bg-neutral-900"
           type="submit"
           size="lg"
           variant="outline"
@@ -37,7 +37,7 @@ export default function SocialsButton({ provider }: { provider: "google" | "gith
       >
         <Button
           type="submit"
-          className="w-full bg-neutral-950 duration-300 hover:bg-neutral-950/50 hover:ring-1 hover:ring-neutral-700 hover:ring-offset-0 hover:ring-offset-transparent"
+          className="w-full bg-neutral-900 duration-300 hover:bg-neutral-900 hover:ring-1 hover:ring-neutral-700 hover:ring-offset-0 hover:ring-offset-transparent"
           size="lg"
           variant="outline"
         >

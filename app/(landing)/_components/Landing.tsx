@@ -47,6 +47,7 @@ export default function Landing() {
         <div className="mx-auto mt-16 flex max-w-2xl items-center sm:mt-24 xl:ml-16 xl:mr-0 xl:mt-5 xl:max-w-none xl:flex-none 2xl:ml-32">
           <div className="max-w-3xl flex-none sm:max-w-2xl md:max-w-2xl lg:max-w-4xl xl:max-w-[95rem]">
             <Image
+              priority
               src="/listsdark.png"
               alt="App screenshot"
               width={1500}
