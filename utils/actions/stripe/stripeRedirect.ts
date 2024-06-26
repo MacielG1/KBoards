@@ -17,7 +17,7 @@ export async function stripeRedirect() {
 
     const { id: userId, email } = session.user;
 
-    const settingsUrl = getAbsoluteUrl("/");
+    const dashboardUrl = getAbsoluteUrl("/dashboard");
 
     const subscription = await db.query.PremiumSubscription.findFirst({
       where: eq(PremiumSubscription.userId, userId),
@@ -26,7 +26,7 @@ export async function stripeRedirect() {
     if (subscription && subscription.stripeCustomerId) {
       const stripeSession = await stripe.billingPortal.sessions.create({
         customer: subscription.stripeCustomerId,
-        return_url: settingsUrl,
+        return_url: dashboardUrl,
       });
 
       url = stripeSession.url;
@@ -34,8 +34,8 @@ export async function stripeRedirect() {
       // Create a new session
 
       const stripeSession = await stripe.checkout.sessions.create({
-        success_url: settingsUrl,
-        cancel_url: settingsUrl,
+        success_url: dashboardUrl,
+        cancel_url: dashboardUrl,
         payment_method_types: ["card"],
         mode: "subscription",
         billing_address_collection: "auto",
