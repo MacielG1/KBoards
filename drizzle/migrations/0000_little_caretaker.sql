@@ -70,7 +70,8 @@ CREATE TABLE IF NOT EXISTS "user" (
 	"name" text,
 	"email" text NOT NULL,
 	"emailVerified" timestamp,
-	"image" text
+	"image" text,
+	"createdAt" timestamp DEFAULT now()
 );
 --> statement-breakpoint
 DO $$ BEGIN
