@@ -35,9 +35,6 @@ const AddItem = forwardRef<HTMLTextAreaElement, AddItemProps>(({ isEditing, enab
     }
   }
 
-  useOnClickOutside(formRef, disableEditing);
-  useEventListener("keydown", onKeyDown);
-
   function onTextAreaKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -83,6 +80,14 @@ const AddItem = forwardRef<HTMLTextAreaElement, AddItemProps>(({ isEditing, enab
     }, 200);
   }
 
+  function onBlur() {
+    disableEditing();
+    formRef.current?.requestSubmit();
+  }
+
+  useOnClickOutside(formRef, onBlur);
+  useEventListener("keydown", onKeyDown);
+
   const list = lists.find((list) => list.id === listId);
   const itemsLength = list ? list.items.length : 0;
   const lastOrder = list ? list.items.at(-1)?.order ?? 0 : 0;
@@ -111,6 +116,7 @@ const AddItem = forwardRef<HTMLTextAreaElement, AddItemProps>(({ isEditing, enab
               id="content"
               onKeyDown={onTextAreaKeyDown}
               ref={ref}
+              onBlur={onBlur}
               className="px-2 focus-visible:ring-1 focus-visible:ring-neutral-500 focus-visible:ring-offset-0 dark:focus-visible:bg-neutral-800/80 dark:focus-visible:ring-neutral-950"
               placeholder="Item Content"
             />
