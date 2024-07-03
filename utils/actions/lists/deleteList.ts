@@ -44,5 +44,5 @@ export async function deleteList(data: z.infer<typeof deleteListSchema>) {
       error: "Failed to delete list",
     };
   }
-  // revalidatePath(`/dashboard/${data.boardId}`);
+  revalidatePath(`/dashboard/${data.boardId}`);
 }

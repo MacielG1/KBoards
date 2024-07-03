@@ -4,6 +4,7 @@ import { createItemSchema } from "../../schemas";
 import { z } from "zod";
 import { db } from "@/utils/db";
 import { Item } from "@/drizzle/schema";
+import { revalidatePath } from "next/cache";
 
 export async function createItem(data: z.infer<typeof createItemSchema>) {
   let item;
@@ -34,7 +35,7 @@ export async function createItem(data: z.infer<typeof createItemSchema>) {
       error: "Failed to create item",
     };
   }
-  // revalidatePath(`/dashboard/${data.boardId}`);
+  revalidatePath(`/dashboard/${data.boardId}`);
 
   return {
     data: item,

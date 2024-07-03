@@ -7,6 +7,7 @@ import { z } from "zod";
 import { db } from "@/utils/db";
 import { Board } from "@/drizzle/schema";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 export async function createBoard(data: z.infer<typeof createBoardSchema>) {
   try {
@@ -53,6 +54,6 @@ export async function createBoard(data: z.infer<typeof createBoardSchema>) {
       error: "Failed to create board",
     };
   }
-  // revalidatePath("/dashboard");
+  revalidatePath("/dashboard");
   // redirect(`/dashboard/${data.id}`);
 }

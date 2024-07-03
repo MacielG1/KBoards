@@ -5,6 +5,7 @@ import { z } from "zod";
 import { db } from "@/utils/db";
 import { Item } from "@/drizzle/schema";
 import { and, eq, gte, ne, sql } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 
 export async function deleteItem(data: z.infer<typeof deleteItemSchema>) {
   try {
@@ -33,5 +34,5 @@ export async function deleteItem(data: z.infer<typeof deleteItemSchema>) {
       error: "Failed to delete item",
     };
   }
-  // revalidatePath(`/dashboard/${data.boardId}`);
+  revalidatePath(`/dashboard/${data.boardId}`);
 }

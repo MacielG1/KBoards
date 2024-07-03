@@ -5,6 +5,7 @@ import { z } from "zod";
 import { db } from "@/utils/db";
 import { and, count, eq, gt, sql } from "drizzle-orm";
 import { List } from "@/drizzle/schema";
+import { revalidatePath } from "next/cache";
 
 export async function moveList(data: z.infer<typeof moveListSchema>) {
   try {
@@ -48,5 +49,5 @@ export async function moveList(data: z.infer<typeof moveListSchema>) {
       error: "Failed to move list",
     };
   }
-  // revalidatePath(`/dashboard/${data.boardId}`);
+  revalidatePath(`/dashboard/${data.boardId}`);
 }

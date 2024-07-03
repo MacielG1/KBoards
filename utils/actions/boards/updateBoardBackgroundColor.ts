@@ -34,7 +34,7 @@ export async function updateBoardBackgroundColor(data: z.infer<typeof updateBoar
       error: "Failed to update board",
     };
   }
-  // revalidatePath(`/dashboard`);
+  revalidatePath(`/dashboard`);
 
   return {
     data: board,

@@ -8,6 +8,7 @@ import { hasAvailableBoards, increaseBoardCount } from "./boardsLimit";
 import { db } from "@/utils/db";
 import { eq } from "drizzle-orm";
 import { Board, List, Item } from "@/drizzle/schema";
+import { revalidatePath } from "next/cache";
 
 export async function copyBoard(data: z.infer<typeof copyBoardSchema>) {
   try {
@@ -106,5 +107,5 @@ export async function copyBoard(data: z.infer<typeof copyBoardSchema>) {
     return { error: "Failed to copy board" };
   }
 
-  // revalidatePath(`/dashboard`);
+  revalidatePath(`/dashboard`);
 }

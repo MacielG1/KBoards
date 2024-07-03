@@ -5,6 +5,7 @@ import { z } from "zod";
 import { db } from "@/utils/db";
 import { Item } from "@/drizzle/schema";
 import { and, eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 
 export async function updateItem(data: z.infer<typeof updateItemSchema>) {
   let item;
@@ -33,7 +34,7 @@ export async function updateItem(data: z.infer<typeof updateItemSchema>) {
       error: "Failed to update item",
     };
   }
-  // revalidatePath(`/dashboard/${data.boardId}`);
+  revalidatePath(`/dashboard/${data.boardId}`);
 
   return {
     data: item,

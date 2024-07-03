@@ -35,7 +35,7 @@ export async function updateBoard(data: z.infer<typeof updateBoardSchema>) {
       error: "Failed to update list",
     };
   }
-  // revalidatePath(`/dashboard/${data.id}`);
+  revalidatePath(`/dashboard/${data.id}`);
 
   return {
     data: board,

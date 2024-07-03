@@ -6,6 +6,7 @@ import { z } from "zod";
 import { db } from "@/utils/db";
 import { and, eq, gte, ne } from "drizzle-orm";
 import { Item } from "@/drizzle/schema";
+import { revalidatePath } from "next/cache";
 
 export async function copyItem(data: z.infer<typeof copyItemSchema>) {
   let newItem;
@@ -54,5 +55,5 @@ export async function copyItem(data: z.infer<typeof copyItemSchema>) {
       error: "Failed to copy Item",
     };
   }
-  // revalidatePath(`/dashboard/${data.boardId}`);
+  revalidatePath(`/dashboard/${data.boardId}`);
 }

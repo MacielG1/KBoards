@@ -7,6 +7,7 @@ import { hasAvailableLists, increaseListCount } from "./listslimit";
 import { db } from "@/utils/db";
 import { and, eq, gte, ne } from "drizzle-orm";
 import { Item, List } from "@/drizzle/schema";
+import { revalidatePath } from "next/cache";
 
 export async function copyList(data: z.infer<typeof copyListSchema>) {
   try {
@@ -84,5 +85,5 @@ export async function copyList(data: z.infer<typeof copyListSchema>) {
       error: "Failed to copy list",
     };
   }
-  // revalidatePath(`/dashboard/${data.boardId}`);
+  revalidatePath(`/dashboard/${data.boardId}`);
 }

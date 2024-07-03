@@ -6,6 +6,7 @@ import { checkIsPremium } from "@/utils/checkSubscription";
 import { hasAvailableLists, increaseListCount } from "./listslimit";
 import { db } from "@/utils/db";
 import { List } from "@/drizzle/schema";
+import { revalidatePath } from "next/cache";
 
 export async function createList(data: z.infer<typeof createListSchema>) {
   let list;
@@ -48,7 +49,7 @@ export async function createList(data: z.infer<typeof createListSchema>) {
       error: "Failed to create list",
     };
   }
-  // revalidatePath(`/dashboard/${data.boardId}`);
+  revalidatePath(`/dashboard/${data.boardId}`);
 
   return {
     data: list,

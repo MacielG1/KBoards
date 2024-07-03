@@ -8,6 +8,7 @@ import { db } from "@/utils/db";
 import { Board } from "@/drizzle/schema";
 import { and, eq, gte, ne, sql } from "drizzle-orm";
 import { auth } from "@/auth";
+import { revalidatePath } from "next/cache";
 
 export async function deleteBoard(data: z.infer<typeof deleteBoardSchema>) {
   try {
@@ -45,5 +46,5 @@ export async function deleteBoard(data: z.infer<typeof deleteBoardSchema>) {
       error: "Failed to delete board",
     };
   }
-  // revalidatePath("/dashboard");
+  revalidatePath("/dashboard");
 }

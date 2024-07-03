@@ -5,6 +5,7 @@ import { z } from "zod";
 import { db } from "@/utils/db";
 import { List } from "@/drizzle/schema";
 import { and, eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 
 export async function updateListOrder(data: z.infer<typeof updateListOrderSchema>, boardId: string) {
   let updatedLists;
@@ -39,7 +40,7 @@ export async function updateListOrder(data: z.infer<typeof updateListOrderSchema
       error: "Failed to reorder lists",
     };
   }
-  // revalidatePath(`/dashboard/${boardId}`);
+  revalidatePath(`/dashboard/${boardId}`);
 
   return {
     data: updatedLists,
