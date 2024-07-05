@@ -46,5 +46,5 @@ export async function deleteBoard(data: z.infer<typeof deleteBoardSchema>) {
       error: "Failed to delete board",
     };
   }
-  revalidatePath("/dashboard");
+  // revalidatePath("/dashboard");
 }

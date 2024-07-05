@@ -99,7 +99,7 @@ export default function BoardOptions({ data, enableEditing, textColor }: BoardOp
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        className=" px-0 pb-3 pt-3"
+        className="px-0 pb-3 pt-3"
         side="bottom"
         align="start"
         onClick={(e) => {
@@ -170,7 +170,7 @@ export default function BoardOptions({ data, enableEditing, textColor }: BoardOp
               // e.stopPropagation();
             }}
             variant="ghost"
-            className="h-auto w-full justify-start rounded-none p-2 px-5 text-sm font-normal"
+            className="h-auto w-full justify-start rounded-none p-2 px-5 pb-2.5 text-sm font-normal"
           >
             <Trash className="mr-2 size-4" /> Delete Board
           </Button>
