@@ -4,14 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { ItemType, useStore } from "@/store/store";
-import { Copy, Eraser, MoreHorizontal, Trash, X } from "lucide-react";
+import { Copy, Eraser, ListEnd, ListStart, MoreHorizontal, Trash, X } from "lucide-react";
 import { ElementRef, useRef, useState } from "react";
 import { deleteItem } from "@/utils/actions/items/deleteItem";
 import { copyItem } from "@/utils/actions/items/copyItem";
+import { createItem } from "@/utils/actions/items/createItem";
 import { useParams } from "next/navigation";
 import { createId } from "@paralleldrive/cuid2";
 import ColorPicker from "../Form/ColorPicker";
 import { updateItemColor } from "@/utils/actions/items/updateItemColor";
+import { insertItem } from "@/utils/actions/items/insertItem";
 
 type ItemOptionsProps = {
   data: ItemType;
@@ -25,6 +27,8 @@ export default function ItemOptions({ data }: ItemOptionsProps) {
   const removeItem = useStore((state) => state.removeItem);
   const copyItemState = useStore((state) => state.copyItem);
   const setItemColor = useStore((state) => state.setItemColor);
+  const addItem = useStore((state) => state.addItem);
+  const insertItemState = useStore((state) => state.insertItem);
 
   const params = useParams<{ boardId: string }>();
 
@@ -48,6 +52,38 @@ export default function ItemOptions({ data }: ItemOptionsProps) {
     await updateItemColor({ id: data.id, color: "", boardId: params.boardId });
   }
 
+  async function InsertItemAbove() {
+    const newItem = {
+      id: createId(),
+      content: "",
+      listId: data.listId,
+      order: data.order,
+      boardId: params.boardId,
+      color: "",
+    };
+
+    insertItemState(newItem, "above", data.id, newItem.id);
+    closeRef.current?.click();
+
+    await insertItem(newItem, "above");
+  }
+
+  async function InsertItemBelow() {
+    const newItem = {
+      id: createId(),
+      content: "",
+      listId: data.listId,
+      order: data.order,
+      boardId: params.boardId,
+      color: "",
+    };
+
+    insertItemState(newItem, "below", data.id, newItem.id);
+    closeRef.current?.click();
+
+    await insertItem(newItem, "below");
+  }
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -63,15 +99,26 @@ export default function ItemOptions({ data }: ItemOptionsProps) {
           <div className="flex-grow pl-2 text-center text-sm font-medium text-neutral-500">Item Options</div>
           <PopoverClose asChild>
             <Button ref={closeRef} className="mr-2 h-auto w-auto p-1 text-neutral-600 focus-visible:ring-neutral-600" variant="ghost">
-              <X className="size-4" />
+              <X className="size-4 shrink-0" />
             </Button>
           </PopoverClose>
         </div>
-
         <Button onClick={handleCopy} variant="ghost" className="h-auto w-full justify-start rounded-none p-2 px-5 text-sm font-normal">
-          <Copy className="mr-2 size-4" /> Copy Item
+          <Copy className="mr-2 size-4 shrink-0" /> <span className="pb-[1px]">Copy Item</span>
         </Button>
-
+        <Separator />
+        <Button onClick={handleDelete} variant="ghost" className="h-auto w-full justify-start rounded-none p-2 px-5 text-sm font-normal">
+          <Trash className="mr-2 size-4" />
+          <span className="pb-[1px]">Delete Item</span>
+        </Button>
+        <Separator />
+        <Button onClick={InsertItemAbove} variant="ghost" className="h-auto w-full justify-start rounded-none p-2 px-5 text-sm font-normal">
+          <ListStart className="mr-2 size-4 shrink-0" /> <span className="pb-[1px]">Insert Item Above</span>
+        </Button>
+        <Separator />
+        <Button onClick={InsertItemBelow} variant="ghost" className="h-auto w-full justify-start rounded-none p-2 px-5 text-sm font-normal">
+          <ListEnd className="mr-2 size-4 shrink-0" /> <span className="pb-[1px]">Insert Item Below</span>
+        </Button>
         <Separator />
         <Button
           tabIndex={-1}
@@ -93,12 +140,6 @@ export default function ItemOptions({ data }: ItemOptionsProps) {
               <Eraser className="ml-2 size-4 shrink-0" />
             </span>
           )}
-        </Button>
-
-        <Separator />
-        <Button onClick={handleDelete} variant="ghost" className="h-auto w-full justify-start rounded-none p-2 px-5 text-sm font-normal">
-          <Trash className="mr-2 size-4" />
-          Delete Item
         </Button>
       </PopoverContent>
     </Popover>

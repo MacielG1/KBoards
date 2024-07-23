@@ -7,7 +7,6 @@ import Item from "../Item/Item";
 import ListHeader from "./ListHeader";
 import AddItem from "../Item/AddItem";
 import { cn } from "@/utils";
-import { getTextLength } from "@/utils/getTextLength";
 
 type ListItemProps = {
   index: number;

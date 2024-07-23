@@ -127,7 +127,7 @@ export default function BoardOptions({ data, enableEditing, textColor }: BoardOp
           variant="ghost"
           className="h-auto w-full justify-start rounded-none p-2 px-5 text-sm font-normal"
         >
-          <Pencil className="mr-2 size-4" /> Edit Board Name
+          <Pencil className="mr-2 size-4" /> <span className="pb-[1px]">Edit Board Name</span>
         </Button>
         <Separator />
         <Button
@@ -138,7 +138,7 @@ export default function BoardOptions({ data, enableEditing, textColor }: BoardOp
           variant="ghost"
           className="h-auto w-full justify-start rounded-none p-2 px-5 text-sm font-normal"
         >
-          <Copy className="mr-2 size-4" /> Copy Board
+          <Copy className="mr-2 size-4" /> <span className="pb-[1px]">Copy Board</span>
         </Button>
         <Separator />
         <Button
@@ -172,7 +172,7 @@ export default function BoardOptions({ data, enableEditing, textColor }: BoardOp
             variant="ghost"
             className="h-auto w-full justify-start rounded-none p-2 px-5 pb-2.5 text-sm font-normal"
           >
-            <Trash className="mr-2 size-4" /> Delete Board
+            <Trash className="mr-2 size-4" /> <span className="pb-[1px]">Delete Board</span>
           </Button>
         </DeleteModal>
       </PopoverContent>

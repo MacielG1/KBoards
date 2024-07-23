@@ -72,7 +72,7 @@ export default function ColorPicker({ id, value, type, text = "Change Color", cl
         id={`${type}-${id}`}
       />
       <label htmlFor={`${type}-${id}`} className="flex cursor-pointer items-center justify-start py-2">
-        {text}
+        <span className="pb-[0.75px]">{text}</span>
       </label>
     </>
   );

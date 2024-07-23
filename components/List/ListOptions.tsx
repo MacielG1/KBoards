@@ -89,11 +89,12 @@ export default function ListOptions({ data, onAddItem, textColor }: ListOptionsP
           </Button>
         </PopoverClose>
         <Button onClick={onAddItem} className="h-auto w-full justify-start rounded-none p-2 px-5 text-sm font-normal" variant="ghost">
-          <Plus className="mr-2 size-4" /> Add Item
+          <Plus className="line mr-2 size-4" />
+          <span className="pb-[1px]">Add Item </span>
         </Button>
         <Separator />
         <Button onClick={handleCopy} variant="ghost" className="h-auto w-full justify-start rounded-none p-2 px-5 text-sm font-normal">
-          <Copy className="mr-2 size-4" /> Copy List
+          <Copy className="mr-2 size-4" /> <span className="pb-[1px]">Copy List</span>
         </Button>
 
         <Separator />
@@ -123,12 +124,11 @@ export default function ListOptions({ data, onAddItem, textColor }: ListOptionsP
         )}
 
         <div className="inline-flex h-auto w-full items-center justify-start whitespace-nowrap rounded-none p-2 px-5 text-sm font-normal ring-offset-background transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-50">
-          {/* <AlignCenter className="mr-2 size-4 shrink-0" /> */}
           {textAlignment === "left" && <AlignLeft className="mr-2 size-4 shrink-0" />}
           {textAlignment === "center" && <AlignJustify className="mr-2 size-4 shrink-0" />}
           {textAlignment === "right" && <AlignRight className="mr-2 size-4 shrink-0" />}
-          Align Items
-          <div className="flex items-center justify-center gap-1 px-5 pt-0.5">
+          <span className="pb-[1px]">Align Items</span>
+          <div className="flex items-center justify-center gap-1 px-5">
             <Button onClick={() => setTextAlignment("left")} className="h-auto w-auto p-0 text-sm font-normal" variant="transparent">
               <AlignLeft className={`size-[18px] ${textAlignment === "left" && "text-mainColor"}`} />
             </Button>
@@ -142,8 +142,8 @@ export default function ListOptions({ data, onAddItem, textColor }: ListOptionsP
         </div>
         <Separator />
         <DeleteModal message={`Delete List: ${data.title}`} deleteHandler={handleDelete}>
-          <Button variant="ghost" className="h-auto w-full justify-start rounded-none p-2 px-5 text-sm font-normal">
-            <Trash className="mr-2 size-4" /> Delete List
+          <Button variant="ghost" className="h-auto w-full items-center justify-start rounded-none p-2 px-5 pb-1 text-sm font-normal">
+            <Trash className="mr-2 size-4" /> <span className="pb-[1px]">Delete List</span>
           </Button>
         </DeleteModal>
       </PopoverContent>

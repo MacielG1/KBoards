@@ -60,6 +60,7 @@ export type StoreType = {
   removeItem: (itemId: string, listId: string) => void;
   updateItem: (itemId: string, updatedItem: Partial<ItemType>, listId: string) => void;
   setItemColor: (itemId: string, color: string, boardId: string) => void;
+  insertItem: (item: ItemType, position: "above" | "below", itemId: string, newId: string) => void;
 
   copyItem: (itemId: string, listId: string, newId: string, boardId: string) => void;
 };
@@ -192,6 +193,71 @@ export const useStore = create<StoreType>((set, get) => ({
               ...lists.slice(listIndex + 1),
             ],
           };
+        }
+      }
+      return state;
+    }),
+
+  // insertItem: (item, position, itemId, newId) =>
+  //   set((state) => {
+  //     const { lists } = state;
+  //     const listIndex = lists.findIndex((list) => list.items.some((item) => item.id === itemId));
+
+  //     if (listIndex !== -1) {
+  //       const list = lists[listIndex];
+  //       const itemIndex = list.items.findIndex((item) => item.id === itemId);
+
+  //       if (itemIndex !== -1) {
+  //         // update order of items and  change order of the item
+  //         const updatedItems = list.items.map((existingItem) => {
+  //           if (position === "above") {
+  //             return existingItem.order >= itemIndex ? { ...existingItem, order: existingItem.order + 1 } : existingItem;
+  //           } else {
+  //             // When inserting below, increment the order of items that come after the new item's position
+  //             return existingItem.order > itemIndex ? { ...existingItem, order: existingItem.order + 1 } : existingItem;
+  //           }
+  //         });
+  //         const newItem = { ...item, order: position === "above" ? itemIndex : itemIndex + 1 };
+
+  //         if (position === "above") {
+  //           updatedItems.splice(itemIndex, 0, newItem);
+  //         } else {
+  //           updatedItems.splice(itemIndex + 1, 0, newItem);
+  //         }
+
+  //         return {
+  //           lists: [...lists.slice(0, listIndex), { ...list, items: updatedItems }, ...lists.slice(listIndex + 1)],
+  //         };
+  //       }
+  //     }
+  //     return state;
+  //   }),
+  insertItem: (item, position, itemId, newId) =>
+    set((state) => {
+      const { lists } = state;
+      const listIndex = lists.findIndex((list) => list.items.some((item) => item.id === itemId));
+
+      if (listIndex !== -1) {
+        const list = lists[listIndex];
+        const itemIndex = list.items.findIndex((item) => item.id === itemId);
+
+        if (itemIndex !== -1) {
+          const updatedItems = list.items.map((existingItem, index) => {
+            if ((position === "above" && index >= itemIndex) || (position !== "above" && index > itemIndex)) {
+              return { ...existingItem, order: existingItem.order + 1 };
+            } else {
+              return existingItem;
+            }
+          });
+
+          const newItemOrder = position === "above" ? itemIndex : itemIndex + 1;
+          const newItem = { ...item, order: newItemOrder };
+
+          updatedItems.splice(newItemOrder, 0, newItem);
+
+          lists[listIndex] = { ...list, items: updatedItems };
+
+          return { ...state, lists };
         }
       }
       return state;

@@ -42,9 +42,9 @@ export default function ItemContent({ data }: { data: ItemType }) {
   useEventListener("keydown", onKeyDown);
 
   async function handleSubmit(formData: FormData) {
-    const content = formData.get("content") as string;
+    const content = formData.get(data.id) as string;
 
-    if (content === data.content || content.trim() === "") {
+    if (!content || content === data.content || content.trim() === "") {
       return disableEditing();
     }
 
@@ -74,7 +74,7 @@ export default function ItemContent({ data }: { data: ItemType }) {
   return (
     <div
       style={{ backgroundColor: data.color || "var(--item-color)" }}
-      className={`flex w-full items-center justify-between overflow-hidden rounded-md border-2 border-transparent text-sm shadow-sm ${isFocused ? "border-transparent" : "hover:border-neutral-500 dark:hover:border-neutral-950"}`}
+      className={`flex min-h-8 w-full items-center justify-between overflow-hidden rounded-md border-2 border-transparent text-sm shadow-sm ${isFocused ? "border-transparent" : "hover:border-neutral-500 dark:hover:border-neutral-950"}`}
     >
       <div className="flex w-full items-start justify-between rounded-t-md text-sm font-semibold">
         {isEditing ? (
@@ -82,7 +82,7 @@ export default function ItemContent({ data }: { data: ItemType }) {
             <FormTextArea
               rows={1}
               onBlur={onBlur}
-              id="content"
+              id={data.id}
               onKeyDown={onTextAreaKeyDown}
               defaultValue={content}
               ref={textAreaRef}
@@ -93,7 +93,7 @@ export default function ItemContent({ data }: { data: ItemType }) {
           <>
             <div
               onClick={enableEditing}
-              className={`relative w-full whitespace-pre-wrap break-words border-transparent bg-transparent px-1 py-1 pl-2 text-sm ${textAlign}`}
+              className={`relative min-h-7 w-full whitespace-pre-wrap break-words border-transparent bg-transparent px-1 py-1 pl-2 text-sm ${textAlign}`}
             >
               {content}
             </div>

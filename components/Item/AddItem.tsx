@@ -116,7 +116,7 @@ const AddItem = forwardRef<HTMLTextAreaElement, AddItemProps>(({ isEditing, enab
               id="content"
               onKeyDown={onTextAreaKeyDown}
               ref={ref}
-              onBlur={onBlur}
+              // onBlur={onBlur}
               className="px-2 focus-visible:ring-1 focus-visible:ring-neutral-500 focus-visible:ring-offset-0 dark:focus-visible:bg-neutral-800/80 dark:focus-visible:ring-neutral-950"
               placeholder="Item Content"
             />

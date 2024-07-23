@@ -37,26 +37,6 @@ export default function Item({ index, data, listLength }: ItemProps) {
     setTextColor(resolvedTheme === "dark" ? "#fff" : "#0a0a0a");
   }, [data.color, resolvedTheme]);
 
-  // return (
-  //   <Draggable draggableId={data.id} index={index}>
-  //     {(provided, snapshot) => (
-  //       <div
-  //         {...provided.draggableProps}
-  //         {...provided.dragHandleProps}
-  //         ref={provided.innerRef}
-  //         style={{ ...getStyle(provided.draggableProps.style || {}, snapshot), color: textColor, cursor: "pointer" }}
-  //         className={cn("group relative mb-0 flex items-center overflow-hidden", showItemsOrder ? "mx-0" : "mx-1")}
-  //       >
-  //         <span className={`flex items-center justify-center ${showItemsOrder && "mr-[4px]"}`} style={{ minWidth: showItemsOrder ? "0.85rem" : 0 }}>
-  //           {showItemsOrder && <span className="text-xs font-normal text-neutral-400">{index + 1}</span>}
-  //         </span>
-
-  //         <ItemContent data={data} />
-  //       </div>
-  //     )}
-  //   </Draggable>
-  // );
-
   return (
     <Draggable draggableId={data.id} index={index}>
       {(provided, snapshot) => (

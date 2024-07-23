@@ -17,13 +17,12 @@ export const createBoardSchema = z.object({
 });
 
 export const createItemSchema = z.object({
-  content: z
-    .string({
-      required_error: "Title is required",
-    })
-    .min(1, {
-      message: "Title must be at least 1 characters long",
-    }),
+  content: z.string({
+    required_error: "Title is required",
+  }),
+  // .min(1, {
+  //   message: "Title must be at least 1 characters long",
+  // }),
   id: z.string(),
   boardId: z.string(),
   order: z.number(),
@@ -163,6 +162,14 @@ export const copyItemSchema = z.object({
   newId: z.string(),
   id: z.string(),
   color: z.string(),
+});
+
+export const insertItemSchema = z.object({
+  id: z.string(),
+  boardId: z.string(),
+  order: z.number(),
+  color: z.string(),
+  listId: z.string(),
 });
 
 export const copyListSchema = z.object({
