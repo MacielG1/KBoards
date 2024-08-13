@@ -35,6 +35,9 @@ export default function SubButton({ isPremium }: { isPremium: boolean }) {
     >
       <ShieldCheck className={`mr-2 size-4 flex-shrink-0`} />
       <span>{isPremium ? "Manage Subscription" : "Upgrade to Premium"}</span>
+      {!isPremium && (
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6107119666573139" crossOrigin="anonymous"></script>
+      )}
     </Button>
   );
 }
