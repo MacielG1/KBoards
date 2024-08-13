@@ -64,6 +64,7 @@ export default function Landing() {
             <p className="text-center text-xs leading-5 text-gray-500">&copy; {new Date().getFullYear()} MacielG1. All rights reserved.</p>
           </div>
         </div>
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6107119666573139" crossOrigin="anonymous"></script>
       </footer>
     </div>
   );
