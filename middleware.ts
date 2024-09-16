@@ -13,7 +13,7 @@ export default auth((req) => {
 
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
   const isNextAuthRoute = nextUrl.pathname.startsWith("/api/auth");
-  const isWebhookRoute = nextUrl.pathname.startsWith("/api/webhook");
+  const isWebhookRoute = nextUrl.pathname.startsWith("/api/webhook") || nextUrl.pathname.startsWith("/api/cron");
 
   if (isNextAuthRoute || isWebhookRoute) return;
 
