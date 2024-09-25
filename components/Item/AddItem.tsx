@@ -90,14 +90,16 @@ const AddItem = forwardRef<HTMLTextAreaElement, AddItemProps>(({ isEditing, enab
 
   const list = lists.find((list) => list.id === listId);
   const itemsLength = list ? list.items.length : 0;
-  const lastOrder = list ? list.items.at(-1)?.order ?? 0 : 0;
+  const lastOrder = list ? (list.items.at(-1)?.order ?? 0) : 0;
 
   return (
     <>
       {isEditing ? (
         <form
           ref={formRef}
-          action={onSubmit}
+          action={async (formData: FormData) => {
+            await onSubmit(formData);
+          }}
           className={cn(`mt-2 flex py-0.5`, showItemsOrder ? "mr-0.5 pr-2" : "mx-2", showItemsOrder && itemsLength <= 0 && "ml-2.5")}
         >
           {itemsLength > 0 && (

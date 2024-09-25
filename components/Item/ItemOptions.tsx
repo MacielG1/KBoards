@@ -107,11 +107,6 @@ export default function ItemOptions({ data }: ItemOptionsProps) {
           <Copy className="mr-2 size-4 shrink-0" /> <span className="pb-[1px]">Copy Item</span>
         </Button>
         <Separator />
-        <Button onClick={handleDelete} variant="ghost" className="h-auto w-full justify-start rounded-none p-2 px-5 text-sm font-normal">
-          <Trash className="mr-2 size-4" />
-          <span className="pb-[1px]">Delete Item</span>
-        </Button>
-        <Separator />
         <Button onClick={InsertItemAbove} variant="ghost" className="h-auto w-full justify-start rounded-none p-2 px-5 text-sm font-normal">
           <ListStart className="mr-2 size-4 shrink-0" /> <span className="pb-[1px]">Insert Item Above</span>
         </Button>
@@ -140,6 +135,11 @@ export default function ItemOptions({ data }: ItemOptionsProps) {
               <Eraser className="ml-2 size-4 shrink-0" />
             </span>
           )}
+        </Button>
+        <Separator />
+        <Button onClick={handleDelete} variant="ghost" className="h-auto w-full justify-start rounded-none p-2 px-5 text-sm font-normal">
+          <Trash className="mr-2 size-4" />
+          <span className="pb-[1px]">Delete Item</span>
         </Button>
       </PopoverContent>
     </Popover>
