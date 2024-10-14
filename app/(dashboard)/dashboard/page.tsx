@@ -53,7 +53,7 @@ export default function Dashboard() {
       router.push(`/dashboard/${currentBoardId}`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasCheckedBoards]);
+  }, [hasCheckedBoards, currentBoardId]);
 
   if (!currentBoardId || !orderedBoards.find((board) => board.id === currentBoardId)) {
     return (

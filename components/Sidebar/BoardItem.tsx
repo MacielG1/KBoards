@@ -49,10 +49,10 @@ export default function BoardItem({ board, index }: BoardItemProps) {
   }
 
   async function changeCurrentBoard() {
-    if (board.id === currentBoardId && params.boardId === board.id) return;
+    if (!board.id || (board.id === currentBoardId && params.boardId === board.id)) return;
 
-    router.prefetch(`/dashboard/${board.id}`);
     setCurrentBoardId(board.id);
+    router.prefetch(`/dashboard/${board.id}`);
     router.push(`/dashboard/${board.id}`);
   }
 
