@@ -8,10 +8,11 @@ import { stripeRedirect } from "@/utils/actions/stripe/stripeRedirect";
 import { toast } from "sonner";
 import { useState } from "react";
 import { BOARDS_LIMIT, CURRENT_PRICE, LISTS_LIMIT } from "@/utils/constants";
+import { useShallow } from "zustand/shallow";
 
 export default function PremiumModal() {
   const [isLoading, setIsLoading] = useState(false);
-  const [isOpen, onClose] = useProModalStore((state) => [state.isOpen, state.onClose]);
+  const [isOpen, onClose] = useProModalStore(useShallow((state) => [state.isOpen, state.onClose]));
 
   async function handleUpgrade() {
     setIsLoading(true);

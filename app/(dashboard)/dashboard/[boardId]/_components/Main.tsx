@@ -2,9 +2,10 @@
 import TopBar from "@/components/TopBar/TopBar";
 import { useStore } from "@/store/store";
 import { useParams } from "next/navigation";
+import { useShallow } from "zustand/shallow";
 
 export default function Main({ SubButtonParent, children }: { SubButtonParent: React.ReactNode; children: React.ReactNode }) {
-  const orderedBoards = useStore((state) => state.orderedBoards);
+  const orderedBoards = useStore(useShallow((state) => state.orderedBoards));
   const params = useParams<{ boardId: string }>();
 
   const currentBoardData = orderedBoards?.find((board) => board.id === params.boardId) || null;

@@ -16,6 +16,7 @@ import { createId } from "@paralleldrive/cuid2";
 import ExportToBoard from "./ExportToBoard";
 import { toast } from "sonner";
 import { useProModalStore } from "@/store/useProModal";
+import { useShallow } from "zustand/shallow";
 
 type ListOptionsProps = {
   data: ListType;
@@ -28,16 +29,16 @@ export default function ListOptions({ data, onAddItem, textColor }: ListOptionsP
   const [isHovered, setIsHovered] = useState(false);
 
   const [listColor, setListColorState] = useState(data.color);
-  const orderedBoards = useStore((state) => state.orderedBoards);
+  const orderedBoards = useStore(useShallow((state) => state.orderedBoards));
 
   const params = useParams<{ boardId: string }>();
 
-  const copyListState = useStore((state) => state.copyList);
-  const removeList = useStore((state) => state.removeList);
-  const setListColor = useStore((state) => state.setListColor);
-  const onOpen = useProModalStore((state) => state.onOpen);
-  const setTextAlignment = useStorePersisted((state) => state.setTextAlignment);
-  const textAlignment = useStorePersisted((state) => state.textAlignment);
+  const copyListState = useStore(useShallow((state) => state.copyList));
+  const removeList = useStore(useShallow((state) => state.removeList));
+  const setListColor = useStore(useShallow((state) => state.setListColor));
+  const onOpen = useProModalStore(useShallow((state) => state.onOpen));
+  const setTextAlignment = useStorePersisted(useShallow((state) => state.setTextAlignment));
+  const textAlignment = useStorePersisted(useShallow((state) => state.textAlignment));
 
   async function handleDelete() {
     removeList(data.id, data.boardId);

@@ -10,13 +10,14 @@ import { useEffect, useState } from "react";
 import getContrastColor from "@/utils/getConstrastColor";
 import { useTheme } from "next-themes";
 import UserButton from "../UserButton";
+import { useShallow } from "zustand/shallow";
 
 export default function TopBar({ SubButton }: { SubButton: React.ReactNode }) {
   const { isCollapsed } = useCollapsedContext();
   const { resolvedTheme } = useTheme();
   const params = useParams<{ boardId: string }>();
 
-  const orderedBoards = useStore((state) => state.orderedBoards);
+  const orderedBoards = useStore(useShallow((state) => state.orderedBoards));
 
   // const currentBoardId = useStorePersisted((state) => state.currentBoardId);
   const currentBoardData = orderedBoards?.find((board) => board.id === params.boardId) || null;

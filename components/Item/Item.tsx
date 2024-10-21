@@ -8,6 +8,7 @@ import getContrastColor from "@/utils/getConstrastColor";
 import { useTheme } from "next-themes";
 import { cn } from "@/utils";
 import { getTextLength } from "@/utils/getTextLength";
+import { useShallow } from "zustand/shallow";
 
 type ItemProps = {
   index: number;
@@ -17,7 +18,7 @@ type ItemProps = {
 
 export default function Item({ index, data, listLength }: ItemProps) {
   const [textColor, setTextColor] = useState("var(--text-default)");
-  const showItemsOrder = useStorePersisted((state) => state.showItemsOrder);
+  const showItemsOrder = useStorePersisted(useShallow((state) => state.showItemsOrder));
 
   const { resolvedTheme } = useTheme();
 

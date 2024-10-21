@@ -4,6 +4,7 @@ import { ExternalLink } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { moveList } from "@/utils/actions/lists/moveList";
 import { Button } from "../ui/button";
+import { useShallow } from "zustand/shallow";
 
 type ExportToBoardProps = {
   listId: string;
@@ -11,11 +12,11 @@ type ExportToBoardProps = {
 };
 
 export default function ExportToBoard({ listId, popoverRef }: ExportToBoardProps) {
-  const orderedBoards = useStore((state) => state.orderedBoards);
+  const orderedBoards = useStore(useShallow((state) => state.orderedBoards));
 
   const params = useParams<{ boardId: string }>();
   const boards = orderedBoards.filter((board) => board.id !== params.boardId);
-  const moveListState = useStore((state) => state.moveList);
+  const moveListState = useStore(useShallow((state) => state.moveList));
 
   async function handleMoveToBoard({ boardId }: { boardId: string }) {
     moveListState(listId, boardId);

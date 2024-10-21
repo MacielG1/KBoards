@@ -2,7 +2,7 @@
 
 import { ElementRef, useEffect, useRef, useState } from "react";
 import { BoardType, useStore, useStorePersisted } from "@/store/store";
-
+import { useShallow } from "zustand/shallow";
 import { cn } from "@/utils";
 import { Draggable, DraggableProvided, DraggableStateSnapshot, DraggableStyle } from "@hello-pangea/dnd";
 import BoardOptions from "./BoardOptions";
@@ -21,8 +21,8 @@ export default function BoardItem({ board, index }: BoardItemProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [textColor, setTextColor] = useState("var(--text-default)");
 
-  const [currentBoardId, setCurrentBoardId] = useStorePersisted((state) => [state.currentBoardId, state.setCurrentBoardId]);
-  const updateCurrentBoardTitle = useStore((state) => state.updateCurrentBoardTitle);
+  const [currentBoardId, setCurrentBoardId] = useStorePersisted(useShallow((state) => [state.currentBoardId, state.setCurrentBoardId]));
+  const updateCurrentBoardTitle = useStore(useShallow((state) => state.updateCurrentBoardTitle));
 
   const { resolvedTheme } = useTheme();
 

@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { ListWithItems } from "@/utils/types";
 import { toast } from "sonner";
 import { useProModalStore } from "@/store/useProModal";
+import { useShallow } from "zustand/shallow";
 
 export default function AddBoard() {
   const [isEditing, setIsEditing] = useState(false);
@@ -21,12 +22,12 @@ export default function AddBoard() {
   const formRef = useRef<ElementRef<"form">>(null);
   const inputRef = useRef<ElementRef<"input">>(null);
 
-  const addBoard = useStore((state) => state.addBoard);
-  const setCurrentBoardId = useStorePersisted((state) => state.setCurrentBoardId);
-  const orderedBoards = useStore((state) => state.orderedBoards);
-  const removeBoard = useStore((state) => state.removeBoard);
+  const addBoard = useStore(useShallow((state) => state.addBoard));
+  const setCurrentBoardId = useStorePersisted(useShallow((state) => state.setCurrentBoardId));
+  const orderedBoards = useStore(useShallow((state) => state.orderedBoards));
+  const removeBoard = useStore(useShallow((state) => state.removeBoard));
 
-  const onOpen = useProModalStore((state) => state.onOpen);
+  const onOpen = useProModalStore(useShallow((state) => state.onOpen));
 
   const router = useRouter();
 

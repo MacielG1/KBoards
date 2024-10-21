@@ -5,11 +5,12 @@ import { useState } from "react";
 import { stripeRedirect } from "@/utils/actions/stripe/stripeRedirect";
 import { toast } from "sonner";
 import { useProModalStore } from "@/store/useProModal";
+import { useShallow } from "zustand/shallow";
 
 export default function SubButton({ isPremium }: { isPremium: boolean }) {
   const [isLoading, setIsLoading] = useState(false);
 
-  const onOpen = useProModalStore((state) => state.onOpen);
+  const onOpen = useProModalStore(useShallow((state) => state.onOpen));
 
   async function handleClick() {
     if (isPremium) {

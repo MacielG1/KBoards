@@ -7,6 +7,7 @@ import Item from "../Item/Item";
 import ListHeader from "./ListHeader";
 import AddItem from "../Item/AddItem";
 import { cn } from "@/utils";
+import { useShallow } from "zustand/shallow";
 
 type ListItemProps = {
   index: number;
@@ -16,7 +17,7 @@ type ListItemProps = {
 export default function ListItem({ data, index }: ListItemProps) {
   const [isEditing, setIsEditing] = useState(false);
 
-  const showItemsOrder = useStorePersisted((state) => state.showItemsOrder);
+  const showItemsOrder = useStorePersisted(useShallow((state) => state.showItemsOrder));
   const textAreaRef = useRef<ElementRef<"textarea">>(null);
   const scrollableRef = useRef<ElementRef<"div">>(null);
 

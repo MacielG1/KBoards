@@ -12,6 +12,7 @@ import { createItem } from "@/utils/actions/items/createItem";
 import { useParams } from "next/navigation";
 import { cn } from "@/utils";
 import { getTextLength } from "@/utils/getTextLength";
+import { useShallow } from "zustand/shallow";
 
 type AddItemProps = {
   isEditing: boolean;
@@ -24,9 +25,9 @@ type AddItemProps = {
 const AddItem = forwardRef<HTMLTextAreaElement, AddItemProps>(({ isEditing, enableEditing, disableEditing, listId, scrollableRef }, ref) => {
   const formRef = useRef<ElementRef<"form">>(null);
 
-  const showItemsOrder = useStorePersisted((state) => state.showItemsOrder);
-  const addItem = useStore((state) => state.addItem);
-  const lists = useStore((state) => state.lists);
+  const showItemsOrder = useStorePersisted(useShallow((state) => state.showItemsOrder));
+  const addItem = useStore(useShallow((state) => state.addItem));
+  const lists = useStore(useShallow((state) => state.lists));
   const params = useParams<{ boardId: string }>();
 
   function onKeyDown(e: KeyboardEvent) {

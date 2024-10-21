@@ -15,6 +15,7 @@ import { copyBoard } from "@/utils/actions/boards/copyBoard";
 import { createId } from "@paralleldrive/cuid2";
 import { toast } from "sonner";
 import { useProModalStore } from "@/store/useProModal";
+import { useShallow } from "zustand/shallow";
 
 type BoardOptionsProps = {
   data: BoardType;
@@ -28,14 +29,14 @@ export default function BoardOptions({ data, enableEditing, textColor }: BoardOp
 
   const closeRef = useRef<ElementRef<"button">>(null);
 
-  const removeBoard = useStore((state) => state.removeBoard);
+  const removeBoard = useStore(useShallow((state) => state.removeBoard));
   const router = useRouter();
-  const copyBoardState = useStore((state) => state.copyBoard);
-  const setBoardColor = useStore((state) => state.setBoardColor);
-  const currentBoardId = useStorePersisted((state) => state.currentBoardId);
-  const orderedBoards = useStore((state) => state.orderedBoards);
-  const setCurrentBoardId = useStorePersisted((state) => state.setCurrentBoardId);
-  const onOpen = useProModalStore((state) => state.onOpen);
+  const copyBoardState = useStore(useShallow((state) => state.copyBoard));
+  const setBoardColor = useStore(useShallow((state) => state.setBoardColor));
+  const currentBoardId = useStorePersisted(useShallow((state) => state.currentBoardId));
+  const orderedBoards = useStore(useShallow((state) => state.orderedBoards));
+  const setCurrentBoardId = useStorePersisted(useShallow((state) => state.setCurrentBoardId));
+  const onOpen = useProModalStore(useShallow((state) => state.onOpen));
 
   async function handleDelete() {
     startTransition(async () => {

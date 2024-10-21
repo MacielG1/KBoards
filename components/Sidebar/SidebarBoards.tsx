@@ -6,9 +6,10 @@ import { DragDropContext, DropResult, Droppable, DroppableProvided } from "@hell
 import { reorder } from "@/utils/reorder";
 import { useEffect } from "react";
 import { updateBoardOrder } from "@/utils/actions/boards/updateBoardOrder";
+import { useShallow } from "zustand/shallow";
 
 export default function SidebarBoards({ boards }: { boards: BoardType[] }) {
-  const [orderedBoards, setOrderedBoards] = useStore((state) => [state.orderedBoards, state.setOrderedBoards]);
+  const [orderedBoards, setOrderedBoards] = useStore(useShallow((state) => [state.orderedBoards, state.setOrderedBoards]));
 
   useEffect(() => {
     setOrderedBoards(boards);

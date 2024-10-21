@@ -16,6 +16,7 @@ import { createId } from "@paralleldrive/cuid2";
 import { toast } from "sonner";
 import { useProModalStore } from "@/store/useProModal";
 import { Board } from "@/drizzle/schema";
+import { useShallow } from "zustand/shallow";
 
 type BoardOptionsProps = {
   data: BoardType | null;
@@ -27,16 +28,16 @@ export default function TopBarOptions({ data, SubButton }: BoardOptionsProps) {
 
   const [bgColor, setBgColor] = useState(data?.backgroundColor ?? "");
 
-  const removeBoard = useStore((state) => state.removeBoard);
+  const removeBoard = useStore(useShallow((state) => state.removeBoard));
   const router = useRouter();
-  const copyBoardState = useStore((state) => state.copyBoard);
-  const currentBoardId = useStorePersisted((state) => state.currentBoardId);
-  const setCurrentBoardId = useStorePersisted((state) => state.setCurrentBoardId);
-  const orderedBoards = useStore((state) => state.orderedBoards);
-  const setBoardBackgroundColor = useStore((state) => state.setBoardBackgroundColor);
-  const toggleItemsOrder = useStorePersisted((state) => state.toggleItemsOrder);
-  const showItemsOrder = useStorePersisted((state) => state.showItemsOrder);
-  const onOpen = useProModalStore((state) => state.onOpen);
+  const copyBoardState = useStore(useShallow((state) => state.copyBoard));
+  const currentBoardId = useStorePersisted(useShallow((state) => state.currentBoardId));
+  const setCurrentBoardId = useStorePersisted(useShallow((state) => state.setCurrentBoardId));
+  const orderedBoards = useStore(useShallow((state) => state.orderedBoards));
+  const setBoardBackgroundColor = useStore(useShallow((state) => state.setBoardBackgroundColor));
+  const toggleItemsOrder = useStorePersisted(useShallow((state) => state.toggleItemsOrder));
+  const showItemsOrder = useStorePersisted(useShallow((state) => state.showItemsOrder));
+  const onOpen = useProModalStore(useShallow((state) => state.onOpen));
 
   useEffect(() => {
     if (data) setBgColor(data.backgroundColor);

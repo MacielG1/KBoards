@@ -13,6 +13,7 @@ import { useParams } from "next/navigation";
 import { BoardWithLists } from "@/utils/types";
 import { toast } from "sonner";
 import { useProModalStore } from "@/store/useProModal";
+import { useShallow } from "zustand/shallow";
 
 export default function AddList({ board }: { board: BoardWithLists }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -20,9 +21,9 @@ export default function AddList({ board }: { board: BoardWithLists }) {
   const formRef = useRef<ElementRef<"form">>(null);
   const textAreaRef = useRef<ElementRef<"textarea">>(null);
 
-  const addList = useStore((state) => state.addList);
-  const removeList = useStore((state) => state.removeList);
-  const onOpen = useProModalStore((state) => state.onOpen);
+  const addList = useStore(useShallow((state) => state.addList));
+  const removeList = useStore(useShallow((state) => state.removeList));
+  const onOpen = useProModalStore(useShallow((state) => state.onOpen));
 
   const params = useParams<{ boardId: string }>();
   const isMobile = useMediaQuery("(max-width: 1000px)");

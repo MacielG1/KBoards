@@ -2,6 +2,7 @@ import { BoardType, useStore, useStorePersisted } from "@/store/store";
 import { ElementRef, useRef, useState } from "react";
 import { FormInput } from "../Form/FormInput";
 import { updateBoard } from "@/utils/actions/boards/updateBoard";
+import { useShallow } from "zustand/shallow";
 
 type BoardTitleProps = {
   board: BoardType;
@@ -11,7 +12,7 @@ type BoardTitleProps = {
 export default function BoardTitle({ board, textColor }: BoardTitleProps) {
   const [isEditing, setIsEditing] = useState(false);
 
-  const updateCurrentBoardTitle = useStore((state) => state.updateCurrentBoardTitle);
+  const updateCurrentBoardTitle = useStore(useShallow((state) => state.updateCurrentBoardTitle));
 
   const inputRef = useRef<ElementRef<"input">>(null);
   const formRef = useRef<ElementRef<"form">>(null);

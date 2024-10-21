@@ -14,6 +14,7 @@ import { createId } from "@paralleldrive/cuid2";
 import ColorPicker from "../Form/ColorPicker";
 import { updateItemColor } from "@/utils/actions/items/updateItemColor";
 import { insertItem } from "@/utils/actions/items/insertItem";
+import { useShallow } from "zustand/shallow";
 
 type ItemOptionsProps = {
   data: ItemType;
@@ -24,11 +25,11 @@ export default function ItemOptions({ data }: ItemOptionsProps) {
 
   const closeRef = useRef<ElementRef<"button">>(null);
 
-  const removeItem = useStore((state) => state.removeItem);
-  const copyItemState = useStore((state) => state.copyItem);
-  const setItemColor = useStore((state) => state.setItemColor);
-  const addItem = useStore((state) => state.addItem);
-  const insertItemState = useStore((state) => state.insertItem);
+  const removeItem = useStore(useShallow((state) => state.removeItem));
+  const copyItemState = useStore(useShallow((state) => state.copyItem));
+  const setItemColor = useStore(useShallow((state) => state.setItemColor));
+  const addItem = useStore(useShallow((state) => state.addItem));
+  const insertItemState = useStore(useShallow((state) => state.insertItem));
 
   const params = useParams<{ boardId: string }>();
 

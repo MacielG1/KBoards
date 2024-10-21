@@ -11,13 +11,14 @@ import { updateListOrder } from "@/utils/actions/lists/updateListOrder";
 import { updateItemOrder } from "@/utils/actions/items/updateItemOrder";
 import ScrollButtons from "./ScrollButtons";
 import { useCollapsedContext } from "./Providers/CollapseProvider";
+import { useShallow } from "zustand/shallow";
 
 type Props = {
   board: BoardWithLists;
 };
 
 export default function Board({ board }: Props) {
-  const [lists, setLists] = useStore((state) => [state.lists, state.setLists]);
+  const [lists, setLists] = useStore(useShallow((state) => [state.lists, state.setLists]));
   const { isCollapsed } = useCollapsedContext();
 
   useEffect(() => {

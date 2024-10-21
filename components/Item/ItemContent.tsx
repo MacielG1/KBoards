@@ -4,14 +4,15 @@ import { useEventListener } from "usehooks-ts";
 import FormTextArea from "../Form/FormTextArea";
 import ItemOptions from "./ItemOptions";
 import { updateItem } from "@/utils/actions/items/updateItem";
+import { useShallow } from "zustand/shallow";
 
 export default function ItemContent({ data }: { data: ItemType }) {
   const [content, setContent] = useState(data.content);
   const [isEditing, setIsEditing] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
 
-  const showItemsOrder = useStorePersisted((state) => state.showItemsOrder);
-  const textAlignment = useStorePersisted((state) => state.textAlignment);
+  const showItemsOrder = useStorePersisted(useShallow((state) => state.showItemsOrder));
+  const textAlignment = useStorePersisted(useShallow((state) => state.textAlignment));
 
   const formRef = useRef<ElementRef<"form">>(null);
   const textAreaRef = useRef<ElementRef<"textarea">>(null);

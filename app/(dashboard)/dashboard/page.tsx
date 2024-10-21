@@ -35,11 +35,12 @@ import AddBoard from "@/components/Sidebar/Addboard";
 import { useStore, useStorePersisted } from "@/store/store";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useShallow } from "zustand/shallow";
 
 export default function Dashboard() {
   const router = useRouter();
-  const currentBoardId = useStorePersisted((state) => state.currentBoardId);
-  const orderedBoards = useStore((state) => state.orderedBoards);
+  const currentBoardId = useStorePersisted(useShallow((state) => state.currentBoardId));
+  const orderedBoards = useStore(useShallow((state) => state.orderedBoards));
   const [hasCheckedBoards, setHasCheckedBoards] = useState(false);
 
   useEffect(() => {
