@@ -46,7 +46,7 @@ export default function Item({ index, data, listLength }: ItemProps) {
           {...provided.dragHandleProps}
           ref={provided.innerRef}
           style={{ ...getStyle(provided.draggableProps.style || {}, snapshot), color: textColor, cursor: "pointer" }}
-          className={cn("group relative mb-0 flex items-center overflow-hidden", showItemsOrder ? "mx-0" : "mx-1")}
+          className={cn("group relative my-[5px] mb-0 flex items-center overflow-hidden", showItemsOrder ? "mx-0" : "mx-1")}
         >
           <span
             className={cn(`flex items-center justify-center ${showItemsOrder && "mx-0.5"}`, getTextLength(listLength) === "1ch" && showItemsOrder && "px-1")}

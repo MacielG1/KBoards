@@ -1,6 +1,5 @@
 "use client";
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
-import { ElementRef } from "react";
 import { cn } from "@/utils";
 import { useMediaQuery } from "usehooks-ts";
 import { ChevronsLeft } from "lucide-react";
@@ -10,7 +9,7 @@ import { Icons } from "@/assets/Icons";
 
 export default function Navigation({ SidebarParent }: { SidebarParent: React.ReactNode }) {
   const sidebarRef = useRef<HTMLElement>(null);
-  const navbarRef = useRef<ElementRef<"div">>(null);
+  const navbarRef = useRef<HTMLDivElement>(null);
   const isMobile = useMediaQuery("(max-width: 500px)");
   const [mounted, setMounted] = useState(false);
 

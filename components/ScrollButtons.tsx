@@ -3,7 +3,7 @@
 import { useStore, useStorePersisted } from "@/store/store";
 import { debounce } from "@/utils/debounce";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { useParams } from "next/navigation";
+// import { useParams } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { useShallow } from "zustand/shallow";
 
@@ -11,8 +11,8 @@ export default function ScrollButtons() {
   const [canScrollRight, setCanScrollRight] = useState(false);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
 
-  const currentBoardId = useStorePersisted(useShallow((state) => state.currentBoardId));
-  const params = useParams<{ boardId: string }>();
+  // const currentBoardId = useStorePersisted(useShallow((state) => state.currentBoardId));
+  // const params = useParams<{ boardId: string }>();
   const holdTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isHeldRef = useRef(false);
 

@@ -1,6 +1,6 @@
 "use client";
 import type { ListType } from "@/store/store";
-import { ElementRef, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useEventListener } from "usehooks-ts";
 import ListOptions from "./ListOptions";
 import FormTextArea from "../Form/FormTextArea";
@@ -21,8 +21,8 @@ export default function ListHeader({ data, onAddItem }: ListHeaderProps) {
 
   const { resolvedTheme } = useTheme();
 
-  const formRef = useRef<ElementRef<"form">>(null);
-  const textAreaRef = useRef<ElementRef<"textarea">>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   function enableEditing() {
     setIsEditing(true);
@@ -85,7 +85,7 @@ export default function ListHeader({ data, onAddItem }: ListHeaderProps) {
             id="title"
             rows={1}
             ref={textAreaRef}
-            className="w-full border-transparent bg-transparent px-2 py-[0.25rem] font-medium transition hover:border-input focus:border-input "
+            className="w-full border-transparent bg-transparent px-2 py-[0.25rem] font-medium transition hover:border-input focus:border-input"
             placeholder="Enter list title..."
             defaultValue={title}
             onBlur={onBlur}

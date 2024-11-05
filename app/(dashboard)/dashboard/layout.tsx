@@ -1,7 +1,6 @@
 import Navigation from "@/components/Navigation";
 import SidebarParent from "@/components/Sidebar/SidebarParent";
 import { SubButtonParent } from "@/components/TopBar/SubButtonParent";
-import TopBar from "@/components/TopBar/TopBar";
 import Main from "./[boardId]/_components/Main";
 
 export const dynamic = "force-dynamic";

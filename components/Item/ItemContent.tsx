@@ -1,5 +1,5 @@
 import { ItemType, useStorePersisted } from "@/store/store";
-import { ElementRef, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useEventListener } from "usehooks-ts";
 import FormTextArea from "../Form/FormTextArea";
 import ItemOptions from "./ItemOptions";
@@ -14,8 +14,8 @@ export default function ItemContent({ data }: { data: ItemType }) {
   const showItemsOrder = useStorePersisted(useShallow((state) => state.showItemsOrder));
   const textAlignment = useStorePersisted(useShallow((state) => state.textAlignment));
 
-  const formRef = useRef<ElementRef<"form">>(null);
-  const textAreaRef = useRef<ElementRef<"textarea">>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   function enableEditing() {
     setIsEditing(true);

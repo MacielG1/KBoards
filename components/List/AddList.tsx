@@ -1,6 +1,6 @@
 "use client";
 
-import { ElementRef, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useEventListener, useMediaQuery, useOnClickOutside } from "usehooks-ts";
 import { ItemType, useStore } from "@/store/store";
 import { Button } from "../ui/button";
@@ -18,8 +18,8 @@ import { useShallow } from "zustand/shallow";
 export default function AddList({ board }: { board: BoardWithLists }) {
   const [isEditing, setIsEditing] = useState(false);
 
-  const formRef = useRef<ElementRef<"form">>(null);
-  const textAreaRef = useRef<ElementRef<"textarea">>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   const addList = useStore(useShallow((state) => state.addList));
   const removeList = useStore(useShallow((state) => state.removeList));
@@ -46,7 +46,7 @@ export default function AddList({ board }: { board: BoardWithLists }) {
   }
 
   useEventListener("keydown", onKeyDown);
-  useOnClickOutside(formRef, disableEditing);
+  useOnClickOutside(formRef as React.RefObject<HTMLElement>, disableEditing);
 
   async function handleSubmit(formData: FormData) {
     const title = formData.get("title") as string;

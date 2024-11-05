@@ -5,7 +5,7 @@ import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "@/compone
 import { Separator } from "@/components/ui/separator";
 import { ItemType, useStore } from "@/store/store";
 import { Copy, Eraser, ListEnd, ListStart, MoreHorizontal, Trash, X } from "lucide-react";
-import { ElementRef, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { deleteItem } from "@/utils/actions/items/deleteItem";
 import { copyItem } from "@/utils/actions/items/copyItem";
 import { createItem } from "@/utils/actions/items/createItem";
@@ -23,7 +23,7 @@ type ItemOptionsProps = {
 export default function ItemOptions({ data }: ItemOptionsProps) {
   const [itemColor, setItemColorState] = useState(data.color);
 
-  const closeRef = useRef<ElementRef<"button">>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
 
   const removeItem = useStore(useShallow((state) => state.removeItem));
   const copyItemState = useStore(useShallow((state) => state.copyItem));

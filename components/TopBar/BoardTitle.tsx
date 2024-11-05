@@ -1,5 +1,5 @@
 import { BoardType, useStore, useStorePersisted } from "@/store/store";
-import { ElementRef, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { FormInput } from "../Form/FormInput";
 import { updateBoard } from "@/utils/actions/boards/updateBoard";
 import { useShallow } from "zustand/shallow";
@@ -14,8 +14,8 @@ export default function BoardTitle({ board, textColor }: BoardTitleProps) {
 
   const updateCurrentBoardTitle = useStore(useShallow((state) => state.updateCurrentBoardTitle));
 
-  const inputRef = useRef<ElementRef<"input">>(null);
-  const formRef = useRef<ElementRef<"form">>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   function disableEditing() {
     setIsEditing(false);

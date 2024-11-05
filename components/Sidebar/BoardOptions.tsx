@@ -5,7 +5,7 @@ import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "@/compone
 import { Separator } from "@/components/ui/separator";
 import { BoardType, useStore, useStorePersisted } from "@/store/store";
 import { Copy, MoreHorizontal, Pencil, Trash, X } from "lucide-react";
-import { ElementRef, useRef, useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import ColorPicker from "../Form/ColorPicker";
 import DeleteModal from "../Modals/DeleteModal";
 import { deleteBoard } from "@/utils/actions/boards/deleteBoard";
@@ -27,7 +27,7 @@ export default function BoardOptions({ data, enableEditing, textColor }: BoardOp
   const [boardColor, setBoardColorState] = useState(data.color);
   const [isPending, startTransition] = useTransition();
 
-  const closeRef = useRef<ElementRef<"button">>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
 
   const removeBoard = useStore(useShallow((state) => state.removeBoard));
   const router = useRouter();

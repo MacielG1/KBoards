@@ -5,7 +5,7 @@ import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "@/compone
 import { Separator } from "@/components/ui/separator";
 import { ListType, useStore, useStorePersisted } from "@/store/store";
 import { AlignJustify, AlignLeft, AlignRight, Copy, MoreHorizontal, Plus, Trash, X } from "lucide-react";
-import { ElementRef, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import ColorPicker from "../Form/ColorPicker";
 import DeleteModal from "../Modals/DeleteModal";
 import { deleteList } from "@/utils/actions/lists/deleteList";
@@ -25,7 +25,7 @@ type ListOptionsProps = {
 };
 
 export default function ListOptions({ data, onAddItem, textColor }: ListOptionsProps) {
-  const closeRef = useRef<ElementRef<"button">>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
   const [isHovered, setIsHovered] = useState(false);
 
   const [listColor, setListColorState] = useState(data.color);
@@ -119,7 +119,7 @@ export default function ListOptions({ data, onAddItem, textColor }: ListOptionsP
 
         {orderedBoards.length > 1 && (
           <>
-            <ExportToBoard listId={data.id} popoverRef={closeRef} />
+            <ExportToBoard listId={data.id} popoverRef={closeRef as React.RefObject<HTMLButtonElement>} />
             <Separator />
           </>
         )}

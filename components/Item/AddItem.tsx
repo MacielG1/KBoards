@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { PlusIcon, X } from "lucide-react";
-import { ElementRef, forwardRef, useRef } from "react";
+import { forwardRef, useRef } from "react";
 import { useEventListener, useOnClickOutside } from "usehooks-ts";
 import { useStore, useStorePersisted } from "@/store/store";
 import { createId } from "@paralleldrive/cuid2";
@@ -19,11 +19,11 @@ type AddItemProps = {
   enableEditing: () => void;
   disableEditing: () => void;
   listId: string;
-  scrollableRef: React.RefObject<ElementRef<"div">>;
+  scrollableRef: React.RefObject<HTMLDivElement>;
 };
 
 const AddItem = forwardRef<HTMLTextAreaElement, AddItemProps>(({ isEditing, enableEditing, disableEditing, listId, scrollableRef }, ref) => {
-  const formRef = useRef<ElementRef<"form">>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const showItemsOrder = useStorePersisted(useShallow((state) => state.showItemsOrder));
   const addItem = useStore(useShallow((state) => state.addItem));
@@ -44,7 +44,7 @@ const AddItem = forwardRef<HTMLTextAreaElement, AddItemProps>(({ isEditing, enab
   }
 
   function focusOnTextArea() {
-    (ref as React.MutableRefObject<HTMLTextAreaElement | null>)?.current?.focus();
+    (ref as React.RefObject<HTMLTextAreaElement>)?.current?.focus();
   }
 
   async function onSubmit(formData: FormData) {
@@ -86,7 +86,7 @@ const AddItem = forwardRef<HTMLTextAreaElement, AddItemProps>(({ isEditing, enab
     formRef.current?.requestSubmit();
   }
 
-  useOnClickOutside(formRef, onBlur);
+  useOnClickOutside(formRef as React.RefObject<HTMLElement>, onBlur);
   useEventListener("keydown", onKeyDown);
 
   const list = lists.find((list) => list.id === listId);

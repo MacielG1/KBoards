@@ -8,7 +8,7 @@ import { eq } from "drizzle-orm";
 
 export async function POST(req: Request) {
   const body = await req.text();
-  const sig = headers().get("Stripe-Signature") as string;
+  const sig = (await headers()).get("Stripe-Signature") as string;
 
   if (!sig) return new Response("Invalid signature", { status: 400 });
 

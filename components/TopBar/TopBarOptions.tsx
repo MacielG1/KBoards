@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { BoardType, useStore, useStorePersisted } from "@/store/store";
 import { Copy, Eraser, FileJson, ListOrdered, MoreHorizontal, Trash } from "lucide-react";
-import { ElementRef, Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import DeleteModal from "../Modals/DeleteModal";
 import ExportCSV from "./ExportCSV";
 import ColorPicker from "../Form/ColorPicker";
@@ -24,7 +24,7 @@ type BoardOptionsProps = {
 };
 
 export default function TopBarOptions({ data, SubButton }: BoardOptionsProps) {
-  const closeRef = useRef<ElementRef<"button">>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
 
   const [bgColor, setBgColor] = useState(data?.backgroundColor ?? "");
 

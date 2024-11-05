@@ -1,11 +1,11 @@
 "use client";
 
-import { ElementRef, useRef, useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { useEventListener, useOnClickOutside } from "usehooks-ts";
 import { FormInput } from "../Form/FormInput";
 import { useStore, useStorePersisted } from "@/store/store";
 import { Button } from "../ui/button";
-import { ArrowUpNarrowWide, ArrowUpWideNarrow, PlusIcon, X } from "lucide-react";
+import { PlusIcon, X } from "lucide-react";
 import FormButton from "../Form/FormButton";
 import { createId } from "@paralleldrive/cuid2";
 import { createBoard } from "@/utils/actions/boards/createBoard";
@@ -19,8 +19,8 @@ export default function AddBoard() {
   const [isEditing, setIsEditing] = useState(false);
   const [isPending, startTransition] = useTransition();
 
-  const formRef = useRef<ElementRef<"form">>(null);
-  const inputRef = useRef<ElementRef<"input">>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const addBoard = useStore(useShallow((state) => state.addBoard));
   const setCurrentBoardId = useStorePersisted(useShallow((state) => state.setCurrentBoardId));
@@ -49,7 +49,7 @@ export default function AddBoard() {
   }
 
   useEventListener("keydown", onKeyDown);
-  useOnClickOutside(formRef, disableEditing);
+  useOnClickOutside(formRef as React.RefObject<HTMLElement>, disableEditing);
 
   async function handleSubmit(formData: FormData) {
     startTransition(async () => {

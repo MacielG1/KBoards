@@ -1,6 +1,6 @@
 "use client";
 
-import { ElementRef, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BoardType, useStore, useStorePersisted } from "@/store/store";
 import { useShallow } from "zustand/shallow";
 import { cn } from "@/utils";
@@ -26,8 +26,8 @@ export default function BoardItem({ board, index }: BoardItemProps) {
 
   const { resolvedTheme } = useTheme();
 
-  const textAreaRef = useRef<ElementRef<"textarea">>(null);
-  const formRef = useRef<ElementRef<"form">>(null);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
   const params = useParams<{ boardId: string }>();
 
   const router = useRouter();
