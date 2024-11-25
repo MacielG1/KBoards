@@ -1,5 +1,5 @@
 "use client";
-import { useStore, useStorePersisted } from "@/store/store";
+import { useStore } from "@/store/store";
 import { ThemeSwitcher } from "../ThemeSwitcher";
 import BoardTitle from "./BoardTitle";
 import TopBarOptions from "./TopBarOptions";
@@ -19,7 +19,6 @@ export default function TopBar({ SubButton }: { SubButton: React.ReactNode }) {
 
   const orderedBoards = useStore(useShallow((state) => state.orderedBoards));
 
-  // const currentBoardId = useStorePersisted((state) => state.currentBoardId);
   const currentBoardData = orderedBoards?.find((board) => board.id === params.boardId) || null;
 
   const [textColor, setTextColor] = useState(currentBoardData?.color || "#fff");

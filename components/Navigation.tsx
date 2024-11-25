@@ -79,15 +79,7 @@ export default function Navigation({ SidebarParent }: { SidebarParent: React.Rea
         <Suspense fallback={<SidebarSkeleton />}>{SidebarParent}</Suspense>
       </aside>
 
-      <div
-        ref={navbarRef}
-        className={cn(
-          "absolute left-60 top-3 z-[99999] w-[calc(100%-208px)]",
-          isCollapsed && "left-0 w-full",
-          // isResetting && "transition-all ease-in-out",
-          // isMobile && "left-0 w-full",
-        )}
-      >
+      <div ref={navbarRef} className={cn("absolute left-60 top-3 z-[99999] w-[calc(100%-208px)]", isCollapsed && "left-0 w-full")}>
         {isCollapsed && (
           <>
             <Icons.MenuIcon
