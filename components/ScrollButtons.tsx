@@ -1,9 +1,8 @@
 "use client";
 
-import { useStore, useStorePersisted } from "@/store/store";
+import { useStore } from "@/store/store";
 import { debounce } from "@/utils/debounce";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-// import { useParams } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { useShallow } from "zustand/shallow";
 
@@ -11,8 +10,6 @@ export default function ScrollButtons() {
   const [canScrollRight, setCanScrollRight] = useState(false);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
 
-  // const currentBoardId = useStorePersisted(useShallow((state) => state.currentBoardId));
-  // const params = useParams<{ boardId: string }>();
   const holdTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isHeldRef = useRef(false);
 
@@ -31,8 +28,6 @@ export default function ScrollButtons() {
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
     window.addEventListener("resize", handleScroll);
-
-    // add event listener to the body
 
     handleScroll();
     return () => {

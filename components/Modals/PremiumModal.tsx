@@ -27,9 +27,6 @@ export default function PremiumModal() {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      {/* <DialogTrigger asChild>
-        <Button variant="outline">Upgrade to Premium</Button>
-      </DialogTrigger> */}
       <DialogContent className="sm:max-w-[450px]">
         <DialogHeader>
           <DialogTitle>Upgrade to Premium</DialogTitle>

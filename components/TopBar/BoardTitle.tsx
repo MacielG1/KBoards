@@ -1,4 +1,4 @@
-import { BoardType, useStore, useStorePersisted } from "@/store/store";
+import { BoardType, useStore } from "@/store/store";
 import { useRef, useState } from "react";
 import { FormInput } from "../Form/FormInput";
 import { updateBoard } from "@/utils/actions/boards/updateBoard";
@@ -53,7 +53,6 @@ export default function BoardTitle({ board, textColor }: BoardTitleProps) {
             ref={inputRef}
             id="title"
             className="px-1 py-0 pl-2 text-xl font-medium transition focus:border-0 focus:bg-neutral-200 focus:outline-0 focus:ring-0 dark:focus-visible:bg-neutral-800"
-            // className="dark:transparent bg-transparent px-1 py-0 pl-2 text-xl font-medium transition hover:border-input focus:border-0 focus:border-input focus:outline-0 focus:ring-0"
             placeholder="Enter board title..."
             defaultValue={board.name}
             onBlur={onBlur}
