@@ -97,7 +97,7 @@ export default function ItemOptions({ data }: ItemOptionsProps) {
       </PopoverTrigger>
       <PopoverContent className="w-44 px-0 pb-2 pt-3" side="bottom" align="start">
         <div className="flex items-center pb-2">
-          <div className="flex-grow pl-2 text-center text-sm font-medium text-neutral-500">Item Options</div>
+          <div className="grow pl-2 text-center text-sm font-medium text-neutral-500">Item Options</div>
           <PopoverClose asChild>
             <Button ref={closeRef} className="mr-2 h-auto w-auto p-1 text-neutral-600 focus-visible:ring-neutral-600" variant="ghost">
               <X className="size-4 shrink-0" />

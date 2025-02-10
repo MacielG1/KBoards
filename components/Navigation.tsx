@@ -62,7 +62,7 @@ export default function Navigation({ SidebarParent }: { SidebarParent: React.Rea
       <aside
         ref={sidebarRef}
         className={cn(
-          `group/sidebar relative z-[9999] flex h-full flex-col overflow-x-hidden bg-neutral-200 dark:bg-neutral-800`,
+          `group/sidebar relative z-9999 flex h-full flex-col overflow-x-hidden bg-neutral-200 dark:bg-neutral-800`,
           isResetting && "transition-all duration-300 ease-in-out",
           isCollapsed && "w-0",
         )}
@@ -79,12 +79,12 @@ export default function Navigation({ SidebarParent }: { SidebarParent: React.Rea
         <Suspense fallback={<SidebarSkeleton />}>{SidebarParent}</Suspense>
       </aside>
 
-      <div ref={navbarRef} className={cn("absolute left-60 top-3 z-[99999] w-[calc(100%-208px)]", isCollapsed && "left-0 w-full")}>
+      <div ref={navbarRef} className={cn("absolute left-60 top-3 z-99999 w-[calc(100%-208px)]", isCollapsed && "left-0 w-full")}>
         {isCollapsed && (
           <>
             <Icons.MenuIcon
               role="button"
-              className="absolute z-[99999] ml-2 mt-[5px] h-6 w-6 flex-shrink-0 text-neutral-600 duration-200 hover:text-neutral-950 dark:text-neutral-400 dark:hover:text-neutral-100"
+              className="absolute z-99999 ml-2 mt-[5px] h-6 w-6 shrink-0 text-neutral-600 duration-200 hover:text-neutral-950 dark:text-neutral-400 dark:hover:text-neutral-100"
               onClick={resetWidth}
             />
           </>

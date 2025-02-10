@@ -78,7 +78,7 @@ export default function ScrollButtons() {
       <button
         className={`${
           canScrollRight ? "visible opacity-100" : "hidden"
-        } fixed bottom-10 right-2 z-[99999] rounded-full bg-mainColor p-1 text-black transition-opacity duration-300 ease-in-out focus:outline-none focus:ring-1 focus:ring-teal-600 xl:right-5`}
+        } fixed bottom-10 right-2 z-99999 rounded-full bg-mainColor p-1 text-black transition-opacity duration-300 ease-in-out focus:outline-hidden focus:ring-1 focus:ring-teal-600 xl:right-5`}
         onClick={handleScrollRight}
         onMouseDown={() => handleMouseDown(1)}
         onMouseUp={() => handleMouseUp(1)}
@@ -89,7 +89,7 @@ export default function ScrollButtons() {
       <button
         className={`${
           canScrollLeft ? "visible opacity-100" : "hidden"
-        } fixed bottom-10 left-2 z-[99999] rounded-full bg-mainColor p-1 text-black transition-opacity duration-300 ease-in-out focus:outline-none focus:ring-1 focus:ring-teal-600 xl:left-5`}
+        } fixed bottom-10 left-2 z-99999 rounded-full bg-mainColor p-1 text-black transition-opacity duration-300 ease-in-out focus:outline-hidden focus:ring-1 focus:ring-teal-600 xl:left-5`}
         onClick={handleScrollLeft}
         onMouseDown={() => handleMouseDown(-1)}
         onMouseUp={() => handleMouseUp(-1)}

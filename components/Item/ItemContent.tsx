@@ -75,7 +75,7 @@ export default function ItemContent({ data }: { data: ItemType }) {
   return (
     <div
       style={{ backgroundColor: data.color || "var(--item-color)" }}
-      className={`flex min-h-8 w-full items-center justify-between overflow-hidden rounded-md border-2 border-transparent text-sm shadow-sm ${isFocused ? "border-transparent" : "hover:border-neutral-500 dark:hover:border-neutral-950"}`}
+      className={`flex min-h-8 w-full items-center justify-between overflow-hidden rounded-md border-2 border-transparent text-sm shadow-xs ${isFocused ? "border-transparent" : "hover:border-neutral-500 dark:hover:border-neutral-950"}`}
     >
       <div className="flex w-full items-start justify-between rounded-t-md text-sm font-semibold">
         {isEditing ? (

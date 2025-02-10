@@ -124,7 +124,7 @@ export default function ListOptions({ data, onAddItem, textColor }: ListOptionsP
           </>
         )}
 
-        <div className="inline-flex h-auto w-full items-center justify-start whitespace-nowrap rounded-none p-2 px-5 text-sm font-normal ring-offset-background transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-50">
+        <div className="inline-flex h-auto w-full items-center justify-start whitespace-nowrap rounded-none p-2 px-5 text-sm font-normal ring-offset-background transition-colors duration-300 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-50">
           {textAlignment === "left" && <AlignLeft className="mr-2 size-4 shrink-0" />}
           {textAlignment === "center" && <AlignJustify className="mr-2 size-4 shrink-0" />}
           {textAlignment === "right" && <AlignRight className="mr-2 size-4 shrink-0" />}

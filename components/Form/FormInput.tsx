@@ -30,7 +30,7 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
           required={required}
           disabled={disabled || pending}
           className={cn(
-            `h-8 w-full rounded-md bg-transparent px-2 py-0.5 text-sm focus-visible:border-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:dark:bg-neutral-600`,
+            `h-8 w-full rounded-md bg-transparent px-2 py-0.5 text-sm focus-visible:border-0 focus-visible:outline-hidden focus-visible:ring-0 dark:focus-visible:bg-neutral-600`,
             className,
           )}
           defaultValue={defaultValue}

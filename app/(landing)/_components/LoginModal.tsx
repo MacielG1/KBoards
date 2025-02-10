@@ -15,7 +15,7 @@ export default function LoginModal({ children, mode = "modal", asChild }: Props)
       <Dialog>
         <DialogTrigger asChild={asChild}>{children}</DialogTrigger>
         <DialogContent className="w-auto bg-transparent p-0">
-          <Card className="w-[26rem] space-y-2 bg-[#252525] px-1 py-3 shadow-sm">
+          <Card className="w-[26rem] space-y-2 bg-[#252525] px-1 py-3 shadow-xs">
             <CardHeader>
               <Logo className="cursor-default" />
             </CardHeader>

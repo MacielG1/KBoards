@@ -50,7 +50,7 @@ export default function SidebarBoards({ boards }: { boards: BoardType[] }) {
       <div className="self-center pt-3">
         <AddBoard />
       </div>
-      <div className="flex-grow"></div>
+      <div className="grow"></div>
     </div>
   );
 }

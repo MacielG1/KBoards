@@ -22,7 +22,7 @@ export default function SidebarSkeleton() {
           }}
         />
       </div>
-      <div className="flex-grow"></div>
+      <div className="grow"></div>
     </div>
   );
 }

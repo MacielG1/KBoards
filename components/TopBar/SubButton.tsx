@@ -34,7 +34,7 @@ export default function SubButton({ isPremium }: { isPremium: boolean }) {
       onClick={handleClick}
       className="h-auto w-full justify-start rounded-none p-1 px-4 py-2 pl-4 text-sm font-normal"
     >
-      <ShieldCheck className={`mr-2 size-4 flex-shrink-0`} />
+      <ShieldCheck className={`mr-2 size-4 shrink-0`} />
       <span>{isPremium ? "Manage Subscription" : "Upgrade to Premium"}</span>
     </Button>
   );

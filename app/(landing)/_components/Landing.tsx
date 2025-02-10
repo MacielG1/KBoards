@@ -6,8 +6,8 @@ import LoginModal from "./LoginModal";
 export default function Landing() {
   return (
     <div className="relative isolate h-[100vh] w-full overflow-hidden bg-gray-900">
-      <nav className="fixed top-0 flex h-14 w-full items-center border-b border-gray-800 px-4 shadow-sm">
-        <div className="mx-auto flex w-full items-center justify-between md:max-w-screen-2xl">
+      <nav className="fixed top-0 flex h-14 w-full items-center border-b border-gray-800 px-4 shadow-xs">
+        <div className="mx-auto flex w-full items-center justify-between md:max-w-(--breakpoint-2xl)">
           <Logo />
           <div className="block w-auto items-center justify-end space-x-4">
             <LoginModal asChild>
@@ -23,7 +23,7 @@ export default function Landing() {
         aria-hidden="true"
       >
         <div
-          className="aspect-[1108/632] w-[80rem] bg-gradient-to-r from-[#63ffa9] to-[#16d857] opacity-20"
+          className="aspect-1108/632 w-[80rem] bg-linear-to-r from-[#63ffa9] to-[#16d857] opacity-20"
           style={{
             clipPath:
               "polygon(15% 41.7%, 88.7% 40.8%, 90% 99.2%, 60% 8%, 70% 88%, 65.2% 50%, 52% 37%, 20% 70%, 35% 60%, 40.3% 67%, 16% 74.1%, 69% 30%, 5.4% 41.1%, 25% 69%, 43.9% 10.2%, 83.6% 81.7%)",
@@ -31,7 +31,7 @@ export default function Landing() {
         />
       </div>
       <div className="mx-auto max-w-[100rem] px-6 pb-24 pt-4 sm:pb-32 xl:flex xl:px-8 2xl:pt-24">
-        <div className="mx-auto max-w-2xl flex-shrink-0 px-8 xl:mx-0 xl:max-w-lg xl:pt-3 2xl:max-w-xl 2xl:pt-8">
+        <div className="mx-auto max-w-2xl shrink-0 px-8 xl:mx-0 xl:max-w-lg xl:pt-3 2xl:max-w-xl 2xl:pt-8">
           <h1 className="mt-12 text-balance text-4xl font-bold tracking-tight text-white sm:text-6xl sm:leading-tight">Organize your ideas</h1>
           <p className="mt-6 text-lg leading-8 text-gray-300">
             Kboards makes it easy for you to manage your tasks. With a simple and intuitive interface, you can arrange the lists and items as you wish.

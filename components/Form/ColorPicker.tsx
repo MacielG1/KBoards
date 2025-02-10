@@ -64,7 +64,7 @@ export default function ColorPicker({ id, value, type, text = "Change Color", cl
     <>
       <input
         className={cn(
-          "peer ml-[1px] mr-[0.4rem] h-6 w-5 min-w-[1rem] shrink-0 cursor-pointer rounded-full border-0 bg-transparent outline-none transition duration-100 focus-visible:scale-110 focus-visible:outline-none focus-visible:outline-4",
+          "peer ml-[1px] mr-[0.4rem] h-6 w-5 min-w-[1rem] shrink-0 cursor-pointer rounded-full border-0 bg-transparent outline-hidden transition duration-100 focus-visible:scale-110 focus-visible:outline-hidden focus-visible:outline-4",
           className,
         )}
         type="color"

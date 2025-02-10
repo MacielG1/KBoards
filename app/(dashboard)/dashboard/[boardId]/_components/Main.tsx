@@ -15,10 +15,10 @@ export default function Main({ SubButtonParent, children }: { SubButtonParent: R
       style={{
         backgroundColor: currentBoardData?.backgroundColor,
       }}
-      className="relative flex flex-1 flex-grow"
+      className="relative flex flex-1 grow"
     >
       <TopBar SubButton={SubButtonParent} />
-      <div className="h-full flex-grow pt-14">{children}</div>
+      <div className="h-full grow pt-14">{children}</div>
     </main>
   );
 }
