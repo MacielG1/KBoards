@@ -152,15 +152,21 @@ export default function TopBarOptions({ data, SubButton }: BoardOptionsProps) {
             </Button>
 
             <Button
-              tabIndex={-1}
+              onClick={(e) => {
+                e.stopPropagation();
+                document.getElementById(`background-${data.id}`)?.click();
+              }}
               variant="ghost"
-              className="group flex h-auto w-full cursor-default items-center justify-start rounded-none p-0 px-3 text-sm font-normal"
+              className="group h-auto w-full justify-start rounded-none p-2 px-5 pl-3 text-sm font-normal"
             >
-              <ColorPicker className="mr-[0.35rem] h-6 w-5" id={data.id} value={bgColor} type="background" text="Background Color" setter={setBgColor} />
+              <ColorPicker id={data.id} value={bgColor} type="background" text="Background Color" setter={setBgColor} className="mr-2" />
               {bgColor !== "" && (
                 <span
-                  className="ml-auto cursor-pointer text-sm text-neutral-400 opacity-0 transition duration-300 hover:text-neutral-800 group-hover:opacity-100 dark:hover:text-neutral-300"
-                  onClick={handleColorReset}
+                  className="ml-auto cursor-pointer text-sm text-neutral-400 opacity-0 transition duration-300 hover:text-neutral-950 group-hover:opacity-100 dark:hover:text-neutral-300"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleColorReset();
+                  }}
                 >
                   <Eraser className="ml-2 size-4 shrink-0" />
                 </span>

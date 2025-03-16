@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { ListType, useStore, useStorePersisted } from "@/store/store";
-import { AlignJustify, AlignLeft, AlignRight, Copy, MoreHorizontal, Plus, Trash, X } from "lucide-react";
+import { AlignJustify, AlignLeft, AlignRight, Copy, Eraser, MoreHorizontal, Plus, Trash, X } from "lucide-react";
 import { useRef, useState } from "react";
 import ColorPicker from "../Form/ColorPicker";
 import DeleteModal from "../Modals/DeleteModal";
@@ -100,17 +100,23 @@ export default function ListOptions({ data, onAddItem, textColor }: ListOptionsP
 
         <Separator />
         <Button
-          tabIndex={-1}
+          onClick={(e) => {
+            e.stopPropagation();
+            document.getElementById(`list-${data.id}`)?.click();
+          }}
           variant="ghost"
-          className="group flex h-auto w-full cursor-default items-center justify-start rounded-none p-0 px-4 text-sm font-normal"
+          className="group h-auto w-full justify-start rounded-none p-2 px-5 pl-4 text-sm font-normal"
         >
-          <ColorPicker id={data.id} value={listColor} type="list" setter={setListColorState} />
+          <ColorPicker id={data.id} value={listColor} type="list" setter={setListColorState} className="mr-2" />
           {listColor !== "" && (
             <span
-              className="ml-auto cursor-pointer text-sm text-neutral-600 opacity-0 transition duration-300 hover:text-black group-hover:opacity-100 dark:text-neutral-400 dark:hover:text-neutral-200"
-              onClick={handleColorReset}
+              className="ml-auto cursor-pointer text-sm text-neutral-400 opacity-0 transition duration-300 hover:text-neutral-950 group-hover:opacity-100 dark:hover:text-neutral-300"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleColorReset();
+              }}
             >
-              Reset
+              <Eraser className="ml-2 size-4 shrink-0" />
             </span>
           )}
         </Button>
@@ -128,7 +134,7 @@ export default function ListOptions({ data, onAddItem, textColor }: ListOptionsP
           {textAlignment === "left" && <AlignLeft className="mr-2 size-4 shrink-0" />}
           {textAlignment === "center" && <AlignJustify className="mr-2 size-4 shrink-0" />}
           {textAlignment === "right" && <AlignRight className="mr-2 size-4 shrink-0" />}
-          <span className="pb-[1px]">Align Items</span>
+          <span className="pb-[1px] cursor-default">Align Items</span>
           <div className="flex items-center justify-center gap-1 px-5">
             <Button onClick={() => setTextAlignment("left")} className="h-auto w-auto p-0 text-sm font-normal" variant="transparent">
               <AlignLeft className={`size-[18px] ${textAlignment === "left" && "text-mainColor"}`} />

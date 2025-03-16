@@ -69,7 +69,7 @@ export default function Navigation({ SidebarParent }: { SidebarParent: React.Rea
       >
         <div
           className={cn(
-            `absolute right-2 top-[18px] h-6 w-6 rounded-sm text-neutral-500 transition hover:text-neutral-900 group-hover/sidebar:opacity-100 dark:text-neutral-500 dark:hover:text-neutral-300 md:opacity-0 md:hover:opacity-100`,
+            `absolute cursor-pointer right-2 top-[18px] h-6 w-6 rounded-sm text-neutral-500 transition hover:text-neutral-900 group-hover/sidebar:opacity-100 dark:text-neutral-500 dark:hover:text-neutral-300 md:opacity-0 md:hover:opacity-100`,
           )}
           role="button"
           onClick={collapse}
@@ -79,7 +79,7 @@ export default function Navigation({ SidebarParent }: { SidebarParent: React.Rea
         <Suspense fallback={<SidebarSkeleton />}>{SidebarParent}</Suspense>
       </aside>
 
-      <div ref={navbarRef} className={cn("absolute left-60 top-3 z-99999 w-[calc(100%-208px)]", isCollapsed && "left-0 w-full")}>
+      <div ref={navbarRef} className={cn("absolute cursor-pointer left-60 top-3 z-99999 w-[calc(100%-208px)]", isCollapsed && "left-0 w-full")}>
         {isCollapsed && (
           <>
             <Icons.MenuIcon

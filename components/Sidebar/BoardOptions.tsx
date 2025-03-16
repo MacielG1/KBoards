@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { BoardType, useStore, useStorePersisted } from "@/store/store";
-import { Copy, MoreHorizontal, Pencil, Trash, X } from "lucide-react";
+import { Copy, Eraser, MoreHorizontal, Pencil, Trash, X } from "lucide-react";
 import { useRef, useState, useTransition } from "react";
 import ColorPicker from "../Form/ColorPicker";
 import DeleteModal from "../Modals/DeleteModal";
@@ -143,23 +143,23 @@ export default function BoardOptions({ data, enableEditing, textColor }: BoardOp
         </Button>
         <Separator />
         <Button
-          tabIndex={-1}
           onClick={(e) => {
-            // e.stopPropagation();
+            e.stopPropagation();
+            document.getElementById(`board-${data.id}`)?.click();
           }}
           variant="ghost"
-          className="group flex h-auto w-full cursor-default items-center justify-start rounded-none p-0 px-4 text-sm font-normal"
+          className="group h-auto w-full justify-start rounded-none p-2 px-5 pl-4 text-sm font-normal"
         >
-          <ColorPicker id={data.id} value={boardColor} type="board" setter={setBoardColorState} />
+          <ColorPicker id={data.id} value={boardColor} type="board" setter={setBoardColorState} className="mr-2" />
           {boardColor !== "" && (
             <span
               className="ml-auto cursor-pointer text-sm text-neutral-400 opacity-0 transition duration-300 hover:text-neutral-950 group-hover:opacity-100 dark:hover:text-neutral-300"
               onClick={(e) => {
-                // e.stopPropagation();
+                e.stopPropagation();
                 handleColorReset();
               }}
             >
-              Reset
+              <Eraser className="ml-2 size-4 shrink-0" />
             </span>
           )}
         </Button>

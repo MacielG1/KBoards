@@ -117,19 +117,19 @@ export default function ItemOptions({ data }: ItemOptionsProps) {
         </Button>
         <Separator />
         <Button
-          tabIndex={-1}
           onClick={(e) => {
-            // e.stopPropagation();
+            e.stopPropagation();
+            document.getElementById(`item-${data.id}`)?.click();
           }}
           variant="ghost"
-          className="group flex h-auto w-full cursor-default items-center justify-start rounded-none p-0 px-4 text-sm font-normal"
+          className="group h-auto w-full justify-start rounded-none p-2 px-5 pl-4 text-sm font-normal"
         >
-          <ColorPicker id={data.id} value={itemColor} type="item" setter={setItemColorState} />
+          <ColorPicker id={data.id} value={itemColor} type="item" setter={setItemColorState} className="mr-2" />
           {itemColor !== "" && (
             <span
               className="ml-auto cursor-pointer text-sm text-neutral-400 opacity-0 transition duration-300 hover:text-neutral-950 group-hover:opacity-100 dark:hover:text-neutral-300"
               onClick={(e) => {
-                // e.stopPropagation();
+                e.stopPropagation();
                 handleColorReset();
               }}
             >

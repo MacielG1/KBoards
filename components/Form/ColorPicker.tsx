@@ -61,10 +61,10 @@ export default function ColorPicker({ id, value, type, text = "Change Color", cl
 
   if (!isMounted) return null;
   return (
-    <>
+    <div className="flex items-center">
       <input
         className={cn(
-          "peer ml-[1px] mr-[0.4rem] h-6 w-5 min-w-[1rem] shrink-0 cursor-pointer rounded-full border-0 bg-transparent outline-hidden transition duration-100 focus-visible:scale-110 focus-visible:outline-hidden focus-visible:outline-4",
+          "peer h-4 w-4 min-w-[1rem] shrink-0 cursor-pointer rounded-full border-0 bg-transparent outline-hidden transition duration-100 focus-visible:scale-110 focus-visible:outline-hidden focus-visible:outline-4",
           className,
         )}
         type="color"
@@ -72,9 +72,9 @@ export default function ColorPicker({ id, value, type, text = "Change Color", cl
         onChange={handleChange}
         id={`${type}-${id}`}
       />
-      <label htmlFor={`${type}-${id}`} className="flex cursor-pointer items-center justify-start py-2">
-        <span className="pb-[0.75px]">{text}</span>
+      <label htmlFor={`${type}-${id}`} className="cursor-pointer">
+        <span className="pb-[1px]">{text}</span>
       </label>
-    </>
+    </div>
   );
 }

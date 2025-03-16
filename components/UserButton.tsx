@@ -12,7 +12,7 @@ export default function UserButton() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <UserAvatar userImage={user?.image || ""} className="ml-1.5" />
+        <UserAvatar userImage={user?.image || ""} className="ml-1.5 cursor-pointer" />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-68 space-y-1 py-2" align="end">
         <DropdownMenuLabel className="flex items-center">

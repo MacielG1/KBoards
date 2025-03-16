@@ -101,7 +101,7 @@ export default function AddList({ board }: { board: BoardWithLists }) {
             // onBlur={onBlur}
           />
           <div className="flex items-center gap-1 pt-2">
-            <FormButton className="font-semibold" variant="primary">
+            <FormButton className="font-semibold cursor-pointer" variant="primary">
               Add List
             </FormButton>
             <Button variant="ghost" size="sm" onClick={disableEditing} className="dark:hover:bg-neutral-700">
@@ -116,7 +116,7 @@ export default function AddList({ board }: { board: BoardWithLists }) {
     <li className="ml-1 h-full w-[17rem] shrink-0 select-none">
       <button
         onClick={enableEditing}
-        className="flex w-full items-center justify-center rounded-md bg-neutral-200 p-2 text-sm font-medium transition duration-300 hover:bg-neutral-300 dark:bg-neutral-700 dark:hover:bg-neutral-700/90"
+        className="flex w-full cursor-pointer items-center justify-center rounded-md bg-neutral-200 p-2 text-sm font-medium transition duration-300 hover:bg-neutral-300 dark:bg-neutral-700 dark:hover:bg-neutral-700/90"
       >
         <PlusIcon className="mr-2 size-4" />
         Add List
