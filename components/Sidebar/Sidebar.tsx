@@ -7,8 +7,9 @@ import { reorder } from "@/utils/reorder";
 import { useEffect } from "react";
 import { updateBoardOrder } from "@/utils/actions/boards/updateBoardOrder";
 import { useShallow } from "zustand/shallow";
+import { Suspense } from "react";
 
-export default function Sidebar({ boards }: { boards: BoardType[] }) {
+export default function Sidebar({ boards, SubscribeButton }: { boards: BoardType[], SubscribeButton?: React.ReactNode }) {
   const [orderedBoards, setOrderedBoards] = useStore(useShallow((state) => [state.orderedBoards, state.setOrderedBoards]));
 
   useEffect(() => {
@@ -33,25 +34,44 @@ export default function Sidebar({ boards }: { boards: BoardType[] }) {
   }
 
   return (
-    <div className="flex w-[13rem] min-w-[13rem] max-w-[13rem] flex-col p-4">
-      <h1 className="mb-3 mt-2 cursor-default whitespace-nowrap text-center text-[1.9rem] font-semibold tracking-wide text-mainColor">KBoards</h1>
-      {/* <h2 className="mb-5 mt-2 whitespace-nowrap text-center text-xl tracking-wider">Boards</h2> */}
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="boards" type="board" direction="vertical">
-          {(provided: DroppableProvided) => (
-            <div {...provided.droppableProps} ref={provided.innerRef}>
-              {orderedBoards.map((board, i) => {
-                return <BoardItem key={board.id} index={i} board={board} />;
-              })}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
-      <div className="self-center pt-3">
-        <AddBoard />
+    <div className="flex h-full w-[13rem] min-w-[13rem] max-w-[13rem] flex-col p-4 pr-[4px]">
+      {/* Fixed Header */}
+      <div className="flex-none">
+        <h1 className="mb-3 mt-2 cursor-default whitespace-nowrap text-center text-[1.9rem] font-semibold tracking-wide text-mainColor">KBoards</h1>
       </div>
-      <div className="grow" />
+      
+      {/* Scrollable Boards List */}
+      <div className="flex-1 min-h-0 overflow-y-auto mb-3 pr-1">
+        <DragDropContext onDragEnd={onDragEnd}>
+          <Droppable droppableId="boards" type="board" direction="vertical">
+            {(provided: DroppableProvided) => (
+              <div 
+                {...provided.droppableProps} 
+                ref={provided.innerRef}
+                className="px-0.5 pr-2"
+              >
+                {orderedBoards.map((board, i) => {
+                  return <BoardItem key={board.id} index={i} board={board} />;
+                })}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
+      </div>
+      
+      {/* Fixed Footer */}
+      <div className="flex-none">
+        <div className="self-center flex justify-center mb-3">
+          <AddBoard />
+        </div>
+        
+        <Suspense fallback={null}>
+          <div className="flex w-full justify-center">
+            {SubscribeButton}
+          </div>
+        </Suspense>
+      </div>
     </div>
   );
 }

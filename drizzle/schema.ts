@@ -39,11 +39,11 @@ export const accounts = pgTable(
     id_token: text("id_token"),
     session_state: text("session_state"),
   },
-  (account) => ({
-    compoundKey: primaryKey({
+  (account) => [
+    primaryKey({
       columns: [account.provider, account.providerAccountId],
     }),
-  }),
+  ],
 );
 
 export const Board = pgTable(
@@ -63,11 +63,9 @@ export const Board = pgTable(
     order: integer("order").notNull(),
     createdAt: timestamp("createdAt").defaultNow(),
   },
-  (table) => {
-    return {
-      userId: index("userId_board").on(table.userId),
-    };
-  },
+  (table) => [
+    index("userId_board").on(table.userId),
+  ],
 );
 
 export const List = pgTable(
@@ -85,11 +83,9 @@ export const List = pgTable(
       .references(() => Board.id, { onDelete: "cascade" }),
     createdAt: timestamp("createdAt").defaultNow(),
   },
-  (table) => {
-    return {
-      boardId: index("boardId").on(table.boardId),
-    };
-  },
+  (table) => [
+    index("boardId").on(table.boardId),
+  ],
 );
 
 export const Item = pgTable(
@@ -110,11 +106,9 @@ export const Item = pgTable(
       .references(() => Board.id, { onDelete: "cascade" }),
     createdAt: timestamp("createdAt").defaultNow(),
   },
-  (table) => {
-    return {
-      listId: index("listId").on(table.listId),
-    };
-  },
+  (table) => [
+    index("listId").on(table.listId),
+  ],
 );
 
 export const FreeTierLimit = pgTable(
@@ -133,11 +127,9 @@ export const FreeTierLimit = pgTable(
     listsCount: integer("listsCount").default(0).notNull(),
     createdAt: timestamp("createdAt").defaultNow(),
   },
-  (table) => {
-    return {
-      userId: index("userId_free_tier_limit").on(table.userId),
-    };
-  },
+  (table) => [
+    index("userId_free_tier_limit").on(table.userId),
+  ],
 );
 
 export const PremiumSubscription = pgTable(
@@ -158,11 +150,9 @@ export const PremiumSubscription = pgTable(
     stripeCurrentPeriodEnd: timestamp("stripeCurrentPeriodEnd"),
     createdAt: timestamp("createdAt").defaultNow(),
   },
-  (table) => {
-    return {
-      userId: index("userId_premium_subscription").on(table.userId),
-    };
-  },
+  (table) => [
+    index("userId_premium_subscription").on(table.userId),
+  ],
 );
 
 export const ListRelations = relations(List, ({ one, many }) => ({

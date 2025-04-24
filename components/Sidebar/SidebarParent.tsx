@@ -2,9 +2,22 @@
 
 import { fetchBoards } from "@/utils/fetchBoards";
 import Sidebar from "./Sidebar";
+import { Suspense } from "react";
+import PremiumCheck from "./PremiumCheck";
 
-export default async function SidebarParent() {
+type SidebarParentProps = {};
+
+export default async function SidebarParent({}: SidebarParentProps) {
   const boards = (await fetchBoards()) || [];
 
-  return <Sidebar boards={boards} />;
+  return (
+    <Sidebar 
+      boards={boards} 
+      SubscribeButton={
+        <Suspense fallback={null}>
+          <PremiumCheck />
+        </Suspense>
+      } 
+    />
+  );
 }

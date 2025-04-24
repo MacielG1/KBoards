@@ -102,8 +102,8 @@ export default function BoardItem({ board, index }: BoardItemProps) {
             cursor: "pointer",
           }}
           className={cn(
-            `group mb-3 cursor-pointer rounded-lg transition-colors duration-300`,
-            board.id === currentBoardId && "ring-1 ring-neutral-500 ring-offset-1 ring-offset-transparent dark:ring-neutral-500",
+            `group mb-3 cursor-pointer rounded-lg transition-colors duration-300 border-2 border-transparent w-full`,
+            board.id === currentBoardId && "border-neutral-500 dark:border-neutral-500"
           )}
           onClick={() => changeCurrentBoard()}
         >

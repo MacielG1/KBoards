@@ -113,8 +113,6 @@ export default function TopBarOptions({ data, SubButton }: BoardOptionsProps) {
     downloadAnchorNode.remove();
   }
 
-  if (orderedBoards.length === 0) return null;
-
   return (
     <Popover>
       <PopoverTrigger
@@ -162,7 +160,7 @@ export default function TopBarOptions({ data, SubButton }: BoardOptionsProps) {
               <ColorPicker id={data.id} value={bgColor} type="background" text="Background Color" setter={setBgColor} className="mr-2" />
               {bgColor !== "" && (
                 <span
-                  className="ml-auto cursor-pointer text-sm text-neutral-400 opacity-0 transition duration-300 hover:text-neutral-950 group-hover:opacity-100 dark:hover:text-neutral-300"
+                  className="ml-auto cursor-pointer text-sm text-neutral-400 hover:text-neutral-950 dark:hover:text-neutral-300"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleColorReset();
@@ -198,9 +196,11 @@ export default function TopBarOptions({ data, SubButton }: BoardOptionsProps) {
           </>
         )}
 
-        <Button onClick={() => exportAllBoards()} variant="ghost" className="h-auto w-full justify-start rounded-none p-1 px-4 py-2 pl-4 text-sm font-normal">
-          <FileJson className="mr-2 size-4" /> Export All Boards
-        </Button>
+        {orderedBoards.length > 0 && (
+          <Button onClick={() => exportAllBoards()} variant="ghost" className="h-auto w-full justify-start rounded-none p-1 px-4 py-2 pl-4 text-sm font-normal">
+            <FileJson className="mr-2 size-4" /> Export All Boards
+          </Button>
+        )}
 
         <Suspense fallback={null}>{SubButton}</Suspense>
       </PopoverContent>

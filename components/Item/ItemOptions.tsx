@@ -127,7 +127,7 @@ export default function ItemOptions({ data }: ItemOptionsProps) {
           <ColorPicker id={data.id} value={itemColor} type="item" setter={setItemColorState} className="mr-2" />
           {itemColor !== "" && (
             <span
-              className="ml-auto cursor-pointer text-sm text-neutral-400 opacity-0 transition duration-300 hover:text-neutral-950 group-hover:opacity-100 dark:hover:text-neutral-300"
+              className="ml-auto cursor-pointer text-sm text-neutral-400 hover:text-neutral-950 dark:hover:text-neutral-300"
               onClick={(e) => {
                 e.stopPropagation();
                 handleColorReset();

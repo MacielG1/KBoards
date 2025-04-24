@@ -39,7 +39,7 @@ export default function Landing() {
           <div className="mt-10 flex items-center gap-x-6">
             <LoginModal asChild>
               <Button className="text-lg" variant="primary" size="md">
-                Enter
+                Join
               </Button>
             </LoginModal>
           </div>
