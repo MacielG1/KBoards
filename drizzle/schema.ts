@@ -155,6 +155,14 @@ export const PremiumSubscription = pgTable(
   ],
 );
 
+export const proxies = pgTable("proxies", {
+  id: varchar("id", { length: 128 }).primaryKey().$defaultFn(() => createId()),
+  address: text("address").notNull(),
+  type: varchar("type", { length: 10 }).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 export const ListRelations = relations(List, ({ one, many }) => ({
   board: one(Board, { fields: [List.boardId], references: [Board.id] }),
   items: many(Item),
@@ -174,3 +182,5 @@ export const UserRelations = relations(users, ({ one, many }) => ({
   freeTierLimit: one(FreeTierLimit, { fields: [users.id], references: [FreeTierLimit.userId] }),
   premiumSubscription: one(PremiumSubscription, { fields: [users.id], references: [PremiumSubscription.userId] }),
 }));
+
+export const proxiesRelations = relations(proxies, ({}) => ({}));
