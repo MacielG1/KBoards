@@ -14,22 +14,19 @@ export default function LoginModal({ children, mode = "modal", asChild }: Props)
     return (
       <Dialog>
         <DialogTrigger asChild={asChild}>{children}</DialogTrigger>
-        <DialogContent className="w-auto bg-transparent p-0 flex justify-center items-center">
-          <Card className="w-[26rem] space-y-4 bg-[#1f1f1f] px-6 py-4 shadow-lg rounded-lg">
-            <CardHeader className="flex justify-center">
-              <Logo className="cursor-default" />
-            </CardHeader>
-            <CardContent className="text-center">
-              <DialogTitle className="pb-2 text-2xl font-semibold text-neutral-300">Sign In</DialogTitle>
-              <>to continue to KBoards</>
-            </CardContent>
+        <DialogContent className="border-none bg-transparent p-0 shadow-none sm:max-w-[425px]">
+          <Card className="relative overflow-hidden border-neutral-800 bg-neutral-900/95 shadow-2xl backdrop-blur-xl">
+            <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/10 to-transparent opacity-20" />
 
-            <CardFooter className="flex justify-center">
-              <div className="flex w-full flex-col items-center gap-4">
-                <SocialsButton provider="google" />
-                <SocialsButton provider="github" />
-              </div>
-            </CardFooter>
+            <CardHeader className="relative flex flex-col items-center gap-2 pt-8 pb-2">
+              <Logo className="scale-125 cursor-default pb-4" />
+              <DialogTitle className="text-2xl font-semibold text-neutral-300">Sign In</DialogTitle>
+            </CardHeader>
+
+            <CardContent className="relative flex flex-col gap-4 px-8 py-6 pb-10">
+              <SocialsButton provider="google" />
+              <SocialsButton provider="github" />
+            </CardContent>
           </Card>
         </DialogContent>
       </Dialog>

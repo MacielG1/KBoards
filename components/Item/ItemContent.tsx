@@ -1,18 +1,24 @@
-import { ItemType, useStorePersisted } from "@/store/store";
+import { ItemType, useStore, useStorePersisted } from "@/store/store";
 import { useRef, useState } from "react";
 import { useEventListener } from "usehooks-ts";
 import FormTextArea from "../Form/FormTextArea";
 import ItemOptions from "./ItemOptions";
 import { updateItem } from "@/utils/actions/items/updateItem";
+import { toggleItemChecked as toggleItemCheckedAction } from "@/utils/actions/items/toggleItemChecked";
 import { useShallow } from "zustand/shallow";
+import { useParams } from "next/navigation";
+import { Checkbox } from "@/components/ui/checkbox";
 
-export default function ItemContent({ data }: { data: ItemType }) {
+export default function ItemContent({ data, checklistMode }: { data: ItemType; checklistMode?: boolean | null }) {
   const [content, setContent] = useState(data.content);
   const [isEditing, setIsEditing] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
 
   const showItemsOrder = useStorePersisted(useShallow((state) => state.showItemsOrder));
   const textAlignment = useStorePersisted(useShallow((state) => state.textAlignment));
+  const toggleItemChecked = useStore(useShallow((state) => state.toggleItemChecked));
+
+  const params = useParams<{ boardId: string }>();
 
   const formRef = useRef<HTMLFormElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -72,11 +78,25 @@ export default function ItemContent({ data }: { data: ItemType }) {
 
   const textAlign = textAlignment === "center" ? "text-center" : textAlignment === "right" ? "text-right" : "text-left";
 
+  async function handleCheckboxToggle(checked: boolean) {
+    toggleItemChecked(data.id, data.listId, params.boardId);
+    await toggleItemCheckedAction(data.id, data.listId, params.boardId, checked);
+  }
+
   return (
     <div
       style={{ backgroundColor: data.color || "var(--item-color)" }}
       className={`flex min-h-8 w-full items-center justify-between overflow-hidden rounded-md border-2 border-transparent text-sm shadow-xs ${isFocused ? "border-transparent" : "hover:border-neutral-500 dark:hover:border-neutral-950"}`}
     >
+      {checklistMode && (
+        <div className="flex items-center pl-1">
+          <Checkbox
+            checked={data.checked || false}
+            onCheckedChange={handleCheckboxToggle}
+            className="cursor-pointer rounded-full p-1 data-[state=checked]:border-green-500 data-[state=checked]:bg-green-500"
+          />
+        </div>
+      )}
       <div className="flex w-full items-start justify-between rounded-t-md text-sm font-semibold">
         {isEditing ? (
           <form action={handleSubmit} className="flex-1" ref={formRef}>
@@ -94,12 +114,12 @@ export default function ItemContent({ data }: { data: ItemType }) {
           <>
             <div
               onClick={enableEditing}
-              className={`relative min-h-7 w-full whitespace-pre-wrap break-words border-transparent bg-transparent px-1 py-1 pl-2 text-sm ${textAlign}`}
+              className={`relative min-h-7 w-full border-transparent bg-transparent px-1 py-1 pl-2 text-sm break-words whitespace-pre-wrap ${textAlign}`}
             >
               {content}
             </div>
             <span
-              className={`absolute right-0 top-0 z-50 pt-[0.35rem] transition duration-100 md:opacity-0 md:group-hover:opacity-100 ${showItemsOrder ? "mr-[2%]" : "mr-1"}`}
+              className={`absolute top-0 right-0 z-50 pt-[0.35rem] transition duration-100 md:opacity-0 md:group-hover:opacity-100 ${showItemsOrder ? "mr-[2%]" : "mr-1"}`}
             >
               <ItemOptions data={data} />
             </span>

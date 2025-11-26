@@ -12,9 +12,10 @@ import { useShallow } from "zustand/shallow";
 type ListItemProps = {
   index: number;
   data: ListType;
+  checklistMode?: boolean | null;
 };
 
-export default function ListItem({ data, index }: ListItemProps) {
+export default function ListItem({ data, index, checklistMode }: ListItemProps) {
   const [isEditing, setIsEditing] = useState(false);
 
   const showItemsOrder = useStorePersisted(useShallow((state) => state.showItemsOrder));
@@ -62,7 +63,9 @@ export default function ListItem({ data, index }: ListItemProps) {
                     {...provided.droppableProps}
                     className={cn(data.items?.length <= 0 ? "py-0.5" : "mx-0 py-0", showItemsOrder ? "mr-0.5 pr-1" : "")}
                   >
-                    {data.items?.map((item, index) => <Item key={item.id} index={index} data={item} listLength={data.items.length} />)}
+                    {data.items?.map((item, index) => (
+                      <Item key={item.id} index={index} data={item} listLength={data.items.length} checklistMode={checklistMode} />
+                    ))}
                     {provided.placeholder}
                   </ol>
                 )}

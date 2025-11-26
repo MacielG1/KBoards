@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { useEventListener, useMediaQuery, useOnClickOutside } from "usehooks-ts";
-import { ItemType, useStore } from "@/store/store";
+import { ItemType, useStore, useStorePersisted } from "@/store/store";
 import { Button } from "../ui/button";
 import { PlusIcon, X } from "lucide-react";
 import FormButton from "../Form/FormButton";
@@ -23,6 +23,7 @@ export default function AddList({ board }: { board: BoardWithLists }) {
 
   const addList = useStore(useShallow((state) => state.addList));
   const removeList = useStore(useShallow((state) => state.removeList));
+  const verticalMode = useStorePersisted(useShallow((state) => state.verticalMode));
   const onOpen = useProModalStore(useShallow((state) => state.onOpen));
 
   const params = useParams<{ boardId: string }>();
@@ -96,12 +97,12 @@ export default function AddList({ board }: { board: BoardWithLists }) {
             rows={1}
             id="title"
             ref={textAreaRef}
-            className="h-8 w-full border-transparent px-2 py-1 font-medium transition hover:border-input focus:border-input"
+            className="hover:border-input focus:border-input h-8 w-full border-transparent px-2 py-1 font-medium transition"
             placeholder="Enter List Name"
             // onBlur={onBlur}
           />
           <div className="flex items-center gap-1 pt-2">
-            <FormButton className="font-semibold cursor-pointer" variant="primary">
+            <FormButton className="cursor-pointer font-semibold" variant="primary">
               Add List
             </FormButton>
             <Button variant="ghost" size="sm" onClick={disableEditing} className="dark:hover:bg-neutral-700">
@@ -113,7 +114,7 @@ export default function AddList({ board }: { board: BoardWithLists }) {
     );
 
   return (
-    <li className="ml-1 h-full w-[17rem] shrink-0 select-none">
+    <li className={`h-full w-[17rem] shrink-0 select-none ${verticalMode ? "ml-3" : "ml-1"}`}>
       <button
         onClick={enableEditing}
         className="flex w-full cursor-pointer items-center justify-center rounded-md bg-neutral-200 p-2 text-sm font-medium transition duration-300 hover:bg-neutral-300 dark:bg-neutral-700 dark:hover:bg-neutral-700/90"

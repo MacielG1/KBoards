@@ -110,6 +110,7 @@ export const UpdateItemOrderSchema = z.object({
       id: z.string(),
       listId: z.string(),
       order: z.number(),
+      checked: z.boolean().nullable().optional(),
     }),
   ),
 

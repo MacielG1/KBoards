@@ -1,7 +1,7 @@
 import { relations } from "drizzle-orm";
 import { createId } from "@paralleldrive/cuid2";
 
-import { pgTable, varchar, integer, index, timestamp, primaryKey, text } from "drizzle-orm/pg-core";
+import { pgTable, varchar, integer, index, timestamp, primaryKey, text, boolean } from "drizzle-orm/pg-core";
 import postgres from "postgres";
 import { drizzle } from "drizzle-orm/postgres-js";
 import type { AdapterAccountType } from "next-auth/adapters";
@@ -61,11 +61,10 @@ export const Board = pgTable(
     color: text("color").notNull(),
     backgroundColor: text("backgroundColor").notNull(),
     order: integer("order").notNull(),
+    checklistMode: boolean("checklistMode").default(false),
     createdAt: timestamp("createdAt").defaultNow(),
   },
-  (table) => [
-    index("userId_board").on(table.userId),
-  ],
+  (table) => [index("userId_board").on(table.userId)],
 );
 
 export const List = pgTable(
@@ -83,9 +82,7 @@ export const List = pgTable(
       .references(() => Board.id, { onDelete: "cascade" }),
     createdAt: timestamp("createdAt").defaultNow(),
   },
-  (table) => [
-    index("boardId").on(table.boardId),
-  ],
+  (table) => [index("boardId").on(table.boardId)],
 );
 
 export const Item = pgTable(
@@ -98,6 +95,7 @@ export const Item = pgTable(
     content: text("content").notNull(),
     order: integer("order").notNull(),
     color: text("color").notNull(),
+    checked: boolean("checked").default(false),
     listId: text("listId")
       .notNull()
       .references(() => List.id, { onDelete: "cascade" }),
@@ -106,9 +104,7 @@ export const Item = pgTable(
       .references(() => Board.id, { onDelete: "cascade" }),
     createdAt: timestamp("createdAt").defaultNow(),
   },
-  (table) => [
-    index("listId").on(table.listId),
-  ],
+  (table) => [index("listId").on(table.listId)],
 );
 
 export const FreeTierLimit = pgTable(
@@ -127,9 +123,7 @@ export const FreeTierLimit = pgTable(
     listsCount: integer("listsCount").default(0).notNull(),
     createdAt: timestamp("createdAt").defaultNow(),
   },
-  (table) => [
-    index("userId_free_tier_limit").on(table.userId),
-  ],
+  (table) => [index("userId_free_tier_limit").on(table.userId)],
 );
 
 export const PremiumSubscription = pgTable(
@@ -150,13 +144,13 @@ export const PremiumSubscription = pgTable(
     stripeCurrentPeriodEnd: timestamp("stripeCurrentPeriodEnd"),
     createdAt: timestamp("createdAt").defaultNow(),
   },
-  (table) => [
-    index("userId_premium_subscription").on(table.userId),
-  ],
+  (table) => [index("userId_premium_subscription").on(table.userId)],
 );
 
 export const proxies = pgTable("proxies", {
-  id: varchar("id", { length: 128 }).primaryKey().$defaultFn(() => createId()),
+  id: varchar("id", { length: 128 })
+    .primaryKey()
+    .$defaultFn(() => createId()),
   address: text("address").notNull(),
   type: varchar("type", { length: 10 }).notNull(),
   createdAt: timestamp("created_at").defaultNow(),

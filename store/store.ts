@@ -18,6 +18,7 @@ export type ItemType = {
   order: number;
   boardId: string;
   color: string;
+  checked?: boolean | null;
 };
 
 export type BoardType = {
@@ -28,6 +29,7 @@ export type BoardType = {
   lists?: ListType[];
   order: number;
   isCurrentBoard?: boolean;
+  checklistMode?: boolean | null;
 };
 
 export type StoreType = {
@@ -55,6 +57,7 @@ export type StoreType = {
   copyList: (listId: string, newId: string) => void;
   setListColor: (listId: string, color: string, boardId: string) => void;
   moveList: (listId: string, boardId: string) => void;
+  toggleBoardChecklistMode: (boardId: string) => void;
 
   addItem: (item: ItemType, listId: string) => void;
   removeItem: (itemId: string, listId: string) => void;
@@ -63,6 +66,7 @@ export type StoreType = {
   insertItem: (item: ItemType, position: "above" | "below", itemId: string, newId: string) => void;
 
   copyItem: (itemId: string, listId: string, newId: string, boardId: string) => void;
+  toggleItemChecked: (itemId: string, listId: string, boardId: string) => void;
 };
 
 export const useStore = create<StoreType>((set, get) => ({
@@ -138,6 +142,11 @@ export const useStore = create<StoreType>((set, get) => ({
       set({ lists: [...lists.slice(0, listIndex), ...lists.slice(listIndex + 1)] });
     }
   },
+
+  toggleBoardChecklistMode: (boardId) =>
+    set((state) => ({
+      orderedBoards: state.orderedBoards.map((board) => (board.id === boardId ? { ...board, checklistMode: !board.checklistMode } : board)),
+    })),
 
   addItem: (item, listId) => set((state) => ({ lists: state.lists.map((list) => (list.id === listId ? { ...list, items: [...list.items, item] } : list)) })),
   removeItem: (itemId, listId) =>
@@ -262,6 +271,15 @@ export const useStore = create<StoreType>((set, get) => ({
       }
       return state;
     }),
+
+  toggleItemChecked: (itemId, listId, boardId) =>
+    set((state) => ({
+      lists: state.lists.map((list) =>
+        list.id === listId && list.boardId === boardId
+          ? { ...list, items: list.items.map((item) => (item.id === itemId ? { ...item, checked: !item.checked } : item)) }
+          : list,
+      ),
+    })),
 }));
 
 export type StoreTypePersisted = {
@@ -273,6 +291,9 @@ export type StoreTypePersisted = {
 
   showItemsOrder: boolean;
   toggleItemsOrder: () => void;
+
+  verticalMode: boolean;
+  toggleVerticalMode: () => void;
 
   textAlignment: "left" | "center" | "right";
   setTextAlignment: (textAlignment: "left" | "center" | "right") => void;
@@ -289,6 +310,9 @@ export const useStorePersisted = create<StoreTypePersisted>()(
 
       showItemsOrder: false,
       toggleItemsOrder: () => set((state) => ({ showItemsOrder: !state.showItemsOrder })),
+
+      verticalMode: false,
+      toggleVerticalMode: () => set((state) => ({ verticalMode: !state.verticalMode })),
 
       textAlignment: "left",
       setTextAlignment: (textAlignment) => set({ textAlignment }),

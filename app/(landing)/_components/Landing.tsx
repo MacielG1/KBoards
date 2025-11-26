@@ -19,7 +19,7 @@ export default function Landing() {
         </div>
       </nav>
       <div
-        className="absolute left-[calc(50%-4rem)] top-5 -z-10 transform-gpu blur-3xl sm:left-[calc(50%-18rem)] xl:left-[calc(50%-24rem)] xl:top-[calc(50%-30rem)]"
+        className="absolute top-5 left-[calc(50%-4rem)] -z-10 transform-gpu blur-3xl sm:left-[calc(50%-18rem)] xl:top-[calc(50%-30rem)] xl:left-[calc(50%-24rem)]"
         aria-hidden="true"
       >
         <div
@@ -30,11 +30,11 @@ export default function Landing() {
           }}
         />
       </div>
-      <div className="mx-auto max-w-[100rem] px-6 pb-24 pt-4 sm:pb-32 xl:flex xl:px-8 2xl:pt-24">
+      <div className="mx-auto max-w-[100rem] px-6 pt-4 pb-24 sm:pb-32 xl:flex xl:px-8 2xl:pt-24">
         <div className="mx-auto max-w-2xl shrink-0 px-8 xl:mx-0 xl:max-w-lg xl:pt-3 2xl:max-w-xl 2xl:pt-8">
-          <h1 className="mt-12 text-balance text-4xl font-bold tracking-tight text-white sm:text-6xl sm:leading-tight">Organize your ideas</h1>
+          <h1 className="mt-12 text-4xl font-bold tracking-tight text-balance text-white sm:text-6xl sm:leading-tight">Organize your ideas</h1>
           <p className="mt-6 text-lg leading-8 text-gray-300">
-            Kboards makes it easy for you to manage your tasks. With a simple and intuitive interface, you can arrange the lists and items as you wish.
+            Kboards makes it easy for you to stay on top of your tasks. The simple and intuitive interface lets you arrange everything the way you prefer
           </p>
           <div className="mt-10 flex items-center gap-x-6">
             <LoginModal asChild>
@@ -44,7 +44,7 @@ export default function Landing() {
             </LoginModal>
           </div>
         </div>
-        <div className="mx-auto mt-16 flex max-w-2xl items-center sm:mt-24 xl:ml-16 xl:mr-0 xl:mt-5 xl:max-w-none xl:flex-none 2xl:ml-32">
+        <div className="mx-auto mt-16 flex max-w-2xl items-center sm:mt-24 xl:mt-5 xl:mr-0 xl:ml-16 xl:max-w-none xl:flex-none 2xl:ml-32">
           <div className="max-w-3xl flex-none sm:max-w-2xl md:max-w-2xl lg:max-w-4xl xl:max-w-[95rem]">
             <Image
               priority

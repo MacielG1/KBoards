@@ -14,9 +14,10 @@ type ItemProps = {
   index: number;
   data: ItemType;
   listLength: number;
+  checklistMode?: boolean | null;
 };
 
-export default function Item({ index, data, listLength }: ItemProps) {
+export default function Item({ index, data, listLength, checklistMode }: ItemProps) {
   const [textColor, setTextColor] = useState("var(--text-default)");
   const showItemsOrder = useStorePersisted(useShallow((state) => state.showItemsOrder));
 
@@ -55,7 +56,7 @@ export default function Item({ index, data, listLength }: ItemProps) {
             {showItemsOrder && !snapshot.isDragging && <span className="text-xs font-normal text-neutral-400">{index + 1}</span>}
           </span>
 
-          <ItemContent data={data} />
+          <ItemContent data={data} checklistMode={checklistMode} />
         </div>
       )}
     </Draggable>

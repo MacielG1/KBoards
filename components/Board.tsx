@@ -1,6 +1,6 @@
 "use client";
 
-import { useStore } from "@/store/store";
+import { useStore, useStorePersisted } from "@/store/store";
 import { DragDropContext, DropResult, Droppable, DroppableProvided } from "@hello-pangea/dnd";
 import ListItem from "./List/ListItem";
 import { reorder } from "../utils/reorder";
@@ -19,6 +19,7 @@ type Props = {
 
 export default function Board({ board }: Props) {
   const [lists, setLists] = useStore(useShallow((state) => [state.lists, state.setLists]));
+  const verticalMode = useStorePersisted(useShallow((state) => state.verticalMode));
   const { isCollapsed } = useCollapsedContext();
 
   useEffect(() => {
@@ -97,7 +98,10 @@ export default function Board({ board }: Props) {
         });
         // updateBoard(currentBoardId, { ...board, lists: newOrderedData });
         setLists(newOrderedData, board.id);
-        return await updateItemOrder({ boardId: board.id, items: destinationList.items });
+
+        // Update both source and destination lists to preserve all properties including checked
+        const allUpdatedItems = [...sourceList.items, ...destinationList.items];
+        return await updateItemOrder({ boardId: board.id, items: allUpdatedItems });
       }
     }
   }
@@ -124,15 +128,15 @@ export default function Board({ board }: Props) {
           }}
           onDragEnd={onDragEnd}
         >
-          <Droppable droppableId="lists" type="list" direction="horizontal">
+          <Droppable droppableId="lists" type="list" direction={verticalMode ? "vertical" : "horizontal"}>
             {(provided: DroppableProvided) => (
               <div {...provided.droppableProps} ref={provided.innerRef}>
-                <ol className="flex">
+                <ol className={verticalMode ? "flex flex-col gap-2" : "flex"}>
                   {lists.map((list, i) => {
-                    return <ListItem key={list.id} index={i} data={list} />;
+                    return <ListItem key={list.id} index={i} data={list} checklistMode={board.checklistMode} />;
                   })}
                   {provided.placeholder}
-                  <div className="pl-2">
+                  <div className={verticalMode ? "pt-2" : "pl-2"}>
                     <AddList board={board} />
                   </div>
                 </ol>

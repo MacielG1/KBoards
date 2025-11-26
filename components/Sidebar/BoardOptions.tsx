@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { BoardType, useStore, useStorePersisted } from "@/store/store";
-import { Copy, Eraser, MoreHorizontal, Pencil, Trash, X } from "lucide-react";
+import { CheckSquare, Copy, Eraser, MoreHorizontal, Pencil, Square, Trash, X } from "lucide-react";
 import { useRef, useState, useTransition } from "react";
 import ColorPicker from "../Form/ColorPicker";
 import DeleteModal from "../Modals/DeleteModal";
@@ -16,6 +16,7 @@ import { createId } from "@paralleldrive/cuid2";
 import { toast } from "sonner";
 import { useProModalStore } from "@/store/useProModal";
 import { useShallow } from "zustand/shallow";
+import { toggleBoardChecklistMode as toggleBoardChecklistModeAction } from "@/utils/actions/boards/toggleBoardChecklistMode";
 
 type BoardOptionsProps = {
   data: BoardType;
@@ -37,6 +38,7 @@ export default function BoardOptions({ data, enableEditing, textColor }: BoardOp
   const orderedBoards = useStore(useShallow((state) => state.orderedBoards));
   const setCurrentBoardId = useStorePersisted(useShallow((state) => state.setCurrentBoardId));
   const onOpen = useProModalStore(useShallow((state) => state.onOpen));
+  const toggleBoardChecklistMode = useStore(useShallow((state) => state.toggleBoardChecklistMode));
 
   async function handleDelete() {
     startTransition(async () => {
@@ -84,6 +86,12 @@ export default function BoardOptions({ data, enableEditing, textColor }: BoardOp
     await updateBoardColor({ id: data.id, color: "" });
   }
 
+  async function handleToggleChecklistMode() {
+    const newChecklistMode = !data.checklistMode;
+    toggleBoardChecklistMode(data.id);
+    await toggleBoardChecklistModeAction(data.id, newChecklistMode);
+  }
+
   return (
     <Popover>
       <PopoverTrigger
@@ -100,7 +108,7 @@ export default function BoardOptions({ data, enableEditing, textColor }: BoardOp
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        className="px-0 pb-3 pt-3"
+        className="px-0 pt-3 pb-3"
         side="bottom"
         align="start"
         onClick={(e) => {
@@ -113,7 +121,7 @@ export default function BoardOptions({ data, enableEditing, textColor }: BoardOp
             onClick={(e) => {
               // e.stopPropagation();
             }}
-            className="absolute right-2 top-2 h-auto w-auto p-2 text-neutral-600 focus-visible:ring-neutral-700"
+            className="absolute top-2 right-2 h-auto w-auto p-2 text-neutral-600 focus-visible:ring-neutral-700"
             variant="ghost"
           >
             <X className="size-4" />
@@ -162,6 +170,17 @@ export default function BoardOptions({ data, enableEditing, textColor }: BoardOp
               <Eraser className="ml-2 size-4 shrink-0" />
             </span>
           )}
+        </Button>
+        <Separator />
+        <Button
+          onClick={(e) => {
+            handleToggleChecklistMode();
+          }}
+          variant="ghost"
+          className="h-auto w-full justify-start rounded-none p-2 px-5 text-sm font-normal"
+        >
+          {data.checklistMode ? <CheckSquare className="text-mainColor mr-2 size-4" /> : <Square className="mr-2 size-4" />}
+          <span className="pb-[1px]">{data.checklistMode ? "Disable" : "Enable"} Checklist Mode</span>
         </Button>
         <Separator />
         <DeleteModal message={`Delete Board: ${data.name}`} deleteHandler={handleDelete}>

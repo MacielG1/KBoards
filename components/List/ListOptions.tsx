@@ -82,10 +82,10 @@ export default function ListOptions({ data, onAddItem, textColor }: ListOptionsP
           <MoreHorizontal style={{ color: textColor }} className="size-4" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-60 px-0 pb-3 pt-3" side="bottom" align="start" alignOffset={10}>
+      <PopoverContent className="w-60 px-0 pt-3 pb-3" side="bottom" align="start" alignOffset={10}>
         <div className="flex items-center justify-center pb-4 text-center text-sm font-medium text-neutral-500">List Options</div>
         <PopoverClose asChild ref={closeRef}>
-          <Button className="absolute right-2 top-2 h-auto w-auto p-2 text-neutral-600 focus-visible:ring-neutral-700" variant="ghost">
+          <Button className="absolute top-2 right-2 h-auto w-auto p-2 text-neutral-600 focus-visible:ring-neutral-700" variant="ghost">
             <X className="size-4" />
           </Button>
         </PopoverClose>
@@ -130,11 +130,11 @@ export default function ListOptions({ data, onAddItem, textColor }: ListOptionsP
           </>
         )}
 
-        <div className="inline-flex h-auto w-full items-center justify-start whitespace-nowrap rounded-none p-2 px-5 text-sm font-normal ring-offset-background transition-colors duration-300 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-50">
+        <div className="ring-offset-background focus-visible:ring-ring inline-flex h-auto w-full items-center justify-start rounded-none p-2 px-5 text-sm font-normal whitespace-nowrap transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-offset-0 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50">
           {textAlignment === "left" && <AlignLeft className="mr-2 size-4 shrink-0" />}
           {textAlignment === "center" && <AlignJustify className="mr-2 size-4 shrink-0" />}
           {textAlignment === "right" && <AlignRight className="mr-2 size-4 shrink-0" />}
-          <span className="pb-[1px] cursor-default">Align Items</span>
+          <span className="cursor-default pb-[1px]">Align Items</span>
           <div className="flex items-center justify-center gap-1 px-5">
             <Button onClick={() => setTextAlignment("left")} className="h-auto w-auto p-0 text-sm font-normal" variant="transparent">
               <AlignLeft className={`size-[18px] ${textAlignment === "left" && "text-mainColor"}`} />

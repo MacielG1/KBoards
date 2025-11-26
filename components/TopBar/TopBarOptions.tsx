@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { BoardType, useStore, useStorePersisted } from "@/store/store";
-import { Copy, Eraser, FileJson, ListOrdered, MoreHorizontal, Trash } from "lucide-react";
+import { ArrowDownUp, ArrowLeftRight, CheckSquare, Copy, Eraser, FileJson, ListOrdered, MoreHorizontal, Square, Trash } from "lucide-react";
 import { Suspense, useEffect, useRef, useState } from "react";
 import DeleteModal from "../Modals/DeleteModal";
 import ExportCSV from "./ExportCSV";
@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import { useProModalStore } from "@/store/useProModal";
 import { Board } from "@/drizzle/schema";
 import { useShallow } from "zustand/shallow";
+import { toggleBoardChecklistMode as toggleBoardChecklistModeAction } from "@/utils/actions/boards/toggleBoardChecklistMode";
 
 type BoardOptionsProps = {
   data: BoardType | null;
@@ -37,7 +38,10 @@ export default function TopBarOptions({ data, SubButton }: BoardOptionsProps) {
   const setBoardBackgroundColor = useStore(useShallow((state) => state.setBoardBackgroundColor));
   const toggleItemsOrder = useStorePersisted(useShallow((state) => state.toggleItemsOrder));
   const showItemsOrder = useStorePersisted(useShallow((state) => state.showItemsOrder));
+  const toggleVerticalMode = useStorePersisted(useShallow((state) => state.toggleVerticalMode));
+  const verticalMode = useStorePersisted(useShallow((state) => state.verticalMode));
   const onOpen = useProModalStore(useShallow((state) => state.onOpen));
+  const toggleBoardChecklistMode = useStore(useShallow((state) => state.toggleBoardChecklistMode));
 
   useEffect(() => {
     if (data) setBgColor(data.backgroundColor);
@@ -95,6 +99,13 @@ export default function TopBarOptions({ data, SubButton }: BoardOptionsProps) {
     await updateBoardBackgroundColor({ id: data?.id, backgroundColor: "" });
   }
 
+  async function handleToggleChecklistMode() {
+    if (!data) return;
+    const newChecklistMode = !data.checklistMode;
+    toggleBoardChecklistMode(data.id);
+    await toggleBoardChecklistModeAction(data.id, newChecklistMode);
+  }
+
   function exportAllBoards() {
     // export orderedBoards as JSON
     const newAllBoards = orderedBoards.map((board) => {
@@ -130,7 +141,7 @@ export default function TopBarOptions({ data, SubButton }: BoardOptionsProps) {
         </Button>
       </PopoverTrigger>
       <PopoverClose ref={closeRef} />
-      <PopoverContent className="w-48 px-0 pb-3 pt-3" side="bottom" align="center">
+      <PopoverContent className="w-48 px-0 pt-3 pb-3" side="bottom" align="center">
         {data && (
           <>
             <div className="text-md flex flex-wrap justify-center px-2 pb-2 text-center font-medium text-neutral-500">
@@ -190,6 +201,24 @@ export default function TopBarOptions({ data, SubButton }: BoardOptionsProps) {
             >
               <ListOrdered className={`mr-2 size-4 ${showItemsOrder && "text-emerald-500 dark:text-green-500"}`} />{" "}
               <span>{showItemsOrder ? "Hide Items Order" : "Show Items Order"}</span>
+            </Button>
+
+            <Button
+              variant="ghost"
+              onClick={() => toggleVerticalMode()}
+              className="h-auto w-full justify-start rounded-none p-1 px-4 py-2 pl-4 text-sm font-normal md:hidden"
+            >
+              {verticalMode ? <ArrowLeftRight className="mr-2 size-4" /> : <ArrowDownUp className="mr-2 size-4" />}
+              <span>{verticalMode ? "Horizontal Mode" : "Vertical Mode"}</span>
+            </Button>
+
+            <Button
+              variant="ghost"
+              onClick={() => handleToggleChecklistMode()}
+              className="h-auto w-full justify-start rounded-none p-1 px-4 py-2 pl-4 text-sm font-normal"
+            >
+              {data.checklistMode ? <CheckSquare className="text-mainColor mr-2 size-4 shrink-0" /> : <Square className="mr-2 size-4" />}
+              <span> Checklist Mode</span>
             </Button>
 
             {data?.lists && data.lists?.length > 0 && <ExportCSV data={data} />}

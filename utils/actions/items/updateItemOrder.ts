@@ -27,7 +27,7 @@ export async function updateItemOrder(data: z.infer<typeof UpdateItemOrderSchema
       for (const item of items) {
         await db
           .update(Item)
-          .set({ order: item.order, listId: item.listId })
+          .set({ order: item.order, listId: item.listId, checked: item.checked })
           .where(and(eq(Item.id, item.id), eq(Item.boardId, boardId)));
       }
     });
