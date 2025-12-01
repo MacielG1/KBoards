@@ -18,6 +18,7 @@ import { useProModalStore } from "@/store/useProModal";
 import { Board } from "@/drizzle/schema";
 import { useShallow } from "zustand/shallow";
 import { toggleBoardChecklistMode as toggleBoardChecklistModeAction } from "@/utils/actions/boards/toggleBoardChecklistMode";
+import { clearBoardChecklist as clearBoardChecklistAction } from "@/utils/actions/items/clearBoardChecklist";
 
 type BoardOptionsProps = {
   data: BoardType | null;
@@ -42,6 +43,7 @@ export default function TopBarOptions({ data, SubButton }: BoardOptionsProps) {
   const verticalMode = useStorePersisted(useShallow((state) => state.verticalMode));
   const onOpen = useProModalStore(useShallow((state) => state.onOpen));
   const toggleBoardChecklistMode = useStore(useShallow((state) => state.toggleBoardChecklistMode));
+  const clearBoardChecklist = useStore(useShallow((state) => state.clearBoardChecklist));
 
   useEffect(() => {
     if (data) setBgColor(data.backgroundColor);
@@ -104,6 +106,12 @@ export default function TopBarOptions({ data, SubButton }: BoardOptionsProps) {
     const newChecklistMode = !data.checklistMode;
     toggleBoardChecklistMode(data.id);
     await toggleBoardChecklistModeAction(data.id, newChecklistMode);
+  }
+
+  async function handleClearChecklist() {
+    if (!data || !data.checklistMode) return;
+    clearBoardChecklist(data.id);
+    await clearBoardChecklistAction(data.id);
   }
 
   function exportAllBoards() {
@@ -220,6 +228,17 @@ export default function TopBarOptions({ data, SubButton }: BoardOptionsProps) {
               {data.checklistMode ? <CheckSquare className="text-mainColor mr-2 size-4 shrink-0" /> : <Square className="mr-2 size-4" />}
               <span> Checklist Mode</span>
             </Button>
+
+            {data.checklistMode && (
+              <Button
+                variant="ghost"
+                onClick={() => handleClearChecklist()}
+                className="h-auto w-full justify-start rounded-none p-1 px-4 py-2 pl-4 text-sm font-normal"
+              >
+                <Eraser className="mr-2 size-4 shrink-0" />
+                <span>Clear all checkmarks</span>
+              </Button>
+            )}
 
             {data?.lists && data.lists?.length > 0 && <ExportCSV data={data} />}
           </>

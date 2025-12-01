@@ -67,6 +67,7 @@ export type StoreType = {
 
   copyItem: (itemId: string, listId: string, newId: string, boardId: string) => void;
   toggleItemChecked: (itemId: string, listId: string, boardId: string) => void;
+  clearBoardChecklist: (boardId: string) => void;
 };
 
 export const useStore = create<StoreType>((set, get) => ({
@@ -278,6 +279,13 @@ export const useStore = create<StoreType>((set, get) => ({
         list.id === listId && list.boardId === boardId
           ? { ...list, items: list.items.map((item) => (item.id === itemId ? { ...item, checked: !item.checked } : item)) }
           : list,
+      ),
+    })),
+
+  clearBoardChecklist: (boardId) =>
+    set((state) => ({
+      lists: state.lists.map((list) =>
+        list.boardId === boardId ? { ...list, items: list.items.map((item) => ({ ...item, checked: false })) } : list,
       ),
     })),
 }));
