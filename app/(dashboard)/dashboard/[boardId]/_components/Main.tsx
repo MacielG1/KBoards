@@ -15,7 +15,7 @@ export default function Main({ SubButtonParent, children }: { SubButtonParent: R
       style={{
         backgroundColor: currentBoardData?.backgroundColor,
       }}
-      className="relative flex flex-1 grow"
+      className="relative flex min-h-full flex-1 grow"
     >
       <TopBar SubButton={SubButtonParent} />
       <div className="h-full grow pt-14">{children}</div>

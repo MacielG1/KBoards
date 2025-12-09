@@ -24,8 +24,6 @@ export async function updateListOrder(data: z.infer<typeof updateListOrderSchema
 
     const { id, lists } = data;
 
-    console.log("data", data);
-
     await db.transaction(async (db) => {
       for (const list of lists) {
         await db

@@ -32,9 +32,12 @@ export default function TopBar({ SubButton }: { SubButton: React.ReactNode }) {
 
   return (
     <div
+      style={{
+        backgroundColor: currentBoardData?.backgroundColor,
+      }}
       className={cn(
-        "fixed inset-x-0 z-50 flex h-14 w-screen items-center justify-center px-8 py-2 transition-all duration-300",
-        isCollapsed ? "pl-[4rem]" : "pl-[18rem]",
+        "fixed inset-x-0 z-50 flex h-14 w-screen items-center justify-center bg-background px-8 py-2 transition-all duration-300",
+        isCollapsed ? "pl-4rem" : "pl-18rem",
       )}
     >
       {currentBoardData && <BoardTitle board={currentBoardData} textColor={textColor} />}

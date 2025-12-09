@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 export default async function DashBoardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative flex h-full">
+    <div className="relative flex min-h-full">
       <Navigation SidebarParent={<SidebarParent />} />
       <Main SubButtonParent={<SubButtonParent />}>{children}</Main>
     </div>
