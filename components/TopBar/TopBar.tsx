@@ -11,6 +11,7 @@ import getContrastColor from "@/utils/getConstrastColor";
 import { useTheme } from "next-themes";
 import UserButton from "../UserButton";
 import { useShallow } from "zustand/shallow";
+import SearchDialog from "../Search/SearchDialog";
 
 export default function TopBar({ SubButton }: { SubButton: React.ReactNode }) {
   const { isCollapsed } = useCollapsedContext();
@@ -43,6 +44,7 @@ export default function TopBar({ SubButton }: { SubButton: React.ReactNode }) {
       {currentBoardData && <BoardTitle board={currentBoardData} textColor={textColor} />}
 
       <div className="ml-auto flex space-x-1.5 pl-1">
+        <SearchDialog />
         <TopBarOptions data={currentBoardData} SubButton={SubButton} />
         <ThemeSwitcher />
         <UserButton

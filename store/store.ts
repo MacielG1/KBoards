@@ -307,6 +307,20 @@ export type StoreTypePersisted = {
   setTextAlignment: (textAlignment: "left" | "center" | "right") => void;
 };
 
+export type SearchHighlightStore = {
+  highlightedId: string | null;
+  highlightType: "board" | "list" | "item" | null;
+  setHighlight: (id: string | null, type: "board" | "list" | "item" | null) => void;
+  clearHighlight: () => void;
+};
+
+export const useSearchHighlight = create<SearchHighlightStore>((set) => ({
+  highlightedId: null,
+  highlightType: null,
+  setHighlight: (id, type) => set({ highlightedId: id, highlightType: type }),
+  clearHighlight: () => set({ highlightedId: null, highlightType: null }),
+}));
+
 export const useStorePersisted = create<StoreTypePersisted>()(
   persist(
     (set) => ({
