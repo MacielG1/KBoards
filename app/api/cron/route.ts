@@ -13,26 +13,6 @@ export async function GET(req: Request) {
   try {
     const timestamp = new Date().toISOString();
 
-    // Keep-alive FIRST — must fire even when the database is paused/unreachable.
-    // Supabase's free-tier pause logic only counts requests through its API
-    // gateway; the Drizzle query below (direct Postgres) never registers. Two
-    // signals: auth health + a REST call (a 401 still hits the gateway logs).
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY;
-    if (supabaseUrl && supabaseKey) {
-      const headers = { apikey: supabaseKey, Authorization: `Bearer ${supabaseKey}` };
-      const [health, rest] = await Promise.all([
-        fetch(`${supabaseUrl}/auth/v1/health`, { headers }).catch(() => null),
-        fetch(`${supabaseUrl}/rest/v1/board?select=id&limit=1`, { headers }).catch(() => null),
-      ]);
-      if (!health?.ok) {
-        console.error(`[${timestamp}] Supabase auth health ping failed: ${health?.status ?? 'no response'}`);
-      }
-      if (!rest) {
-        console.error(`[${timestamp}] Supabase REST ping failed (no response)`);
-      }
-    }
-
     await db.query.Board.findMany({
       limit: 1,
       columns: {
